@@ -1,0 +1,60 @@
+cpu-bind=MASK - gpu2, task  0  0 [3983490]: mask 0x30000003000000000000000000000000300000030000000000000000000 set
+MODE: div_prune=0 (0=baseline 1=BTP)
+torch 2.3.0+cu121 | tf 4.40.0 | fa 2.7.4.post1
+The following values were not passed to `accelerate launch` and had defaults used instead:
+	`--num_machines` was set to a value of `1`
+	`--mixed_precision` was set to a value of `'no'`
+	`--dynamo_backend` was set to a value of `'no'`
+To avoid this warning pass in values for each of the problematic parameters or run `accelerate config`.
+[32m2026-06-11 21:42:58[0m | [1mINFO    [0m | [36mlmms_eval.__main__[0m:[36mcli_evaluate[0m:[36m475[0m - [1mVerbosity set to INFO[0m
+[RANK 0] Detected kernel version 4.18.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+[32m2026-06-11 21:43:03[0m | [1mINFO    [0m | [36mlmms_eval.__main__[0m:[36mcli_evaluate_single[0m:[36m594[0m - [1mEvaluation tracker args: {'output_path': './results/lmms_logs/'}[0m
+[32m2026-06-11 21:43:03[0m | [33m[1mWARNING [0m | [36mlmms_eval.__main__[0m:[36mcli_evaluate_single[0m:[36m624[0m - [33m[1m --limit SHOULD ONLY BE USED FOR TESTING.REAL METRICS SHOULD NOT BE COMPUTED USING LIMIT.[0m
+[32m2026-06-11 21:43:03[0m | [1mINFO    [0m | [36mlmms_eval.__main__[0m:[36mcli_evaluate_single[0m:[36m678[0m - [1mSelected Tasks: ['pope'][0m
+[32m2026-06-11 21:43:03[0m | [1mINFO    [0m | [36mlmms_eval.evaluator[0m:[36msimple_evaluate[0m:[36m323[0m - [1mSetting random seed to 0 | Setting numpy seed to 1234 | Setting torch manual seed to 1234[0m
+[RANK 0] Detected kernel version 4.18.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+You are using a model of type llava to instantiate a model of type llava_llama. This is not supported for all configurations of models and can yield errors.
+You are using a model of type llava to instantiate a model of type llava_llama. This is not supported for all configurations of models and can yield errors.
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:11<00:11, 11.33s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:15<00:00,  7.13s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:15<00:00,  7.76s/it]
+[32m2026-06-11 21:43:31[0m | [1mINFO    [0m | [36mlmms_eval.models.simple.llava[0m:[36m__init__[0m:[36m141[0m - [1mUsing single device: cuda:0[0m
+[32m2026-06-11 21:43:31[0m | [1mINFO    [0m | [36mlmms_eval.api.task[0m:[36m_resolve_hf_datasets_cache_dir[0m:[36m98[0m - [1mHF datasets cache '/scratch/data/divyasaxena_rs/kedar_BTPreproduction/hf_cache/datasets' is on a remote filesystem; using node-local cache '/tmp/lmms_eval_hf_datasets/divyasaxena_rs'.[0m
+Generating test split:   0%|          | 0/9000 [00:00<?, ? examples/s]Generating test split:   9%|▉         | 800/9000 [00:00<00:01, 7064.15 examples/s]Generating test split:  20%|██        | 1800/9000 [00:00<00:00, 8460.36 examples/s]Generating test split:  33%|███▎      | 3000/9000 [00:00<00:00, 9937.98 examples/s]Generating test split:  49%|████▉     | 4400/9000 [00:00<00:00, 9254.34 examples/s]Generating test split:  63%|██████▎   | 5700/9000 [00:00<00:00, 9905.89 examples/s]Generating test split:  79%|███████▉  | 7100/9000 [00:00<00:00, 9600.31 examples/s]Generating test split:  91%|█████████ | 8200/9000 [00:00<00:00, 9756.32 examples/s]Generating test split: 100%|██████████| 9000/9000 [00:00<00:00, 9697.87 examples/s]
+[32m2026-06-11 21:54:00[0m | [1mINFO    [0m | [36mlmms_eval.evaluator[0m:[36mevaluate[0m:[36m865[0m - [1mRunning on rank 0 (local rank 0)[0m
+[32m2026-06-11 21:54:00[0m | [1mINFO    [0m | [36mlmms_eval.evaluator_utils[0m:[36mfrom_taskdict[0m:[36m100[0m - [1mNo metadata found in task config for pope, using default n_shot=0[0m
+[32m2026-06-11 21:54:00[0m | [1mINFO    [0m | [36mlmms_eval.api.task[0m:[36mbuild_all_requests[0m:[36m469[0m - [1mBuilding contexts for pope on rank 0...[0m
+  0%|          | 0/200 [00:00<?, ?it/s]100%|██████████| 200/200 [00:00<00:00, 15973.43it/s]
+[32m2026-06-11 21:54:00[0m | [1mINFO    [0m | [36mlmms_eval.evaluator[0m:[36mevaluate[0m:[36m994[0m - [1mRunning generate_until requests[0m
+Model Responding:   0%|          | 0/200 [00:00<?, ?it/s]Traceback (most recent call last):
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/__main__.py", line 542, in cli_evaluate
+    results, samples = cli_evaluate_single(args)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/__main__.py", line 682, in cli_evaluate_single
+    results = evaluator.simple_evaluate(
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/utils.py", line 736, in _wrapper
+    return fn(*args, **kwargs)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/evaluator.py", line 486, in simple_evaluate
+    results = evaluate(
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/utils.py", line 736, in _wrapper
+    return fn(*args, **kwargs)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/evaluator.py", line 1022, in evaluate
+    resps = getattr(lm, reqtype)(cloned_reqs)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/models/simple/llava.py", line 405, in generate_until
+    raise e
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/models/simple/llava.py", line 390, in generate_until
+    cont = self.model.generate(
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/LLaVA/llava/model/language_model/llava_llama.py", line 137, in generate
+    return super().generate(
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/torch/utils/_contextlib.py", line 115, in decorate_context
+    return func(*args, **kwargs)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/transformers/generation/utils.py", line 1576, in generate
+    result = self._greedy_search(
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/transformers/generation/utils.py", line 2494, in _greedy_search
+    outputs = self(
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1532, in _wrapped_call_impl
+    return self._call_impl(*args, **kwargs)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/torch/nn/modules/module.py", line 1541, in _call_impl
+    return forward_call(*args, **kwargs)
+TypeError: LlavaLlamaForCausalLM.forward() got an unexpected keyword argument 'cache_position'
+[32m2026-06-11 21:54:01[0m | [31m[1mERROR   [0m | [36mlmms_eval.__main__[0m:[36mcli_evaluate[0m:[36m564[0m - [31m[1mError during evaluation: LlavaLlamaForCausalLM.forward() got an unexpected keyword argument 'cache_position'. Please set `--verbosity=DEBUG` to get more information.[0m
+Model Responding:   0%|          | 0/200 [00:00<?, ?it/s]

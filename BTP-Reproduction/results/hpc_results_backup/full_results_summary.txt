@@ -1,0 +1,28 @@
+20260612_003255_results.json | time 55.09157385677099
+  pope {'pope_accuracy,none': 0.835, 'pope_accuracy_stderr_clt,none': 0.0263, 'pope_precision,none': 0.8454, 'pope_precision_stderr_clt,none': 0.0263, 'pope_recall,none': 0.82, 'pope_recall_stderr_clt,none': 0.0263, 'pope_f1_score,none': 0.8325, 'pope_f1_score_stderr_clt,none': 0.0263, 'pope_yes_ratio,none': 0.5, 'pope_yes_ratio_stderr_clt,none': 0.0263}
+20260612_003542_results.json | time 68.82054022699594
+  pope {'pope_accuracy,none': 0.835, 'pope_accuracy_stderr_clt,none': 0.0263, 'pope_precision,none': 0.8851, 'pope_precision_stderr_clt,none': 0.0263, 'pope_recall,none': 0.77, 'pope_recall_stderr_clt,none': 0.0263, 'pope_f1_score,none': 0.8235, 'pope_f1_score_stderr_clt,none': 0.0263, 'pope_yes_ratio,none': 0.5, 'pope_yes_ratio_stderr_clt,none': 0.0263}
+20260612_005058_results.json | time 1027.7968665361404
+  pope {'pope_accuracy,none': 0.8698, 'pope_accuracy_stderr_clt,none': 0.0035, 'pope_precision,none': 0.9386, 'pope_precision_stderr_clt,none': 0.0035, 'pope_recall,none': 0.7913, 'pope_recall_stderr_clt,none': 0.0035, 'pope_f1_score,none': 0.8587, 'pope_f1_score_stderr_clt,none': 0.0035, 'pope_yes_ratio,none': 0.5, 'pope_yes_ratio_stderr_clt,none': 0.0035}
+20260612_010821_results.json | time 430.4730548262596
+  mme {'mme_cognition_score,none': 355.7143, 'mme_cognition_score_stderr_clt,none': 0.0301, 'mme_perception_score,none': 1507.5112, 'mme_perception_score_stderr_clt,none': 0.0084}
+20260612_011546_results.json | time 643.4061829596758
+  mmbench_en_dev {'gpt_eval_score,none': 64.0034}
+20260612_012644_results.json | time 1160.7331157028675
+  textvqa_val {'exact_match,none': 0.4611, 'exact_match_stderr,none': 0.0068, 'exact_match_stderr_clt,none': 0.0068}
+20260612_014620_results.json | time 2181.7381539344788
+  gqa {'exact_match,none': 0.6198, 'exact_match_stderr,none': 0.0043, 'exact_match_stderr_clt,none': 0.0043}
+20260612_022257_results.json | time 9510.173770137131
+  seedbench {'seed_image,none': 0.6623, 'seed_all,none': 0.5365, 'seed_video,none': 0.0602}
+20260612_050148_results.json | time 1710.176916360855
+  pope {'pope_accuracy,none': 0.8536, 'pope_accuracy_stderr_clt,none': 0.0037, 'pope_precision,none': 0.9378, 'pope_precision_stderr_clt,none': 0.0037, 'pope_recall,none': 0.7573, 'pope_recall_stderr_clt,none': 0.0037, 'pope_f1_score,none': 0.838, 'pope_f1_score_stderr_clt,none': 0.0037, 'pope_yes_ratio,none': 0.5, 'pope_yes_ratio_stderr_clt,none': 0.0037}
+20260612_053034_results.json | time 568.5636154562235
+  mme {'mme_cognition_score,none': 351.4286, 'mme_cognition_score_stderr_clt,none': 0.0302, 'mme_perception_score,none': 1497.1798, 'mme_perception_score_stderr_clt,none': 0.0084}
+20260612_054017_results.json | time 817.8274541348219
+  mmbench_en_dev {'gpt_eval_score,none': 63.488}
+20260612_055410_results.json | time 1481.1729905828834
+  textvqa_val {'exact_match,none': 0.4002, 'exact_match_stderr,none': 0.0067, 'exact_match_stderr_clt,none': 0.0067}
+20260612_061907_results.json | time 2622.975588813424
+  gqa {'exact_match,none': 0.5898, 'exact_match_stderr,none': 0.0044, 'exact_match_stderr_clt,none': 0.0044}
+20260612_070306_results.json | time 6255.625399298966
+  seedbench {'seed_image,none': 0.6399, 'seed_all,none': 0.5079, 'seed_video,none': 0.008}

@@ -1,0 +1,88 @@
+cpu-bind=MASK - gpu2, task  0  0 [3981719]: mask 0x3c0000000000000000000000000000003c00000000000000000000000000 set
+The cache for model files in Transformers v4.22.0 has been updated. Migrating your old cache. This is a one-time only operation. You can interrupt this and resume the migration later on by calling `transformers.utils.move_cache()`.
+0it [00:00, ?it/s]0it [00:00, ?it/s]
+MODE: div_prune=0 (0=baseline 1=BTP)
+torch 2.3.0+cu121 | tf 4.40.0 | fa 2.7.4.post1
+The following values were not passed to `accelerate launch` and had defaults used instead:
+	`--num_machines` was set to a value of `1`
+	`--mixed_precision` was set to a value of `'no'`
+	`--dynamo_backend` was set to a value of `'no'`
+To avoid this warning pass in values for each of the problematic parameters or run `accelerate config`.
+[32m2026-06-11 21:35:05[0m | [1mINFO    [0m | [36mlmms_eval.__main__[0m:[36mcli_evaluate[0m:[36m475[0m - [1mVerbosity set to INFO[0m
+[RANK 0] Detected kernel version 4.18.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+[32m2026-06-11 21:35:12[0m | [1mINFO    [0m | [36mlmms_eval.__main__[0m:[36mcli_evaluate_single[0m:[36m594[0m - [1mEvaluation tracker args: {'output_path': './results/lmms_logs/'}[0m
+[32m2026-06-11 21:35:12[0m | [33m[1mWARNING [0m | [36mlmms_eval.__main__[0m:[36mcli_evaluate_single[0m:[36m624[0m - [33m[1m --limit SHOULD ONLY BE USED FOR TESTING.REAL METRICS SHOULD NOT BE COMPUTED USING LIMIT.[0m
+[32m2026-06-11 21:35:12[0m | [1mINFO    [0m | [36mlmms_eval.__main__[0m:[36mcli_evaluate_single[0m:[36m678[0m - [1mSelected Tasks: ['pope'][0m
+[32m2026-06-11 21:35:12[0m | [1mINFO    [0m | [36mlmms_eval.evaluator[0m:[36msimple_evaluate[0m:[36m323[0m - [1mSetting random seed to 0 | Setting numpy seed to 1234 | Setting torch manual seed to 1234[0m
+[RANK 0] Detected kernel version 4.18.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+'(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: 91116be8-abb3-4b34-b683-e0d34834dea2)')' thrown while requesting HEAD https://huggingface.co/liuhaotian/llava-v1.5-7b/resolve/main/tokenizer_config.json
+Retrying in 1s [Retry 1/5].
+'(ReadTimeoutError("HTTPSConnectionPool(host='huggingface.co', port=443): Read timed out. (read timeout=10)"), '(Request ID: db0118a9-4506-4848-b2dc-a9975625b594)')' thrown while requesting HEAD https://huggingface.co/api/resolve-cache/models/liuhaotian/llava-v1.5-7b/4481d270cc22fd5c4d1bb5df129622006ccd9234/config.json
+Retrying in 1s [Retry 1/5].
+You are using a model of type llava to instantiate a model of type llava_llama. This is not supported for all configurations of models and can yield errors.
+You are using a model of type llava to instantiate a model of type llava_llama. This is not supported for all configurations of models and can yield errors.
+Loading checkpoint shards:   0%|          | 0/2 [00:00<?, ?it/s]Loading checkpoint shards:  50%|█████     | 1/2 [00:11<00:11, 11.37s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:15<00:00,  7.09s/it]Loading checkpoint shards: 100%|██████████| 2/2 [00:15<00:00,  7.74s/it]
+[32m2026-06-11 21:36:23[0m | [1mINFO    [0m | [36mlmms_eval.models.simple.llava[0m:[36m__init__[0m:[36m141[0m - [1mUsing single device: cuda:0[0m
+[32m2026-06-11 21:36:23[0m | [1mINFO    [0m | [36mlmms_eval.api.task[0m:[36m_resolve_hf_datasets_cache_dir[0m:[36m98[0m - [1mHF datasets cache '/scratch/data/divyasaxena_rs/kedar_BTPreproduction/hf_cache/datasets' is on a remote filesystem; using node-local cache '/tmp/lmms_eval_hf_datasets/divyasaxena_rs'.[0m
+Traceback (most recent call last):
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/tenacity/__init__.py", line 473, in __call__
+    result = fn(*args, **kwargs)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/api/task.py", line 1149, in download
+    self.dataset = datasets.load_dataset(
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/datasets/load.py", line 2129, in load_dataset
+    builder_instance = load_dataset_builder(
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/datasets/load.py", line 1849, in load_dataset_builder
+    dataset_module = dataset_module_factory(
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/datasets/load.py", line 1731, in dataset_module_factory
+    raise e1 from None
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/datasets/load.py", line 1601, in dataset_module_factory
+    dataset_readme_path = api.hf_hub_download(
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/huggingface_hub/hf_api.py", line 5467, in hf_hub_download
+    return hf_hub_download(
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/huggingface_hub/file_download.py", line 976, in hf_hub_download
+    hf_headers = build_hf_headers(
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/huggingface_hub/utils/_deprecation.py", line 101, in inner_f
+    return f(*args, **kwargs)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/huggingface_hub/utils/_validators.py", line 114, in _inner_fn
+    return fn(*args, **kwargs)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/huggingface_hub/utils/_headers.py", line 126, in build_hf_headers
+    token_to_send = get_token_to_send(token)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/huggingface_hub/utils/_headers.py", line 159, in get_token_to_send
+    raise LocalTokenNotFoundError(
+huggingface_hub.errors.LocalTokenNotFoundError: Token is required (`token=True`), but no token found. You need to provide a token or be logged in to Hugging Face with `hf auth login` or `huggingface_hub.login`. See https://huggingface.co/settings/tokens.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/__main__.py", line 542, in cli_evaluate
+    results, samples = cli_evaluate_single(args)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/__main__.py", line 682, in cli_evaluate_single
+    results = evaluator.simple_evaluate(
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/utils.py", line 736, in _wrapper
+    return fn(*args, **kwargs)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/evaluator.py", line 392, in simple_evaluate
+    task_dict = get_task_dict(tasks, task_manager, task_type)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/tasks/__init__.py", line 565, in get_task_dict
+    task_name_from_string_dict = task_manager.load_task_or_group(
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/tasks/__init__.py", line 378, in load_task_or_group
+    all_loaded_tasks = dict(collections.ChainMap(*map(load_fn, task_list)))
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/tasks/__init__.py", line 297, in _load_individual_task_or_group
+    return _load_task(task_config, task=name_or_config)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/tasks/__init__.py", line 267, in _load_task
+    task_object = TaskObj(config=config, model_name=self.model_name)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/api/task.py", line 811, in __init__
+    self.download(self.config.dataset_kwargs)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/tenacity/__init__.py", line 331, in wrapped_f
+    return copy(f, *args, **kw)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/tenacity/__init__.py", line 470, in __call__
+    do = self.iter(retry_state=retry_state)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/tenacity/__init__.py", line 371, in iter
+    result = action(retry_state)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/llava_btp/lib/python3.10/site-packages/tenacity/__init__.py", line 414, in exc_check
+    raise retry_exc from fut.exception()
+tenacity.RetryError: RetryError[<Future at 0x14a4ac23b010 state=finished raised LocalTokenNotFoundError>]
+[32m2026-06-11 21:36:31[0m | [31m[1mERROR   [0m | [36mlmms_eval.__main__[0m:[36mcli_evaluate[0m:[36m564[0m - [31m[1mError during evaluation: RetryError[<Future at 0x14a4ac23b010 state=finished raised LocalTokenNotFoundError>]. Please set `--verbosity=DEBUG` to get more information.[0m
