@@ -2,8 +2,8 @@
 
 Reproduction of the NeurIPS 2025 paper **"Balanced Token Pruning: Accelerating Vision Language Models Beyond Local Optimization"** ([arXiv:2505.22038](https://arxiv.org/abs/2505.22038)) on LLaVA-v1.5-7B.
 
-- **Author:** P. S. Kedar (Research Intern)
-- **Supervisor:** Prof. Divya Saxena, SAIDE, IIT Jodhpur
+- **Author:** P. S. Kedar (summer research intern)
+- **Supervisor:** Prof. Dr. Divya Saxena, SAIDE, IIT Jodhpur
 - **Hardware:** IIT Jodhpur HPC — NVIDIA A100-SXM4-40GB, SLURM scheduler
 - **Date:** June 2026
 
