@@ -170,6 +170,4 @@ README.md       This file
 ## Pending / future work
 
 - **MM-Vet** — needs GPT-4 as an automatic judge (OpenAI API key). Generation can run on the HPC any time; only the judging step needs the key.
-- **Wall-clock latency** — measure real timed speedup (FLOPs is done; latency is the measured counterpart).
 - **LLaVA-1.6 (LLaVA-NeXT)** — the authors describe it in the paper but never released the code (their GitHub to-do still lists it as pending, and the repo only has the LLaVA-1.5 file). Reproducing it would mean implementing BTP for LLaVA-NeXT ourselves — original work, not reproduction.
-- **Cross-model TextVQA study** — test whether the pruning-vs-text-reading collapse generalizes to other VLMs.
