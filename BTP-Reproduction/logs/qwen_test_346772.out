@@ -1,0 +1,41 @@
+cpu-bind=MASK - gpu1, task  0  0 [954480]: mask 0x7800000000000000000000000000000078000000000000000000000000000000 set
+MODE: div_prune=0 (expect 0) | MODEL: qwen2.5-vl-7b | POPE-200 test
+The following values were not passed to `accelerate launch` and had defaults used instead:
+	`--num_machines` was set to a value of `1`
+	`--mixed_precision` was set to a value of `'no'`
+	`--dynamo_backend` was set to a value of `'no'`
+To avoid this warning pass in values for each of the problematic parameters or run `accelerate config`.
+[32m2026-06-16 14:30:28[0m | [1mINFO    [0m | [36mlmms_eval.__main__[0m:[36mcli_evaluate[0m:[36m475[0m - [1mVerbosity set to INFO[0m
+[RANK 0] Detected kernel version 4.18.0, which is below the recommended minimum of 5.5.0; this can cause the process to hang. It is recommended to upgrade the kernel to the minimum version or higher.
+[32m2026-06-16 14:30:33[0m | [1mINFO    [0m | [36mlmms_eval.__main__[0m:[36mcli_evaluate_single[0m:[36m594[0m - [1mEvaluation tracker args: {'output_path': './results/lmms_logs/'}[0m
+[32m2026-06-16 14:30:33[0m | [33m[1mWARNING [0m | [36mlmms_eval.__main__[0m:[36mcli_evaluate_single[0m:[36m624[0m - [33m[1m --limit SHOULD ONLY BE USED FOR TESTING.REAL METRICS SHOULD NOT BE COMPUTED USING LIMIT.[0m
+[32m2026-06-16 14:30:33[0m | [1mINFO    [0m | [36mlmms_eval.__main__[0m:[36mcli_evaluate_single[0m:[36m678[0m - [1mSelected Tasks: ['pope'][0m
+[32m2026-06-16 14:30:33[0m | [1mINFO    [0m | [36mlmms_eval.evaluator[0m:[36msimple_evaluate[0m:[36m323[0m - [1mSetting random seed to 0 | Setting numpy seed to 1234 | Setting torch manual seed to 1234[0m
+[32m2026-06-16 14:30:33[0m | [31m[1mERROR   [0m | [36mlmms_eval.models[0m:[36mget_model[0m:[36m254[0m - [31m[1mFailed to import model from 'qwen2_5_vl': No module named 'decord'[0m
+Traceback (most recent call last):
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/__main__.py", line 542, in cli_evaluate
+    results, samples = cli_evaluate_single(args)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/__main__.py", line 682, in cli_evaluate_single
+    results = evaluator.simple_evaluate(
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/utils.py", line 736, in _wrapper
+    return fn(*args, **kwargs)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/evaluator.py", line 351, in simple_evaluate
+    lm = models.get_model(model, force_simple).create_from_arg_string(
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/models/__init__.py", line 252, in get_model
+    return MODEL_REGISTRY_V2.get_model_class(model_name, force_simple=force_simple)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/models/registry_v2.py", line 115, in get_model_class
+    module = importlib.import_module(module_name)
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/envs/qwen_btp/lib/python3.10/importlib/__init__.py", line 126, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+  File "<frozen importlib._bootstrap>", line 1050, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1027, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1006, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 688, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 883, in exec_module
+  File "<frozen importlib._bootstrap>", line 241, in _call_with_frames_removed
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/models/chat/qwen2_5_vl.py", line 17, in <module>
+    from lmms_eval.models.simple.qwen2_5_vl import Qwen2_5_VL as Qwen2_5_VLSimple
+  File "/scratch/data/divyasaxena_rs/kedar_BTPreproduction/repos/lmms-eval/lmms_eval/models/simple/qwen2_5_vl.py", line 4, in <module>
+    import decord
+ModuleNotFoundError: No module named 'decord'
+[32m2026-06-16 14:30:33[0m | [31m[1mERROR   [0m | [36mlmms_eval.__main__[0m:[36mcli_evaluate[0m:[36m564[0m - [31m[1mError during evaluation: No module named 'decord'. Please set `--verbosity=DEBUG` to get more information.[0m
