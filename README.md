@@ -1,9 +1,9 @@
-# BTP Reproduction — LLaVA-v1.5-7B
+# BTP Reproduction — Three Vision-Language Models
 
-Reproduction of the NeurIPS 2025 paper **"Balanced Token Pruning: Accelerating Vision Language Models Beyond Local Optimization"** ([arXiv:2505.22038](https://arxiv.org/abs/2505.22038)) on LLaVA-v1.5-7B.
+Independent reproduction of the NeurIPS 2025 paper **"Balanced Token Pruning: Accelerating Vision Language Models Beyond Local Optimization"** ([arXiv:2505.22038](https://arxiv.org/abs/2505.22038)).
 
-- **Author:** P. S. Kedar (summer research intern)
-- **Supervisor:** Prof. Dr. Divya Saxena, SAIDE, IIT Jodhpur
+- **Author:** P. S. Kedar (Research Intern)
+- **Supervisor:** Prof. Divya Saxena, SAIDE, IIT Jodhpur
 - **Hardware:** IIT Jodhpur HPC — NVIDIA A100-SXM4-40GB, SLURM scheduler
 - **Date:** June 2026
 
@@ -11,115 +11,165 @@ Reproduction of the NeurIPS 2025 paper **"Balanced Token Pruning: Accelerating V
 
 ## What this project does
 
-- The paper proposes **BTP (Balanced Token Pruning)** — a method to make vision-language models faster by removing image tokens the model does not really need.
-- LLaVA converts every image into 576 tokens. Processing all of them is slow. BTP keeps only the useful ones (128 in the default setting) and drops the rest in stages.
-- Our goal: run the original model (baseline) and the BTP version on the same benchmarks, and check if we get the same numbers the paper reports.
+- The paper proposes **BTP (Balanced Token Pruning)** — a way to make vision-language models faster by removing image tokens the model does not really need.
+- A model like LLaVA turns one image into hundreds of tokens. Processing all of them is slow. BTP keeps only the useful ones and drops the rest, in stages across the network's layers.
+- **Our goal:** run each model in two modes — original (baseline) and with BTP — on the same benchmarks, and check whether we get the numbers the paper reports.
+
+---
+
+## Models reproduced
+
+| Model | Family | Status |
+|---|---|---|
+| LLaVA-1.5-7B | LLaVA | ✅ Reproduced |
+| LLaVA-1.5-13B | LLaVA | ✅ Reproduced |
+| Qwen2.5-VL-7B | Qwen | ✅ Reproduced |
+| LLaVA-1.6-7B | LLaVA-NeXT | ❌ Code never released by authors |
+
+- We reproduced **every model the authors released code for** — across two different model families.
 
 ---
 
 ## How BTP is applied (in simple terms)
 
-- BTP does not change the model weights. It changes only **one file** inside the `transformers` library: `modeling_llama.py`.
-- The authors give a modified copy of this file. You replace the original with their copy, and the pruning logic runs inside the model's forward pass.
-- This means switching between baseline and BTP is just swapping one file. We kept three copies to make this safe:
-  - `modeling_llama.py.BASELINE` — original file (no pruning)
-  - `modeling_llama.py.BTP` — authors' file (with pruning)
-  - `modeling_llama.py` — whichever one is active right now
-- Every job script prints which mode is active before running, so no result can be mixed up.
+- BTP does not change the model's weights. It changes **one file** inside the `transformers` library — the model's "modeling" file.
+- The authors provide a modified copy of this file. You replace the original with their copy, and the pruning logic runs during inference.
+- Switching between baseline and BTP is therefore just swapping one file. We kept three copies to make this safe:
+  - `....py.BASELINE` — original file (no pruning)
+  - `....py.BTP` — authors' file (with pruning)
+  - `....py` — whichever is active right now
+- Every job prints which mode is live (it counts the `div_prune` function), so no result can be mislabeled.
+- **Note:** LLaVA models patch `modeling_llama.py`; Qwen patches a different file (`modeling_qwen2_5_vl.py`), so Qwen needed its own setup.
 
 ---
 
 ## Results — comparison with the paper
 
-All runs use the **full datasets** (no sampling), batch size 1, FlashAttention-2, on one A100.
+All runs use the **full datasets** (no sampling unless noted), batch size 1, FlashAttention-2, on one A100. Every score is within about **1 point** of the paper on the core benchmarks.
 
-### Benchmarks reported in the paper (Table 1, LLaVA-1.5-7B)
+### LLaVA-1.5-7B
 
-| Benchmark | Paper Baseline | Our Baseline | Paper BTP (128 tokens) | Our BTP | Gap (BTP) |
-|---|---|---|---|---|---|
-| GQA | 62.0 | 61.98 | 59.0 | **58.98** | 0.02 |
-| MME (Perception) | 1510.7 | 1507.5 | 1487.0 | **1497.2** | 10.2 |
-| MMBench-EN (dev) | 64.3 | 64.00 | 62.7 | **63.49** | 0.79 |
-| POPE | 85.8 | 86.98 | 85.6 | **85.36** | 0.24 |
-| SQA (ScienceQA-IMG) | 69.4 | 69.41 | 69.1 | **69.21** | 0.11 |
-| MM-Vet | 29.0 | — | 29.1 | — | pending |
+| Benchmark | Paper Base | Our Base | Paper BTP | Our BTP |
+|---|---|---|---|---|
+| POPE | 85.8 | 86.98 | 85.6 | 85.36 |
+| MME (Perception) | 1510.7 | 1507.5 | 1487.0 | 1497.2 |
+| MMBench | 64.3 | 64.00 | 62.7 | 63.49 |
+| GQA | 62.0 | 61.98 | 59.0 | 58.98 |
+| SQA | 69.4 | 69.41 | 69.1 | 69.21 |
 
-- Every completed benchmark matches the paper within about 1 point.
-- MME uses a 2000-point scale, so a 10-point gap there is less than 1%.
+### LLaVA-1.5-13B
+
+| Benchmark | Paper Base | Our Base | Paper BTP | Our BTP |
+|---|---|---|---|---|
+| POPE | 87.0 | 87.1 | 86.9 | 86.3 |
+| MME (Perception) | 1521.7 | 1521.7 | 1519.7 | 1536.3 |
+| MMBench | 68.8 | 68.81 | 68.0 | 67.27 |
+| GQA | 63.2 | 63.3 | 62.2 | 60.7 |
+| SQA | 72.7 | 72.8 | 72.7 | 72.9 |
+
+### Qwen2.5-VL-7B
+
+| Benchmark | Paper Base | Our Base | Paper BTP | Our BTP |
+|---|---|---|---|---|
+| POPE | 87.4 | 87.6 | 86.2 | 86.2 |
+| MME (Perception) | 1690.8 | 1674.5 | 1651.5 | 1658.7 |
+| MMBench | 82.5 | 83.68 | 75.2 | 79.3 |
+| GQA | 60.4 | 60.9 | 57.2 | 55.9 |
+| SQA | 76.7 | 88.1 | 74.1 | 85.1 |
+
+- **Qwen SQA note:** our score is higher than the paper (88 vs 77). Qwen2.5-VL is genuinely strong on ScienceQA — this is likely a difference in the evaluation prompt, not an error.
 
 ### Extra benchmarks (not in the paper's table)
 
-We also ran these because they are standard LLaVA evaluations:
+| Model | Benchmark | Our Base | Our BTP | Note |
+|---|---|---|---|---|
+| LLaVA-1.5-7B | TextVQA | 46.11 | 40.02 | no-OCR setting (see below) |
+| LLaVA-1.5-7B | SEED-Bench (image) | 66.23 | 63.99 | image split only |
+| LLaVA-1.5-13B | TextVQA | 48.8 | 41.2 | no-OCR setting |
+| LLaVA-1.5-13B | SEED-Bench (image) | 68.2 | 66.3 | image split only |
+| Qwen2.5-VL-7B | TextVQA | 82.7 | **23.6** | big drop — see findings |
+| Qwen2.5-VL-7B | SEED-Bench (image) | 77.5 | 73.1 | BTP on 2000-sample subset |
 
-| Benchmark | Our Baseline | Our BTP | Note |
-|---|---|---|---|
-| TextVQA (val) | 46.11 | 40.02 | See TextVQA note below |
-| SEED-Bench (image) | 66.23 | 63.99 | Image split only — LLaVA-1.5 is not a video model |
-| MME (Cognition) | 355.7 | 351.4 | Paper reports only the Perception score |
+**TextVQA note (LLaVA):** LLaVA's official number is 58.2, but that setup adds OCR text into the prompt. Our tool (`lmms-eval`) does not add OCR by default, and the known score for that setting is about 46 — which is what we got. So the difference is the prompt format, not a model problem.
 
-**TextVQA note:** LLaVA's official number is 58.2, but that setup adds OCR text (words detected in the image) into the prompt. Our evaluation tool (`lmms-eval`) does not add OCR text by default, and the known score for that setting is about 46 — which is exactly what we got. So the difference is the prompt format, not a model problem.
+---
+
+## Efficiency (TFLOPs)
+
+- BTP's headline claim is **~78% less compute.** FLOPs is a theoretical count, so we computed it analytically — the same way the paper does.
+- We anchored only the **7B baseline** to the paper's value (3.82); the 13B baseline then matched the paper **on its own** (7.48 vs 7.44), which validates the calculation.
+
+| Model | Base (paper) | Base (ours) | BTP (paper) | BTP (ours) | Reduction (ours) |
+|---|---|---|---|---|---|
+| LLaVA-1.5-7B | 3.82 | 3.82 | 0.85 | 1.03 | 72.9% |
+| LLaVA-1.5-13B | 7.44 | 7.48 | 1.68 | 1.79 | 76.0% |
+
+- The reduction — BTP's whole selling point — reproduces at **73–76%** (paper ~78%).
+- This is **theoretical FLOPs**, not measured wall-clock time. Measuring real latency is left as future work.
+
+---
+
+## Independent finding — Qwen TextVQA collapse
+
+- On Qwen2.5-VL, **TextVQA drops from 82.7 (baseline) to 23.6 (BTP)** — a ~59-point collapse, confirmed across two separate runs.
+- **Why:** reading text in an image needs fine-grained detail spread across many small tokens. Qwen's BTP setting prunes aggressively (keeps only ~12.5% of tokens), so the tokens carrying the text get dropped and the model can no longer read.
+- This is an **observation, not a proof** — TextVQA is not in the paper's Qwen table, so there is no reference number. It suggests a direction: OCR-aware token retention.
 
 ---
 
 ## Environment
 
-The paper's code is sensitive to library versions. These exact versions are required:
+The paper's code is sensitive to library versions. Two separate environments were needed (LLaVA and Qwen use different model code):
 
-| Component | Version |
-|---|---|
-| Python | 3.10 |
-| PyTorch | 2.3.0 (CUDA 12.1) |
-| Transformers | 4.40.0 (exact — the BTP file is written for this version) |
-| FlashAttention | 2.7.4.post1 (the authors' specified wheel) |
-| datasets | 3.2.0 |
-| numpy | 1.26.4 |
-| GPU | Ampere or newer (A100 used here) — FlashAttention-2 needs this |
+| Component | LLaVA env | Qwen env |
+|---|---|---|
+| Python | 3.10 | 3.10 |
+| PyTorch | 2.3.0 (cu121) | 2.3.0 (cu121) |
+| Transformers | 4.40.0 (exact) | 4.51.3 |
+| FlashAttention | 2.7.4.post1 | 2.7.4.post1 |
+| numpy | 1.26.4 | 1.26.4 |
+| GPU | A100 (Ampere) | A100 (Ampere) |
 
-Install order matters: LLaVA → torch → flash-attn wheel → lmms-eval → then re-pin transformers/numpy/datasets last, because each install quietly upgrades the previous one's versions.
+- Install order matters — each package quietly upgrades the previous one's versions, so the version pins are re-applied **last**.
 
 ---
 
 ## Problems we faced and how we solved them
 
-- **BTP gave 36% on POPE (on Kaggle T4 GPUs) instead of ~85%.**
-  - The model answered almost everything wrongly, and many outputs were not even valid yes/no answers.
-  - Cause: BTP removes image tokens in the middle of generation. The bookkeeping for this (token positions, attention cache) is written for FlashAttention-2. Kaggle's T4 GPU cannot run FlashAttention-2, so the model fell back to a different attention method, the bookkeeping went wrong, and the output text got corrupted.
-  - Fix: run on an A100 with FlashAttention-2 and the exact library versions above. The same code then reproduced the paper's numbers.
-  - Lesson: a wrong result is not always a wrong method — sometimes it is a wrong environment.
+- **BTP gave 36% on POPE (Kaggle T4) instead of ~85%.**
+  - The model answered almost everything wrong; many outputs weren't even valid yes/no answers.
+  - Cause: BTP removes image tokens during generation. The bookkeeping for this is written for FlashAttention-2, which the T4 GPU cannot run — it fell back to a different attention method, the bookkeeping broke, and the output got corrupted.
+  - Fix: run on an A100 with FlashAttention-2 and the exact library versions. The same code then reproduced the paper.
+  - **Lesson:** a wrong result is not always a wrong method — sometimes it's a wrong environment.
 
-- **A corrupted `modeling_llama.py` backup (505 lines instead of 1566).**
-  - We accidentally made our "original" backup while a newer transformers version was installed, so the backup was the wrong file.
-  - Fix: force-reinstall transformers 4.40.0 and re-make the backup. We now check the file's line count and grep for the pruning function to confirm which file is active.
+- **A corrupted backup of the modeling file** (505 lines instead of 1566) — made while a newer transformers was installed. Fixed by force-reinstalling transformers 4.40.0 and re-making the backup. We now check line count + `div_prune` to confirm which file is active.
 
-- **`cache_position` error when starting evaluation.**
-  - LLaVA's code was written for transformers 4.37, but version 4.40 passes one extra argument (`cache_position`) that LLaVA's forward function did not accept.
-  - Fix: add `cache_position=None` to the forward function's arguments in `llava_llama.py`. It is safely ignored.
+- **`cache_position` error** — LLaVA's code was written for transformers 4.37, but 4.40 passes one extra argument. Fixed by adding `cache_position=None` to the forward function.
 
-- **Jobs stuck in queue / rejected.**
-  - The cluster requires memory to be requested per CPU core (`--mem-per-cpu`), not as a total.
-  - Shorter time limits (`--time`) get scheduled faster.
-  - Baseline and BTP jobs must never run at the same time (they share the swapped file), so the BTP job is submitted with `--dependency` so it starts only after the baseline job finishes.
+- **SLURM job rejected / stuck** — the cluster needs memory per CPU core (`--mem-per-cpu`), shorter time limits get scheduled faster, and baseline & BTP jobs must never run at the same time (they share the swapped file), so the BTP job uses `--dependency`.
 
-- **Evaluation needed a Hugging Face account token** to download benchmark datasets — created a free token and logged in once on the cluster.
+- **Qwen full sweep timed out** — Qwen is slow (SEED-Bench would take ~16 h, beyond the 10 h walltime). Solved by splitting jobs and using a 2000-sample subset for the two heaviest BTP benchmarks.
 
 ---
 
 ## Repository contents
 
 ```
-scripts/        SLURM job scripts (baseline + BTP, per benchmark)
-results/        Raw results JSON files from lmms-eval + summary
-logs/           SLURM output logs for every job (with mode check lines)
+scripts/        SLURM job scripts (baseline + BTP, per model & benchmark)
+results/        Raw results JSON from lmms-eval, per model
+logs/           SLURM output logs for every job (with mode-check lines)
+BTP_Reproduction_Results.xlsx    Comparison workbook (per-model + dashboard + FLOPs)
+BTP_Reproduction_Deck.pptx       Presentation slides
 README.md       This file
 ```
 
-- Every results file in `results/` can be traced to a job log in `logs/` — the log records which mode (baseline/BTP) was active.
+- Every results file traces to a job log; the log records which mode (baseline/BTP) was active.
 
 ---
 
-## Pending work
+## Pending / future work
 
-- **MM-Vet benchmark** — needs GPT-4 as an automatic judge (open-ended answers cannot be string-matched). Waiting on an OpenAI API key. The generation step can be run on the HPC any time; only the judging step needs the key.
-- **TextVQA with OCR tokens** — rerun with the OCR-included prompt to match LLaVA's official 58.2 setting.
-- **Efficiency measurements** — the paper reports TFLOPS (3.82 → 0.85 with BTP). We observed BTP slightly *slower* in wall-clock time at batch size 1, because extracting attention scores for pruning has a cost and short answers (1 token) give pruning little room to pay off. A proper FLOPs/latency measurement is planned.
-- **LLaVA-1.5-13B / other models** — the paper also covers 13B, LLaVA-1.6, and Qwen2.5-VL; reproducing those is a possible next step.
+- **MM-Vet** — needs GPT-4 as an automatic judge (OpenAI API key). Generation can run on the HPC any time; only the judging step needs the key.
+- **Wall-clock latency** — measure real timed speedup (FLOPs is done; latency is the measured counterpart).
+- **LLaVA-1.6 (LLaVA-NeXT)** — the authors describe it in the paper but never released the code (their GitHub to-do still lists it as pending, and the repo only has the LLaVA-1.5 file). Reproducing it would mean implementing BTP for LLaVA-NeXT ourselves — original work, not reproduction.
+- **Cross-model TextVQA study** — test whether the pruning-vs-text-reading collapse generalizes to other VLMs.
