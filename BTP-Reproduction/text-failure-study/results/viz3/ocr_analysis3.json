@@ -1,0 +1,86 @@
+[
+ {
+  "tag": "text_heavy_textvqa_0",
+  "cat": "text_heavy",
+  "text_patches": 0,
+  "rem_text_pct": null,
+  "rem_nontext_pct": null
+ },
+ {
+  "tag": "text_heavy_textvqa_1",
+  "cat": "text_heavy",
+  "text_patches": 256,
+  "rem_text_pct": 78.9,
+  "rem_nontext_pct": 91.0
+ },
+ {
+  "tag": "text_heavy_textvqa_2",
+  "cat": "text_heavy",
+  "text_patches": 192,
+  "rem_text_pct": 77.6,
+  "rem_nontext_pct": 89.1
+ },
+ {
+  "tag": "text_heavy_textvqa_3",
+  "cat": "text_heavy",
+  "text_patches": 105,
+  "rem_text_pct": 81.0,
+  "rem_nontext_pct": 88.5
+ },
+ {
+  "tag": "text_heavy_textvqa_4",
+  "cat": "text_heavy",
+  "text_patches": 105,
+  "rem_text_pct": 81.0,
+  "rem_nontext_pct": 88.5
+ },
+ {
+  "tag": "chart_ChartQA_0",
+  "cat": "chart",
+  "text_patches": 209,
+  "rem_text_pct": 73.7,
+  "rem_nontext_pct": 94.5
+ },
+ {
+  "tag": "chart_ChartQA_1",
+  "cat": "chart",
+  "text_patches": 209,
+  "rem_text_pct": 73.7,
+  "rem_nontext_pct": 94.5
+ },
+ {
+  "tag": "chart_ChartQA_2",
+  "cat": "chart",
+  "text_patches": 121,
+  "rem_text_pct": 73.6,
+  "rem_nontext_pct": 91.0
+ },
+ {
+  "tag": "chart_ChartQA_3",
+  "cat": "chart",
+  "text_patches": 121,
+  "rem_text_pct": 73.6,
+  "rem_nontext_pct": 91.0
+ },
+ {
+  "tag": "diagram_ai2d_0",
+  "cat": "diagram",
+  "text_patches": 10,
+  "rem_text_pct": 60.0,
+  "rem_nontext_pct": 88.3
+ },
+ {
+  "tag": "diagram_ai2d_1",
+  "cat": "diagram",
+  "text_patches": 10,
+  "rem_text_pct": 60.0,
+  "rem_nontext_pct": 88.3
+ },
+ {
+  "tag": "diagram_ai2d_2",
+  "cat": "diagram",
+  "text_patches": 75,
+  "rem_text_pct": 89.3,
+  "rem_nontext_pct": 87.2
+ }
+]
