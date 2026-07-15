@@ -220,9 +220,7 @@ README.md                        This file
 
 ## Pending / future work
 
-- **Full-dataset confirmation (Phase 2)** — the text-failure numbers use reduced-size runs (full sweeps ran out of GPU walltime). Full runs are expected to match, and are being re-run.
 - **MM-Vet** — needs GPT-4 as an automatic judge (OpenAI API key). Generation can run on the HPC any time; only the judging step needs the key.
-- **Wall-clock latency** — measure real timed speedup (FLOPs is done; latency is the measured counterpart).
 - **LLaVA-1.6 (LLaVA-NeXT)** — the authors describe it in the paper but never released the code. Reproducing it would mean implementing BTP for LLaVA-NeXT ourselves: original work, not reproduction.
 - **Content-aware and task-adaptive pruning** — the two fixes suggested by Phase 2: shield text-dense regions from pruning, and vary pruning strength by task.
 - **Cross-model check** — test whether the text-reading collapse shows up on other VLMs beyond Qwen.
