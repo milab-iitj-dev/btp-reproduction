@@ -1,10 +1,14 @@
-# BTP Reproduction — Three Vision-Language Models
+# Balanced Token Pruning: Reproduction and Failure-Mode Study
 
-Independent reproduction of the NeurIPS 2025 paper **"Balanced Token Pruning: Accelerating Vision Language Models Beyond Local Optimization"** ([arXiv:2505.22038](https://arxiv.org/abs/2505.22038)).
+Work on the NeurIPS 2025 paper **"Balanced Token Pruning: Accelerating Vision Language Models Beyond Local Optimization"** ([arXiv:2505.22038](https://arxiv.org/abs/2505.22038)), in two phases:
+
+- **Phase 1 (Reproduction):** reproduce the paper's results across every model it released code for. Result: three models reproduced within about a point of the paper.
+- **Phase 2 (Failure-mode study):** investigate a text-reading collapse we discovered in Phase 1, and work out why it happens. Full write-up, figures, scripts and raw results are in [`text-failure-study/`](text-failure-study/).
 
 - **Author:** P. S. Kedar (Research Intern)
 - **Supervisor:** Prof. Divya Saxena, SAIDE, IIT Jodhpur
-- **Hardware:** IIT Jodhpur HPC — NVIDIA A100-SXM4-40GB, SLURM scheduler
+- **PhD mentor:** Aditya Sharma
+- **Hardware:** IIT Jodhpur HPC, NVIDIA A100-SXM4-40GB, SLURM scheduler
 - **Date:** June 2026
 
 ---
@@ -113,7 +117,52 @@ All runs use the **full datasets** (no sampling unless noted), batch size 1, Fla
 
 - On Qwen2.5-VL, **TextVQA drops from 82.7 (baseline) to 23.6 (BTP)** — a ~59-point collapse, confirmed across two separate runs.
 - **Why:** reading text in an image needs fine-grained detail spread across many small tokens. Qwen's BTP setting prunes aggressively (keeps only ~12.5% of tokens), so the tokens carrying the text get dropped and the model can no longer read.
-- This is an **observation, not a proof** — TextVQA is not in the paper's Qwen table, so there is no reference number. It suggests a direction: OCR-aware token retention.
+- This is an **observation, not a proof**: TextVQA is not in the paper's Qwen table, so there is no reference number. **This collapse became the subject of Phase 2 below.**
+
+---
+
+## Phase 2 — Text-Failure Study
+
+The Qwen TextVQA collapse became its own investigation: *why* does BTP break text, and can we do anything about it? Four experiments, all on Qwen2.5-VL-7B. (Full report, deck, figures, scripts and raw results live in [`text-failure-study/`](text-failure-study/).)
+
+### What we tested
+
+| Experiment | Question |
+|---|---|
+| 1. Benchmark sweep | Does the collapse hit other text tasks, or only TextVQA? |
+| 2. Retention sweep | Does accuracy fall gradually as more tokens are pruned? |
+| 3. Token visualization | Which image regions does BTP actually throw away? |
+| 4. Text-region analysis | Are text regions removed more often than the rest? |
+
+### What we found
+
+**1. It spreads to every text-heavy task.**
+
+| Dataset | Baseline | BTP | Drop |
+|---|---|---|---|
+| TextVQA | 86.2 | 23.3 | −62.9 |
+| DocVQA (ANLS) | 94.7 | 19.2 | −75.5 |
+| ChartQA | 76.8 | 29.0 | −47.8 |
+| AI2D | 86.4 | 79.6 | −6.8 |
+
+TextVQA, DocVQA and ChartQA all collapse. AI2D barely moves, because it reads diagram layout rather than dense text. That contrast pins the failure to reading text specifically.
+
+**2. It is a cliff, not a slope.** Even keeping 90% of tokens already breaks text (TextVQA 86 down to 23), and it stays flat all the way to 12.5%. There is no safe pruning level for text.
+
+**3. Almost nothing survives.** At the 12.5% setting BTP ships with, 87.5% of image patches are removed. The overlay figures show the text buried under the discarded regions.
+
+**4. The twist: BTP does not target text.** It removes text *less* often than non-text (74.8% vs 90.2%), and on charts it clearly protects the text. The token selection is doing its job.
+
+### Why it happens
+
+The failure is not bad token selection. The real reason is that **text has almost no redundancy**. In a photo, one patch of sky looks like the next, so dropping most of them costs nothing, which is exactly why AI2D survives. But every character on a page is unique. Lose three-quarters of the text patches and the words fall apart, no matter which quarter you keep. BTP's core assumption, that visual tokens are redundant and so pruning is safe, simply does not hold for text.
+
+### What we could do about it
+
+- **Content-aware retention:** detect the text-dense regions first and shield them from pruning, so only the redundant background gets cut.
+- **Task-adaptive pruning:** prune hard on photos, go gentle on documents and charts, instead of one fixed level for everything.
+
+Both keep BTP's speed where it is safe and stop it firing where it hurts.
 
 ---
 
@@ -155,21 +204,25 @@ The paper's code is sensitive to library versions. Two separate environments wer
 ## Repository contents
 
 ```
-scripts/        SLURM job scripts (baseline + BTP, per model & benchmark)
-results/        Raw results JSON from lmms-eval, per model
-logs/           SLURM output logs for every job (with mode-check lines)
+scripts/                         SLURM job scripts (baseline + BTP, per model & benchmark)
+results/                         Raw results JSON from lmms-eval, per model
+logs/                            SLURM output logs for every job (with mode-check lines)
 BTP_Reproduction_Results.xlsx    Comparison workbook (per-model + dashboard + FLOPs)
-BTP_Reproduction_Deck.pptx       Presentation slides
-README.md       This file
+BTP_Reproduction_Deck.pptx       Phase 1 presentation slides
+text-failure-study/              Phase 2: report, deck, figures, scripts, raw results
+README.md                        This file
 ```
 
 - Every results file traces to a job log; the log records which mode (baseline/BTP) was active.
+- Phase 2's `text-failure-study/` has its own report (`BTP_TextFailure_Report.docx`), deck, figures, and the scripts and JSONs needed to re-run all four experiments.
 
 ---
 
 ## Pending / future work
 
+- **Full-dataset confirmation (Phase 2)** — the text-failure numbers use reduced-size runs (full sweeps ran out of GPU walltime). Full runs are expected to match, and are being re-run.
 - **MM-Vet** — needs GPT-4 as an automatic judge (OpenAI API key). Generation can run on the HPC any time; only the judging step needs the key.
 - **Wall-clock latency** — measure real timed speedup (FLOPs is done; latency is the measured counterpart).
-- **LLaVA-1.6 (LLaVA-NeXT)** — the authors describe it in the paper but never released the code (their GitHub to-do still lists it as pending, and the repo only has the LLaVA-1.5 file). Reproducing it would mean implementing BTP for LLaVA-NeXT ourselves — original work, not reproduction.
-- **Cross-model TextVQA study** — test whether the pruning-vs-text-reading collapse generalizes to other VLMs.
+- **LLaVA-1.6 (LLaVA-NeXT)** — the authors describe it in the paper but never released the code. Reproducing it would mean implementing BTP for LLaVA-NeXT ourselves: original work, not reproduction.
+- **Content-aware and task-adaptive pruning** — the two fixes suggested by Phase 2: shield text-dense regions from pruning, and vary pruning strength by task.
+- **Cross-model check** — test whether the text-reading collapse shows up on other VLMs beyond Qwen.
