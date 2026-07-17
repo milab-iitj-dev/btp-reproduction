@@ -50,17 +50,25 @@ pip install -e repos/lmms-eval
 pip install flash-attn==2.7.4.post1 --no-build-isolation
 pip install transformers==4.40.0 numpy==1.26.4          # re-pin last
 
-# 4. Choose baseline or BTP by swapping ONE modeling file
-cp <modeling_file>.BTP       <modeling_file>            # pruning ON
-# cp <modeling_file>.BASELINE  <modeling_file>          # pruning OFF (baseline)
+# 4. Locate the modeling file inside the ACTIVE env (don't hard-code a path — resolve it)
+MODFILE=$(python -c "import transformers.models.llama.modeling_llama as m; print(m.__file__)")
+#   e.g. .../site-packages/transformers/models/llama/modeling_llama.py
+#   Qwen env instead: transformers.models.qwen2_5_vl.modeling_qwen2_5_vl
+# Keep two copies alongside it once: $MODFILE.BASELINE (original) and $MODFILE.BTP (authors' pruning file)
 
-# 5. Run a single benchmark to sanity-check the setup
+# 5. Switch mode by copying one file over $MODFILE
+cp ${MODFILE}.BTP      $MODFILE     # pruning ON  (div_prune count = 1)
+# cp ${MODFILE}.BASELINE $MODFILE   # pruning OFF (baseline, div_prune count = 0)
+
+# 6. Run a benchmark — a ready-made SLURM script (recommended on the HPC)...
+sbatch scripts/pope_btp.sh
+#   ...or directly with lmms-eval:
 accelerate launch -m lmms_eval \
   --model llava --model_args pretrained=liuhaotian/llava-v1.5-7b \
   --tasks pope --batch_size 1
 ```
 
-Ready-made SLURM scripts for every model and benchmark (baseline + BTP, with the file swap and mode-check baked in) are in [`scripts/`](scripts/) — `sbatch` one of those on the HPC rather than assembling the command by hand.
+The exact modeling-file location is inside the active environment's `site-packages`, so the scripts resolve it with the `python -c "import ...; print(m.__file__)"` line above rather than assuming a fixed path. Ready-made SLURM scripts for every model and benchmark (baseline + BTP, each with the file swap and a `div_prune` mode-check baked in) are in [`scripts/`](scripts/) — for example `sbatch scripts/pope_baseline.sh`, `scripts/pope_btp.sh`, `scripts/qwen_btp.sh`, or `scripts/sqa_btp.sh`.
 
 ---
 
@@ -240,13 +248,4 @@ README.md                        This file
 ```
 
 - Every results file traces to a job log; the log records which mode (baseline/BTP) was active.
-- Phase 2's `text-failure-study/` has its own report (`BTP_TextFailure_Report.docx`), deck, figures, and the scripts and JSONs needed to re-run all four experiments.
-
----
-
-## Pending / future work
-
-- **MM-Vet** — needs GPT-4 as an automatic judge (OpenAI API key). Generation can run on the HPC any time; only the judging step needs the key.
-- **LLaVA-1.6 (LLaVA-NeXT)** — the authors describe it in the paper but never released the code. Reproducing it would mean implementing BTP for LLaVA-NeXT ourselves: original work, not reproduction.
-- **Content-aware and task-adaptive pruning** — the two fixes suggested by Phase 2: shield text-dense regions from pruning, and vary pruning strength by task.
-- **Cross-model check** — test whether the text-reading collapse shows up on other VLMs beyond Qwen.
+- Phase 2's `tex
