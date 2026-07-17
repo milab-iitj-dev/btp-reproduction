@@ -21,6 +21,49 @@ Work on the NeurIPS 2025 paper **"Balanced Token Pruning: Accelerating Vision La
 
 ---
 
+## Getting started
+
+The paper's code is sensitive to library versions, and LLaVA and Qwen need **two separate environments** (they patch different model code). The exact pins matter: they are what avoid the FlashAttention fallback that corrupts BTP's output (see "Problems we faced").
+
+| Component | LLaVA env | Qwen env |
+|---|---|---|
+| Python | 3.10 | 3.10 |
+| PyTorch | 2.3.0 (cu121) | 2.3.0 (cu121) |
+| Transformers | 4.40.0 (exact) | 4.51.3 |
+| FlashAttention | 2.7.4.post1 | 2.7.4.post1 |
+| numpy | 1.26.4 | 1.26.4 |
+| GPU | A100 (Ampere) | A100 (Ampere) |
+
+```bash
+# 1. Clone
+git clone https://github.com/milab-iitj-dev/btp-reproduction.git
+cd btp-reproduction
+
+# 2. Create the LLaVA environment (repeat with the Qwen pins for the Qwen env)
+conda create -n llava_btp python=3.10 -y
+conda activate llava_btp
+
+# 3. Install — apply the version pins LAST; each step can silently upgrade the previous one
+pip install torch==2.3.0 --index-url https://download.pytorch.org/whl/cu121
+pip install -e repos/LLaVA
+pip install -e repos/lmms-eval
+pip install flash-attn==2.7.4.post1 --no-build-isolation
+pip install transformers==4.40.0 numpy==1.26.4          # re-pin last
+
+# 4. Choose baseline or BTP by swapping ONE modeling file
+cp <modeling_file>.BTP       <modeling_file>            # pruning ON
+# cp <modeling_file>.BASELINE  <modeling_file>          # pruning OFF (baseline)
+
+# 5. Run a single benchmark to sanity-check the setup
+accelerate launch -m lmms_eval \
+  --model llava --model_args pretrained=liuhaotian/llava-v1.5-7b \
+  --tasks pope --batch_size 1
+```
+
+Ready-made SLURM scripts for every model and benchmark (baseline + BTP, with the file swap and mode-check baked in) are in [`scripts/`](scripts/) — `sbatch` one of those on the HPC rather than assembling the command by hand.
+
+---
+
 ## Models reproduced
 
 | Model | Family | Status |
@@ -55,11 +98,11 @@ All runs use the **full datasets** (no sampling unless noted), batch size 1, Fla
 
 | Benchmark | Paper Base | Our Base | Paper BTP | Our BTP |
 |---|---|---|---|---|
-| POPE | 85.8 | 86.98 | 85.6 | 85.36 |
+| POPE | 85.8 | 87.0 | 85.6 | 85.4 |
 | MME (Perception) | 1510.7 | 1507.5 | 1487.0 | 1497.2 |
-| MMBench | 64.3 | 64.00 | 62.7 | 63.49 |
-| GQA | 62.0 | 61.98 | 59.0 | 58.98 |
-| SQA | 69.4 | 69.41 | 69.1 | 69.21 |
+| MMBench | 64.3 | 64.0 | 62.7 | 63.5 |
+| GQA | 62.0 | 62.0 | 59.0 | 59.0 |
+| SQA | 69.4 | 69.4 | 69.1 | 69.2 |
 
 ### LLaVA-1.5-13B
 
@@ -67,7 +110,7 @@ All runs use the **full datasets** (no sampling unless noted), batch size 1, Fla
 |---|---|---|---|---|
 | POPE | 87.0 | 87.1 | 86.9 | 86.3 |
 | MME (Perception) | 1521.7 | 1521.7 | 1519.7 | 1536.3 |
-| MMBench | 68.8 | 68.81 | 68.0 | 67.27 |
+| MMBench | 68.8 | 68.8 | 68.0 | 67.3 |
 | GQA | 63.2 | 63.3 | 62.2 | 60.7 |
 | SQA | 72.7 | 72.8 | 72.7 | 72.9 |
 
@@ -77,18 +120,18 @@ All runs use the **full datasets** (no sampling unless noted), batch size 1, Fla
 |---|---|---|---|---|
 | POPE | 87.4 | 87.6 | 86.2 | 86.2 |
 | MME (Perception) | 1690.8 | 1674.5 | 1651.5 | 1658.7 |
-| MMBench | 82.5 | 83.68 | 75.2 | 79.3 |
+| MMBench | 82.5 | 83.7 | 75.2 | 79.3 |
 | GQA | 60.4 | 60.9 | 57.2 | 55.9 |
 | SQA | 76.7 | 88.1 | 74.1 | 85.1 |
 
-- **Qwen SQA note:** our score is higher than the paper (88 vs 77). Qwen2.5-VL is genuinely strong on ScienceQA — this is likely a difference in the evaluation prompt, not an error.
+- **Note on Qwen SQA:** our score is higher than the paper (88 vs 77). Qwen2.5-VL is strong on ScienceQA, so this is likely a difference in the evaluation prompt, not an error.
 
 ### Extra benchmarks (not in the paper's table)
 
 | Model | Benchmark | Our Base | Our BTP | Note |
 |---|---|---|---|---|
-| LLaVA-1.5-7B | TextVQA | 46.11 | 40.02 | no-OCR setting (see below) |
-| LLaVA-1.5-7B | SEED-Bench (image) | 66.23 | 63.99 | image split only |
+| LLaVA-1.5-7B | TextVQA | 46.1 | 40.0 | no-OCR setting (see below) |
+| LLaVA-1.5-7B | SEED-Bench (image) | 66.2 | 64.0 | image split only |
 | LLaVA-1.5-13B | TextVQA | 48.8 | 41.2 | no-OCR setting |
 | LLaVA-1.5-13B | SEED-Bench (image) | 68.2 | 66.3 | image split only |
 | Qwen2.5-VL-7B | TextVQA | 82.7 | **23.6** | big drop — see findings |
@@ -163,23 +206,6 @@ The failure is not bad token selection. The real reason is that **text has almos
 - **Task-adaptive pruning:** prune hard on photos, go gentle on documents and charts, instead of one fixed level for everything.
 
 Both keep BTP's speed where it is safe and stop it firing where it hurts.
-
----
-
-## Environment
-
-The paper's code is sensitive to library versions. Two separate environments were needed (LLaVA and Qwen use different model code):
-
-| Component | LLaVA env | Qwen env |
-|---|---|---|
-| Python | 3.10 | 3.10 |
-| PyTorch | 2.3.0 (cu121) | 2.3.0 (cu121) |
-| Transformers | 4.40.0 (exact) | 4.51.3 |
-| FlashAttention | 2.7.4.post1 | 2.7.4.post1 |
-| numpy | 1.26.4 | 1.26.4 |
-| GPU | A100 (Ampere) | A100 (Ampere) |
-
-- Install order matters — each package quietly upgrades the previous one's versions, so the version pins are re-applied **last**.
 
 ---
 
