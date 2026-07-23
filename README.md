@@ -9,7 +9,7 @@ Work on the NeurIPS 2025 paper **"Balanced Token Pruning: Accelerating Vision La
 - **Supervisor:** Prof. Divya Saxena, SAIDE, IIT Jodhpur
 - **PhD mentor:** Aditya Sharma
 - **Hardware:** IIT Jodhpur HPC, NVIDIA A100-SXM4-40GB, SLURM scheduler
-- **Date:** June 2026
+- **Date:** June-July 2026
 
 ---
 
