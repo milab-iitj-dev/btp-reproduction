@@ -202,7 +202,15 @@ TextVQA, DocVQA and ChartQA all collapse. AI2D barely moves, because it reads di
 
 **3. Almost nothing survives.** At the 12.5% setting BTP ships with, 87.5% of image patches are removed. The overlay figures show the text buried under the discarded regions.
 
-**4. The twist: BTP does not target text.** It removes text *less* often than non-text (74.8% vs 90.2%), and on charts it clearly protects the text. The token selection is doing its job.
+**4. The twist: BTP does not target text.** It removes text *less* often than non-text (**76.3% vs 89.9%**), and on charts it clearly protects the text. The token selection is doing its job.
+
+> **Corrected 2026-09-14.** The originally reported 74.8% vs 90.2% came from 12 capture
+> records, four of which were **duplicate images**: the capture script walked consecutive
+> dataset rows, and TextVQA, ChartQA and AI2D store several questions per image. The real
+> sample is **8 unique images, 7 of them usable** (one yields no OCR text). Recomputed on the
+> deduplicated set the figures are 76.3% vs 89.9%, so the conclusion is unchanged. The bug is
+> fixed in [`phase3-mechanism/capture_tokens4.py`](phase3-mechanism/capture_tokens4.py), which
+> deduplicates by image hash and records the model's answer so correctness can be scored.
 
 ### Why it happens (the leading explanation)
 
@@ -255,7 +263,7 @@ assumes feature similarity implies informational redundancy. That assumption hol
 natural image regions and breaks for text.
 
 This *reframes* Phase 2's Finding 4 rather than contradicting it. The attention component
-rescues some text tokens, so the removal **rate** for text looks favourable (75% vs 90%),
+rescues some text tokens, so the removal **rate** for text looks favourable (76% vs 90%),
 while the diversity component still destroys **within-word completeness**. Removal rate was
 the wrong metric; per-word coverage is the right one.
 
@@ -273,8 +281,29 @@ The decisive comparison in E1 is **attention-only vs diversity-only at the same 
 attention-only recovers much of the gap, the selection objective is the cause. If every mode
 collapses equally, H1 is wrong and the explanation has to change.
 
-**Status:** scripts written, not yet executed. Nothing here should be cited as a result
-until it has run. E2 uses ground-truth OCR at inference and is a probe, not a proposed method.
+### Results so far
+
+**E4 has run** (CPU only, deduplicated, n=8 images at the 12.5% operating point):
+
+| metric | value |
+|---|---|
+| global image tokens kept | 0.124 |
+| mean per-word coverage | **0.244** (about 2x the global rate) |
+| words still readable (>=50% of patches) | **0.215** |
+
+By category, readable-word fraction: **diagram 0.400**, text_heavy 0.150, chart 0.127. That
+ordering matches the accuracy ordering (AI2D survives at -6.8; TextVQA -62.9 and ChartQA
+-47.8 collapse).
+
+Two honest notes. First, an earlier prediction of ours failed: readable-word fraction is
+*not* below the global kept fraction, so coverage alone does not expose the failure, and text
+really is protected. Second, n=2 per category for charts and diagrams is an anecdote, not
+evidence. A larger capture (100 images per category, with answer correctness recorded) is
+queued.
+
+**Status:** E4 complete; E1, E2, E3 and E5 are written but waiting on GPU availability.
+Nothing else here should be cited as a result until it has run. E2 uses ground-truth OCR at
+inference and is a diagnostic probe, not a proposed method.
 
 ---
 
