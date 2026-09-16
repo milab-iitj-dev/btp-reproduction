@@ -47,12 +47,26 @@ from qwen_vl_utils import process_vision_info
 
 MID = "Qwen/Qwen2.5-VL-7B-Instruct"
 
-# dataset, split, image key, category, question key, answer key(s)
+# Benchmarks expect SHORT answers. Without the instruction suffix the model replies in
+# prose ("The brand of the camera is...") and never matches the reference, which made every
+# sample score as wrong in the first run. lmms-eval appends the same kind of suffix.
+SHORT = "\nAnswer the question using a single word or phrase."
+MCQ = "\nAnswer with the option's letter from the given choices directly."
+
 PLAN = [
-    ("lmms-lab/textvqa", "validation", "image", "text_heavy", "question", ["answers", "answer"]),
-    ("lmms-lab/ChartQA", "test",       "image", "chart",      "question", ["answer", "answers"]),
-    ("lmms-lab/ai2d",    "test",       "image", "diagram",    "question", ["answer", "answers"]),
+    {"ds": "lmms-lab/textvqa", "split": "validation", "ikey": "image",
+     "cat": "text_heavy", "qkey": "question", "akeys": ["answers", "answer"],
+     "mode": "short", "suffix": SHORT},
+    {"ds": "lmms-lab/ChartQA", "split": "test", "ikey": "image",
+     "cat": "chart", "qkey": "question", "akeys": ["answer", "answers"],
+     "mode": "short", "suffix": SHORT},
+    # AI2D is multiple choice: 'answer' is an INDEX into 'options', not text.
+    {"ds": "lmms-lab/ai2d", "split": "test", "ikey": "image",
+     "cat": "diagram", "qkey": "question", "akeys": ["answer"],
+     "mode": "mcq", "suffix": MCQ},
 ]
+
+LETTERS = "ABCDEFGH"
 
 _ARTICLES = {"a", "an", "the"}
 
@@ -75,6 +89,13 @@ def get_refs(ex, keys):
     return []
 
 
+def as_float(s):
+    try:
+        return float(str(s).replace(",", "").replace("%", "").strip())
+    except Exception:
+        return None
+
+
 def is_correct(pred, refs):
     """VQA-style: correct if the prediction matches any reference after normalization."""
     if not refs:
@@ -85,11 +106,47 @@ def is_correct(pred, refs):
     norm_refs = [normalize(r) for r in refs]
     if p in norm_refs:
         return True
+    # numeric answers, tolerate formatting (1,200 vs 1200 vs 1200.0)
+    pf = as_float(p)
+    if pf is not None:
+        for r in refs:
+            rf = as_float(r)
+            if rf is not None and abs(pf - rf) < 1e-6:
+                return True
     # allow the reference to appear inside a short generated sentence
     for r in norm_refs:
         if r and (r == p or r in p.split() or (len(r) > 2 and r in p)):
             return True
     return False
+
+
+def build_prompt_and_refs(ex, spec):
+    """Return (prompt, references, options). Handles AI2D's index-into-options answers."""
+    question = str(ex.get(spec["qkey"]) or "What does the text in the image say?")
+
+    if spec["mode"] == "mcq":
+        options = ex.get("options") or ex.get("choices") or []
+        options = [str(o) for o in options]
+        raw = ex.get("answer")
+        lines = [question]
+        for i, o in enumerate(options):
+            if i < len(LETTERS):
+                lines.append("{}. {}".format(LETTERS[i], o))
+        prompt = "\n".join(lines) + spec["suffix"]
+
+        refs = []
+        idx = None
+        try:
+            idx = int(str(raw).strip())
+        except Exception:
+            idx = None
+        if idx is not None and 0 <= idx < len(options):
+            refs = [LETTERS[idx], options[idx]]       # accept letter OR option text
+        elif raw is not None:
+            refs = [str(raw)]
+        return prompt, refs, options
+
+    return question + spec["suffix"], get_refs(ex, spec["akeys"]), None
 
 
 def load_image(raw):
@@ -148,7 +205,8 @@ def main():
         return meta, pred
 
     out = []
-    for ds_name, split, ikey, cat, qkey, akeys in PLAN:
+    for spec in PLAN:
+        ds_name, split, ikey, cat = spec["ds"], spec["split"], spec["ikey"], spec["cat"]
         try:
             ds = load_dataset(ds_name, split=split, streaming=True)
         except Exception as e:
@@ -177,11 +235,10 @@ def main():
                 continue
             seen_md5.add(md5)
 
-            question = ex.get(qkey) or "What does the text in the image say?"
-            refs = get_refs(ex, akeys)
+            prompt, refs, options = build_prompt_and_refs(ex, spec)
 
             try:
-                rec, pred = run_one(img, str(question))
+                rec, pred = run_one(img, prompt)
             except Exception as e:
                 print("fail", ds_name, got, repr(e))
                 continue
@@ -199,7 +256,8 @@ def main():
                 "dataset": ds_name,
                 "image_path": ip,
                 "image_md5": md5,
-                "question": str(question),
+                "question": prompt,
+                "options": options,
                 "prediction": pred,
                 "references": refs,
                 "correct": is_correct(pred, refs),
