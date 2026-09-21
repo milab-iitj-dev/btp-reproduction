@@ -37,7 +37,21 @@ plt.rcParams.update({
 NAVY, TEAL, CRIMS, GREY = "#1F3864", "#2E8B8B", "#A3312F", "#8A8A8A"
 
 # ---------------------------------------------------------------- measured data
-qL = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 23, 24, 25, 26, 27]
+#
+# CONVENTION. Both curves are plotted as the number of layers that still had access to the
+# image, which is the quantity with a meaning. Getting this wrong is easy and we did:
+#
+#   Qwen sweep (E12) set self.end_layer, and the BTP source increments layer_index BEFORE
+#   its branch check, so end_layer is ONE based. end_layer = E deletes the tokens before
+#   the E-th layer runs, leaving E-1 layers with access. We therefore subtract one.
+#
+#   InternVL sweep (E11) used enumerate(), which is zero based, and deletes before the
+#   named layer runs. IVL_WIPE_LAYER = L leaves exactly L layers with access. No shift.
+#
+# Validated against the hook-based tool in job 423959, which agrees to within a couple of
+# points once both are expressed this way.
+qEnd = [2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 23, 24, 25, 26, 27]   # raw end_layer values
+qL = [e - 1 for e in qEnd]                                            # layers with access
 qS = [0.0718, 0.0780, 0.0914, 0.0990, 0.1094, 0.1264, 0.1354, 0.1452,
       0.1372, 0.1418, 0.1584, 0.2344, 0.6454, 0.7632, 0.7806, 0.7820]
 qB, qN = 0.8624, 28
@@ -75,11 +89,12 @@ a.plot(qL, qP, "o-", color=NAVY, lw=2, ms=4.5, label="Qwen2.5-VL-7B (28 layers)"
 a.plot(iL, iP, "s-", color=TEAL, lw=2, ms=4.5, label="InternVL2-2B (24 layers)")
 a.axhline(100, color=GREY, ls="--", lw=1)
 a.text(28.2, 102, "no deletion", fontsize=8, color=GREY, ha="right")
-a.axvline(23, color=CRIMS, ls=":", lw=1.4)
-a.annotate("BTP ships\nlayer 23", xy=(23, 27.2), xytext=(14.5, 52),
+# BTP's end_layer = 23 leaves 22 layers with access, so the marker goes at 22.
+a.axvline(22, color=CRIMS, ls=":", lw=1.4)
+a.annotate("what BTP\nallows Qwen", xy=(22, 27.2), xytext=(13.5, 52),
            fontsize=8.5, color=CRIMS, ha="center",
            arrowprops=dict(arrowstyle="->", color=CRIMS, lw=1.1))
-a.set_xlabel("Layer at which all visual tokens are deleted")
+a.set_xlabel("Layers that still had access to the image")
 a.set_ylabel("TextVQA retained (% of baseline)")
 a.set_ylim(0, 115)
 a.set_xlim(0, 28.5)
@@ -103,7 +118,7 @@ b.annotate("Qwen\n%.0f%% depth" % (100 * q_half / qN),
            xy=(100 * q_half / qN, 50), xytext=(62, 33),
            fontsize=8.5, color=NAVY, ha="center", fontweight="bold",
            arrowprops=dict(arrowstyle="->", color=NAVY, lw=1))
-b.set_xlabel("Depth of the deletion (% through the decoder)")
+b.set_xlabel("Layers with access, as % of the decoder")
 b.set_ylabel("TextVQA retained (% of baseline)")
 b.set_ylim(0, 115)
 b.set_xlim(0, 100)
@@ -117,7 +132,7 @@ plt.close(fig)
 
 # ---------------------------------------------------------------- figure 8
 fig2, ax = plt.subplots(figsize=(4.6, 3.0))
-lay = [22, 23, 24]
+lay = [21, 22, 23]   # layers with access; BTP allows 22
 val = [0.1584, 0.2344, 0.6454]
 pct = [100 * v / qB for v in val]
 bars = ax.bar([str(l) for l in lay], pct, color=[CRIMS, CRIMS, TEAL], width=0.55)
@@ -129,7 +144,7 @@ ax.annotate("", xy=(2, pct[2]), xytext=(1, pct[1]),
             arrowprops=dict(arrowstyle="<->", color=NAVY, lw=1.4))
 ax.text(1.5, (pct[1] + pct[2]) / 2, "  +%.1f points\n  for one layer" % (pct[2] - pct[1]),
         fontsize=9, color=NAVY, ha="center")
-ax.set_xlabel("Layer at which visual tokens are deleted")
+ax.set_xlabel("Layers that still had access to the image")
 ax.set_ylabel("TextVQA retained (%)")
 ax.set_ylim(0, 118)
 ax.set_title("What the shipped constant costs", fontsize=11)
