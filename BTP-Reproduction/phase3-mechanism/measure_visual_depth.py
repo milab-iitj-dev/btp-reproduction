@@ -22,6 +22,19 @@ let the rest of the stack run. If accuracy holds, the model had already finished
 that depth. If it collapses, it had not. Sweeping the layer traces the curve; the depth at
 which the curve crosses half of baseline is the threshold.
 
+CONVENTION, READ THIS BEFORE COMPARING WITH ANYTHING ELSE
+---------------------------------------------------------
+Layer indices here are ZERO BASED, and the deletion happens BEFORE the named layer runs.
+So `--layers 22` means layers 0 to 21 inclusive saw the image and layers 22 upward did not,
+that is, TWENTY-TWO layers had access.
+
+The quantity this script reports is the number of layers that still need visual tokens, not
+the index of the layer where the deletion was placed. Those differ by one, and conflating
+them is easy: the BTP source counts layers from one (`layer_index += 1` runs before its
+branch check), so its `end_layer = 23` is the same experiment as `--layers 22` here. An
+earlier version of our own write-up reported Qwen's threshold as 83.9 per cent by using the
+raw `end_layer` value; measured as layers-with-access it is 80.3 per cent.
+
 Deletion is done with a forward pre-hook rather than by editing the model source, so the
 same code works across architectures. The hook rewrites hidden_states, position_ids,
 attention_mask, cache_position and position_embeddings consistently, which is the part that
@@ -503,16 +516,22 @@ def main():
     with open(args.out, "w") as f:
         json.dump(results, f, indent=1)
 
-    print("\n" + "=" * 62)
+    print("\n" + "=" * 68)
     print("VISUAL DEPENDENCE THRESHOLD")
-    print("=" * 62)
-    print("model              : {}".format(args.model))
-    print("decoder layers     : {}".format(n_layers))
-    print("baseline accuracy  : {:.4f}".format(base))
+    print("=" * 68)
+    print("model               : {}".format(args.model))
+    print("decoder layers      : {}".format(n_layers))
+    print("baseline accuracy   : {:.4f}".format(base))
     if cross is not None:
-        print("half of baseline at: layer {:.2f} of {}".format(cross, n_layers))
-        print("relative depth     : {:.1f}%".format(100 * cross / n_layers))
-        print("\nA pruning method that deletes all visual tokens BELOW this layer will")
+        print("layers needing the image : {:.2f} of {}".format(cross, n_layers))
+        print("relative depth           : {:.1f}%".format(100 * cross / n_layers))
+        print("")
+        print("CONVENTION: indices are zero based and the deletion happens BEFORE the")
+        print("named layer runs, so the figure above is the number of layers that still")
+        print("need visual tokens. A method whose own layer index is ONE based, as the")
+        print("BTP source is, will quote a number one higher for the same experiment.")
+        print("")
+        print("A pruning method that removes all visual tokens before this point will")
         print("destroy text reading while leaving the standard benchmark suite unchanged.")
     else:
         print("no crossing found; the curve never reaches half of baseline")
