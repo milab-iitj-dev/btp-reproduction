@@ -139,10 +139,10 @@ const children = [];
 
 children.push(
   new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 50 },
-    children: [new TextRun({ text: "When can a vision language model stop looking at the image?",
+    children: [new TextRun({ text: "A Task-Specific Visual Token Access Threshold in Vision-Language Models",
                              font: HEAD, size: 34, bold: true, color: NAVY })] }),
   new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 110 },
-    children: [new TextRun({ text: "Measuring the depth at which visual tokens stop mattering, and what token pruning does with that",
+    children: [new TextRun({ text: "Implications for token pruning",
                              font: BODY, size: 22, italics: true, color: GREY })] }),
   new Paragraph({ alignment: AlignmentType.CENTER, spacing: { after: 40 },
     children: [new TextRun({ text: "P. S. Kedar", font: BODY, size: 24, bold: true })] }),
@@ -153,30 +153,33 @@ children.push(
 );
 
 // ============================================================ 1
-children.push(H1("1.  What we were chasing"));
+children.push(H1("1.  Objective and observation"));
 
 children.push(P("Token pruning throws away visual tokens while a model runs, to save compute. Balanced Token Pruning does it in three stages. We reproduced its published numbers in earlier phases and they held up, except on one thing: Qwen2.5-VL-7B lost almost all its ability to read text inside an image. TextVQA fell from 86.2 to 23.3. DocVQA fell from 94.7 to 19.2. AI2D, which has text but rarely needs it read word by word, barely moved."));
 
-children.push(P("That gap is what Phase 3 set out to explain. The answer took four failed experiments to reach, and it turned out to sit in a place none of us were looking."));
+children.push(P("Phase 3 set out to explain that gap. Four experiments were run to distinguish between candidate causes. All four returned negative, and the results eventually moved the investigation from token selection to the handling of visual tokens after pruning."));
 
 children.push(SPACER(40));
-children.push(BOX("What we found", [
-  "There is a depth past which deleting every visual token costs a model almost nothing, and before which it is ruinous. The change is abrupt. We measured it at 74.8 per cent of the way through InternVL2-2B and 80.3 per cent through Qwen2.5-VL-7B.",
-  "BTP's released code deletes at a point that leaves Qwen 22 layers of image access. We measure the threshold at 22.5. One layer either side is worth about 47.7 percentage points on TextVQA.",
-  "Deletion is not the whole story. On ChartQA the ordinary pruning costs twice what the deletion does, so we keep the two apart throughout.",
-  "None of this shows up on the benchmarks the paper reports. With the fault in place the code still scores 96.1 per cent of baseline on five of them."
+children.push(BOX("Summary of findings", [
+  "On TextVQA there is a depth beyond which deleting every visual token costs the model very little, and before which the loss is severe. The transition is abrupt. We measure it at 74.8 per cent of decoder depth in InternVL2-2B and 80.3 per cent in Qwen2.5-VL-7B. The threshold is task-specific: it is measured on one task and may sit elsewhere for others.",
+  "The released BTP code deletes at a point that leaves Qwen 22 layers with image access, against a measured threshold of 22.5. Near that threshold one layer accounts for about 47.7 percentage points on TextVQA.",
+  "The deletion is not the only cost. On ChartQA the graded pruning costs roughly twice what the deletion does, so the two are reported separately throughout.",
+  "Neither cost is visible on the benchmarks the paper reports. With the discrepancy present the code still retains 96.1 per cent of baseline across five of them."
 ], "FCE9E7", CRIMS));
 children.push(SPACER(90));
 
-children.push(P("We measured the thresholds on TextVQA only, on two models, and our InternVL pruning is not a complete reproduction of BTP. Section 6 says where that bites.", { italics: true }));
+children.push(P("We measured the thresholds on TextVQA only, on two models, and our InternVL pruning is not a complete reproduction of BTP. Section 6 states where that matters.", { italics: true }));
+
+children.push(IMG("fig0_workflow.png", 500, 236));
+children.push(CAP("Figure 1. The investigation, in order. The upper row eliminated candidate causes; the control at 100 per cent retention redirected it downstream. The lower row is the work that followed from the code finding."));
 
 // ============================================================ 2
-children.push(H1("2.  Four things that were not the cause"));
+children.push(H1("2.  Four alternative explanations tested"));
 
-children.push(P("We listed what could explain the collapse and tried to kill each one."));
+children.push(P("We enumerated the plausible causes and designed a test capable of eliminating each."));
 
 children.push(TBL(
-  ["What we thought", "What we did", "What came back"],
+  ["Initial hypothesis", "Experimental test", "Result and interpretation"],
   [["The selector picks badly",
     "Swapped it for diversity only, attention only, and random, at the same budget",
     "17.3 to 19.4, standard errors 2.6 to 2.7. Random did as well as BTP"],
@@ -193,12 +196,12 @@ children.push(TBL(
 children.push(SPACER(40));
 children.push(CAP("Table 1. Four negatives, in order. All four landed on the same floor."));
 
-children.push(P("Four unrelated interventions, one number. That should have been the clue and it was not, until we added a control at 100 per cent retention, where nothing is pruned at all. It scored 0.178. Keeping every token changed nothing, so whatever was destroying the image was happening after the pruning stages, not during them."));
+children.push(P("Four unrelated interventions produced the same number, which was itself the signal. The point became clear only after we added a control at 100 per cent retention, where nothing is pruned at all. It scored 0.178. Retaining every token changed nothing, so the loss was occurring after the pruning stages rather than during them."));
 
 // ============================================================ 3
-children.push(H1("3.  The line, and what happens when you remove it"));
+children.push(H1("3.  The implementation discrepancy and its causal test"));
 
-children.push(P("We read through the released Qwen file for anything that touches the hidden-state sequence. One branch does this:"));
+children.push(P("We inspected the released Qwen file for operations that alter the hidden-state sequence. One branch is responsible:"));
 
 children.push(SPACER(25));
 children.push(...CODE([
@@ -212,12 +215,12 @@ children.push(...CODE([
 children.push(SPACER(90));
 
 children.push(PR([
-  { t: "System tokens and text tokens go into the concatenation. Image tokens do not. There is no " },
+  { t: "The concatenation includes system tokens and text tokens. It does not include image tokens. There is no " },
   { t: "remain_img_index", mono: true },
-  { t: ", so everything that survived three stages of careful pruning is thrown away here regardless. Directly above it sits a commented-out version that would have kept some by attention score." }
+  { t: ", so every token surviving the three pruning stages is removed at this point regardless. A commented-out variant immediately above would have retained a subset by attention score." }
 ]));
 
-children.push(P("Reading code is not evidence. We changed the one condition so the branch can never fire, left the 12.5 per cent pruning exactly as it was, and ran it again."));
+children.push(P("Code inspection alone is not evidence of cause. We disabled the single condition so the branch cannot fire, left the 12.5 per cent pruning unchanged, and re-ran the evaluation."));
 
 children.push(TBL(
   ["Arm", "TextVQA", "AI2D"],
@@ -228,14 +231,14 @@ children.push(TBL(
 children.push(SPACER(40));
 children.push(CAP("Table 2. Job 416735, 200 samples. The 0.8565 baseline differs from the 86.2 used elsewhere because this ran on a separate 200 sample subset. Code: NeurIPS2025-Balanced-Token-Pruning at commit 9682db0, file qwen-2.5-vl/modeling_qwen2_5_vl.py, constants at lines 1140 to 1144, branch at line 1385, read unmodified."));
 
-children.push(P("One condition, and reading goes from 0.1725 to 0.7860. AI2D does not move, which matters, because it means we did not simply find a lever that lifts every score."));
+children.push(P("Changing one condition moves reading accuracy from 0.1725 to 0.7860. AI2D is unchanged, which matters: it shows the intervention is not simply a lever that raises every score."));
 
-children.push(P("The paper is worth checking here. Appendix 7.3 specifies complete deletion for the LLaVA family. For Qwen2.5-VL it asks for the opposite: keep 12.5 per cent in the final stage, in the authors' words, to preserve model performance. The released code we looked at applies the LLaVA branch to Qwen anyway. That is a discrepancy in the released implementation. It says nothing about what the authors intended, and nothing at all about Qwen2.5-VL as a model."));
+children.push(P("The paper is worth checking here. Appendix 7.3 specifies complete deletion for the LLaVA family. For Qwen2.5-VL it asks for the opposite: keep 12.5 per cent in the final stage, in the authors' words, to preserve model performance. The released code we examined applies the LLaVA branch to Qwen regardless. We describe this as a discrepancy in the released implementation. It says nothing about what the authors intended, and nothing at all about Qwen2.5-VL as a model."));
 
 // ============================================================ 4
-children.push(H1("4.  Is layer 23 special, or just early?"));
+children.push(H1("4.  Measuring a task-specific visual token access threshold"));
 
-children.push(P("Finding a bad constant is less interesting than finding out what makes it bad. So we moved the deletion across the whole decoder with the graded pruning switched off, changing nothing else, and did the same on InternVL2-2B. That model shares almost nothing with Qwen: a 24 layer InternLM2 backbone, ordinary 1D RoPE instead of M-RoPE, 448 pixel tiling instead of a merged patch grid."));
+children.push(P("A poorly chosen constant is less informative than the quantity that makes it poor. We therefore moved the deletion across the whole decoder with graded pruning disabled, changing nothing else, and repeated the procedure on InternVL2-2B. That model shares almost nothing with Qwen: a 24 layer InternLM2 backbone, ordinary 1D RoPE instead of M-RoPE, 448 pixel tiling instead of a merged patch grid."));
 
 children.push(SPACER(20));
 children.push(BOX("A note on counting", [
@@ -244,9 +247,9 @@ children.push(BOX("A note on counting", [
 children.push(SPACER(80));
 
 children.push(IMG("fig7_depth_sweep.png", 470, 192));
-children.push(CAP("Figure 1. Left, by layers with access. Right, by relative depth. Both models sit on a floor, then climb sharply."));
+children.push(CAP("Figure 2. Left, by layers with access. Right, by relative depth. Both models sit on a floor, then climb sharply."));
 
-children.push(P("We take the threshold to be where accuracy crosses half the unpruned baseline, interpolated between the two measured layers either side. A different cutoff, say 90 per cent, moves both numbers, so treat these as a comparison between the models rather than absolutes."));
+children.push(P("We take the threshold to be where accuracy crosses half the unpruned baseline, interpolated between the two measured layers either side. The baselines for these sweeps are 0.8624 for Qwen and 0.7156 for InternVL, both TextVQA at limit 500. A different cutoff, say 90 per cent, moves both numbers, so treat these as a comparison between the models rather than absolutes."));
 
 children.push(TBL(
   ["Model", "Decoder layers", "Threshold", "Relative depth"],
@@ -256,19 +259,19 @@ children.push(TBL(
 children.push(SPACER(40));
 children.push(CAP("Table 3. Layers that still need the image."));
 
-children.push(P("Two things follow. The shape is the same in both models, which makes this look like a property of the architecture rather than a quirk of one. And the depths differ, which means you cannot guess the number from the layer count."));
+children.push(P("Two observations follow. The curve has the same shape in both models. With two models that is a pattern worth testing further rather than a property of vision-language models in general. The depths differ, so the value cannot be inferred from the layer count alone."));
 
-children.push(P("BTP's constant leaves Qwen 22 layers. We measure 22.5. At 22 layers the model keeps 27.2 per cent of baseline; at 23 it keeps 74.8. So the released value sits just under the edge, and one layer is worth roughly 47.7 percentage points."));
+children.push(P("BTP's constant leaves Qwen 22 layers. We measure 22.5. At 22 layers the model keeps 27.2 per cent of baseline; at 23 it keeps 74.8. The released value therefore sits just below the threshold, and one layer accounts for roughly 47.7 percentage points."));
 
 children.push(IMG("fig8_one_layer.png", 280, 183));
-children.push(CAP("Figure 2. Either side of the threshold. The 47.7 comes from the unrounded scores; the rounded percentages shown differ by 47.6."));
+children.push(CAP("Figure 3. Either side of the threshold. The 47.7 comes from the unrounded scores; the rounded percentages shown differ by 47.6."));
 
-children.push(P("A caveat about what this is. We measure what happens when the tokens are removed. We do not observe the model using them, so we describe sensitivity, not mechanism. Calling it the point where the model stops looking would be reading more into the curve than it contains."));
+children.push(P("One qualification about what is being measured. We observe the effect of removing the tokens, not the model's use of them, so this is a statement about sensitivity rather than mechanism. Describing it as the point where the model stops looking at the image would claim more than the curve supports."));
 
 // ============================================================ 5
-children.push(H1("5.  Checking the measurement with a different instrument"));
+children.push(H1("5.  Validating the measurement with an independent instrument"));
 
-children.push(P("Both sweeps edit model source, separately for each architecture, which nobody else can reuse. So we rebuilt the measurement as a forward hook that removes the tokens during the pass and touches no source at all, then ran it on Qwen where we already knew the answer."));
+children.push(P("Both sweeps edit model source, separately for each architecture, which limits reuse. We therefore rebuilt the measurement as a forward hook that removes the tokens during the forward pass without altering any source, and ran it on Qwen, where the answer was already known."));
 
 children.push(TBL(
   ["Layers with access", "Source patch", "Forward hook"],
@@ -280,12 +283,12 @@ children.push(TBL(
 children.push(SPACER(40));
 children.push(CAP("Table 4. Job 423959, different sample sets, so compare the threshold and not the absolute scores."));
 
-children.push(P("Same shape, a couple of points apart. That is reassuring about the measurement rather than about any particular way of making it, and we have only done the comparison on one model. The tool needs no training and no calibration set, and a coarse sweep plus bisection finds the threshold in about seven runs."));
+children.push(P("The two agree in shape and to within a few points. This supports the measurement itself rather than any particular way of making it, though the comparison has been run on one model only. The tool needs no training and no calibration set, and a coarse sweep plus bisection finds the threshold in about seven runs."));
 
-children.push(P("One difference at the top of the curve we did not expect. InternVL comes all the way back, 101 per cent of baseline with 20 of its 24 layers. Qwen stops at 90.7 per cent even with 26 of 28. Something in Qwen still wants the image very late, for some fraction of examples. We cannot say which, or how many, from this experiment."));
+children.push(P("The two models differ at the top of the curve, which we had not anticipated. InternVL recovers fully, reaching 101 per cent of baseline with 20 of its 24 layers. Qwen plateaus at 90.7 per cent even with 26 of 28, which suggests visual information remains useful very late in its decoder for some subset of examples. This experiment does not identify that subset or its size."));
 
 // ============================================================ 6
-children.push(H1("6.  Two costs, not one"));
+children.push(H1("6.  Separating pruning cost from deletion cost"));
 
 children.push(P("With the mechanism understood we ran a corrected arm across the benchmarks. It still prunes to 12.5 per cent; it just does not delete what is left. That gives two gaps worth separating. Baseline to corrected is what pruning costs. Corrected to released is what the deletion costs on top."));
 
@@ -304,7 +307,7 @@ children.push(TBL(
 children.push(SPACER(40));
 children.push(CAP("Table 5. Qwen2.5-VL-7B. MME is scored out of roughly 2000 rather than 100, so its last two figures are 1.4 and 0.4 per cent of its own baseline. Where a deletion cost would be negative, meaning the released arm scored a shade higher, we give the magnitude."));
 
-children.push(P("ChartQA is the row that stops you. There the deletion costs 16.4 points and the pruning costs 31.4, so the fault is not the main problem on that benchmark. We had been writing the deletion as the dominant cause everywhere. It is not."));
+children.push(P("ChartQA reverses the pattern. There the deletion costs 16.4 points and the pruning costs 31.4, so the discrepancy is not the dominant problem on that benchmark. An earlier version of this analysis treated the deletion as the main cause throughout, which these figures do not support."));
 
 children.push(H2("6.1  What the standard suite reports"));
 
@@ -312,9 +315,9 @@ children.push(P("The paper reports six benchmarks. We ran five of them: GQA, MME
 
 children.push(P("Averaged across those five, the released arm keeps 96.1 per cent of baseline and the corrected arm 96.9. A gap of 0.8 points. On the three reading tasks the same two arms give 28.4 and 77.9 per cent. The suite the method was validated on cannot see the difference."));
 
-children.push(H2("6.2  The same blind spot without any fault"));
+children.push(H2("6.2  The same blind spot without a discrepancy"));
 
-children.push(P("We then pruned InternVL2-2B to 12.5 per cent with no deletion at all, on an implementation where we found nothing of the kind."));
+children.push(P("We then pruned InternVL2-2B to 12.5 per cent with no deletion at all, on an implementation where we found no comparable discrepancy."));
 
 children.push(TBL(
   ["Benchmark", "Baseline", "Pruned to 12.5 %", "Retained"],
@@ -329,54 +332,71 @@ children.push(TBL(
 children.push(SPACER(40));
 children.push(CAP("Table 6. InternVL2-2B, pruning only."));
 
-children.push(P("The three reading tasks average 56.5 per cent of baseline. The three from the paper's suite that we ran here, GQA, POPE and MMBench, average 94.9. AI2D is at 97.6 but it is our control, not part of that suite. In points lost: 43.5 against 5.1, about 8.6 to one. No bug anywhere, correct pruning, and the standard benchmarks still report 95 per cent while the model has lost half its reading."));
+children.push(P("The three reading tasks average 56.5 per cent of baseline. The three from the paper's suite that we ran here, GQA, POPE and MMBench, average 94.9. AI2D is at 97.6 but it is our control, not part of that suite. In points lost: 43.5 against 5.1, about 8.6 to one. No discrepancy is present, the pruning behaves as designed, and the standard benchmarks still report 95 per cent while roughly half the reading ability has gone."));
 
 children.push(P("This arm is not a full reproduction of BTP. Our selector has the diversity component but not the attention one, because InternLM2's FlashAttention-2 path does not expose attention scores, and we scaled the pruning layers across from Qwen rather than calibrating them. In one probe on one image, attention picks landed on text 36.0 per cent of the time against a 28.8 per cent share, so attention does seem to favour text. One image cannot tell us by how much, which makes these numbers a likely upper bound on what BTP itself would cost.", { italics: true }));
 
 // ============================================================ 7
-children.push(H1("7.  Where this leaves us"));
+children.push(H1("7.  Interpretation, limitations and next steps"));
 
-children.push(P("Three claims, at three levels, and they stand or fall separately."));
+children.push(P("Three findings, at three levels. They stand or fall separately and should not be quoted as one result."));
 
-children.push(BUL([{ t: "Implementation. ", b: true }, { t: "The released BTP code we read deletes all remaining image tokens just below the threshold we measured for Qwen2.5-VL, while the paper's appendix asks for retention on that model." }]));
-children.push(BUL([{ t: "Model. ", b: true }, { t: "Visual token access has a measurable depth threshold in both models we tested, and the two differ." }]));
-children.push(BUL([{ t: "Evaluation. ", b: true }, { t: "The suite we evaluated did not show the damage to text reading, with the fault or without it." }]));
+children.push(TBL(
+  ["Level", "Finding", "Scope"],
+  [["Implementation",
+    "The released BTP code deletes all remaining image tokens just below the threshold we measured for Qwen2.5-VL, while the paper's Appendix 7.3 asks for retention on that model.",
+    "The code at commit 9682db0. Says nothing about author intent, and nothing about Qwen2.5-VL as a model."],
+   ["Model",
+    "Visual token access has a measurable depth threshold, abrupt in both models tested, at 80.3 per cent of decoder depth in Qwen2.5-VL-7B and 74.8 per cent in InternVL2-2B.",
+    "Two models, measured on TextVQA. Task-specific and not yet shown to hold for other tasks."],
+   ["Evaluation",
+    "The benchmark suite did not reveal the degradation in text reading, with the discrepancy present or absent.",
+    "Five of the paper's six benchmarks, on two models. The one finding that does not depend on the other two."]],
+  [1.5, 3.1, 2.4]));
+children.push(SPACER(40));
+children.push(CAP("Table 7. The three findings kept separate."));
 
-children.push(P("The third is the one that travels furthest, and it does not need the first to be true. On Qwen there is a fault the benchmarks cannot see. On InternVL there is no fault and the benchmarks still cannot see what pruning costs."));
+children.push(P("The evaluation finding generalises furthest and does not depend on the implementation one. On Qwen there is a discrepancy the benchmarks do not reveal. On InternVL there is no such discrepancy, and the benchmarks still do not reveal what pruning costs."));
 
-children.push(H2("7.1  What we would not claim"));
+children.push(P("The model-level result is the one we would build on. BTP does calibrate. Section 4.3 of the paper selects the three pruning layers using a fixed set of 64 samples, by locating where image-token representations shift. What we measure is a different quantity: the depth at which removing the remaining tokens entirely becomes safe. That depth does not appear to be calibrated anywhere, and in the released Qwen configuration it is a fixed value. Our two measurements differ by more than five percentage points of decoder depth, which is enough for such a value to fall on the wrong side of the threshold in one architecture while being harmless in another."));
 
-children.push(BUL([{ t: "Two architectures is two architectures. The shape matched; that is not a law." }]));
-children.push(BUL([{ t: "The thresholds come from TextVQA. Given how ChartQA behaved in Table 5, we would not assume it sits in the same place there." }]));
-children.push(BUL([{ t: "The InternVL implementation is ours, with the selector half built and the layers transplanted rather than calibrated." }]));
-children.push(BUL([{ t: "The OCR oracle ran at one budget. An unexplained slowdown killed the sweep and we left it." }]));
+children.push(P("The evaluation-level result is the one we would warn about. Both models lost far more on reading tasks than the standard suite reported, in one case with a discrepancy present and in the other without. A suite that contains no reading task cannot distinguish a method that preserves reading from one that destroys it."));
+
+children.push(H2("7.1  Limitations"));
+
+children.push(BUL([{ t: "Two architectures are two architectures. The shapes matched, which is not a general law." }]));
+children.push(BUL([{ t: "The thresholds were measured on TextVQA. Given ChartQA's behaviour in Table 5, we would not assume the threshold lies in the same place for that task." }]));
+children.push(BUL([{ t: "The InternVL implementation is ours, with the selector only partly built and the pruning layers transplanted from Qwen rather than calibrated." }]));
+children.push(BUL([{ t: "The OCR oracle ran at one budget. An unexplained slowdown ended the intended sweep, which was not resumed." }]));
 children.push(BUL([{ t: "Everything here uses 500 sample subsets, matched across arms, so the comparisons hold but the absolute numbers are not the published full-dataset ones." }]));
 children.push(BUL([{ t: "Two of our own claims are withdrawn. ", b: true, c: "8A5A00" }, { t: "Phase 2 blamed the collapse on text having no redundancy; our own similarity measurement says the opposite, 0.379 against 0.438. And an early result where text coverage seemed to predict correct answers disappeared at a larger sample. An earlier draft of this report also concluded the effect was Qwen-specific, on one measurement in InternVL, and the sweep showed that was wrong." }]));
 
-children.push(H2("7.2  What to do about it"));
+children.push(H2("7.2  Recommendations"));
 
-children.push(P("Measure the depth instead of picking it. The sweep is cheap, the tool is written and validated on one model, and it needs no training or calibration set. Seven runs gets you the number."));
+children.push(P("Measure the depth rather than selecting it. The sweep is inexpensive, the tool is written and validated on one model, and it requires no training and no calibration set. Approximately seven evaluations establish the value."));
 
-children.push(P("And put one reading benchmark in the evaluation. Not because reading matters more than reasoning, but because it breaks first when visual evidence goes missing."));
+children.push(P("Include at least one reading benchmark in the evaluation. Not because reading matters more than reasoning, but because it degrades first when visual evidence is removed, which makes it the more informative early indicator."));
 
-children.push(P("Next for us: thresholds on DocVQA and ChartQA, ChartQA first since pruning already costs more there than deletion does, then a third architecture, then the manuscript."));
+children.push(P("Next: thresholds on DocVQA and ChartQA, taking ChartQA first since pruning already costs more there than the deletion does, then a third architecture, then the manuscript."));
 
-children.push(H2("7.3  Where to check any of this"));
+children.push(H2("7.3  Reproducibility"));
 children.push(TBL(
-  ["", ""],
+  ["Artefact", "Location"],
   [["Run-by-run record", "phase3-mechanism/RESULTS_LOG.md, observed output marked VERIFIED, untested statements HYPOTHESIS"],
    ["Scripts and jobs", "phase3-mechanism/, job scripts e9 to e13 and their submit chains"],
    ["Threshold tool", "phase3-mechanism/measure_visual_depth.py, runs on any Hugging Face VLM"],
-   ["Figures and this file", "report/make_depth_figures.py and report/build_report.js, so every number comes out of a script"],
-   ["Repository", "milab-iitj-dev/btp-reproduction, not public yet, local commit 139af1c"],
-   ["Jobs", "411681, 412401, 414662, 416734-5, 416896-904, 417968, 418974-419012, 421205-421237"],
+   ["Figures and this file", "report/make_depth_figures.py, make_workflow_figure.py and build_report.js, so every number comes out of a script"],
+   ["Repository", "github.com/milab-iitj-dev/btp-reproduction, commit 9214e75"],
+   ["Jobs", "411681, 412401, 414662, 416734-5, 416896-904, 417968, 418974-419012, 421205-421237, 423959"],
    ["The paper", "Balanced Token Pruning, NeurIPS 2025, arXiv:2505.22038. Code read at commit 9682db0."]],
   [1.7, 4.7]));
+children.push(SPACER(40));
+children.push(CAP("Table 8. Where each part of the work can be checked."));
 
 // ============================================================ ASSEMBLE
 const doc = new Document({
   creator: "P. S. Kedar",
-  title: "When can a vision language model stop looking at the image?",
+  title: "A Task-Specific Visual Token Access Threshold in Vision-Language Models",
   styles: {
     default: { document: { run: { font: BODY, size: 24 } } },
     paragraphStyles: [
