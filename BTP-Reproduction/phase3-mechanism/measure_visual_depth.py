@@ -305,11 +305,16 @@ def load_qwen(model_id):
     layers = model.model.layers
     img_id = model.config.image_token_id
 
-    def run(img, question, max_new_tokens=16):
+    def run(img, question, max_new_tokens=16, suffix=SHORT, max_pixels=None):
+        # suffix and max_pixels were added for Phase 4 (multiple-choice prompts, document
+        # resolution cap). The defaults reproduce the Phase 3 behaviour exactly.
         from qwen_vl_utils import process_vision_info
+        image_item = {"type": "image", "image": img}
+        if max_pixels:
+            image_item["max_pixels"] = max_pixels
         msg = [{"role": "user", "content": [
-            {"type": "image", "image": img},
-            {"type": "text", "text": question + SHORT}]}]
+            image_item,
+            {"type": "text", "text": question + suffix}]}]
         text = proc.apply_chat_template(msg, tokenize=False, add_generation_prompt=True)
         imgs, vids = process_vision_info(msg)
         inp = proc(text=[text], images=imgs, videos=vids,

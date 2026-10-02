@@ -1,0 +1,12 @@
+Qwen2.5-VL-7B  textvqa_mc    open: floor 0.10 base 0.91 h 23 (82%) | MC: floor 0.59 base 0.98 h  8 (29%) | delta +15 [+14, +18] | MMBench h 10 | share of gap closed 115%
+Qwen2.5-VL-7B  chartqa_mc    open: floor 0.16 base 0.85 h 23 (82%) | MC: floor 0.56 base 0.94 h 15 (54%) | delta +8 [+8, +10] | MMBench h 10 | share of gap closed 62%
+Qwen2.5-VL-7B  textvqa_hard  open: floor 0.10 base 0.91 h 23 (82%) | MC: floor 0.59 base 0.98 h 10 (36%) | delta +13 [+10, +14] | MMBench h 10 | share of gap closed 100%
+Qwen2.5-VL-7B  textvqa_hard  fully-hard subset n=134: open h 23 | MC h 10 (36%), floor 0.66 base 0.99 | delta +13 [+8, +14]
+Qwen2.5-VL-7B  mmbench_fmc   open: floor 0.06 base 0.31 h 20 (71%) | MC: floor 0.36 base 0.88 h 10 (36%) | delta +10 [+4, +12] | MMBench h 10 | share of gap closed 100%
+Qwen2.5-VL-7B  ai2d_fmc      open: floor 0.21 base 0.40 h 23 (82%) | MC: floor 0.73 base 0.88 h 15 (54%) | delta +8 [+5, +9] | MMBench h 10 | share of gap closed 62%
+InternVL2-2B   textvqa_mc    open: floor 0.07 base 0.81 h 19 (79%) | MC: floor 0.61 base 0.95 h  9 (38%) | delta +10 [+8, +10] | MMBench h 9 | share of gap closed 100%
+InternVL2-2B   chartqa_mc    open: floor 0.12 base 0.71 h 18 (75%) | MC: floor 0.51 base 0.86 h 12 (50%) | delta +6 [+5, +6] | MMBench h 9 | share of gap closed 67%
+InternVL2-2B   textvqa_hard  open: floor 0.07 base 0.81 h 19 (79%) | MC: floor 0.56 base 0.91 h 11 (46%) | delta +8 [+7, +10] | MMBench h 9 | share of gap closed 80%
+InternVL2-2B   textvqa_hard  fully-hard subset n=134: open h 19 | MC h 11 (46%), floor 0.55 base 0.90 | delta +8 [+7, +10]
+InternVL2-2B   mmbench_fmc   open: floor 0.04 base 0.28 h 17 (71%) | MC: floor 0.29 base 0.79 h  9 (38%) | delta +8 [+6, +10] | MMBench h 9 | share of gap closed 100%
+InternVL2-2B   ai2d_fmc      open: floor 0.12 base 0.31 h 19 (79%) | MC: floor 0.67 base 0.76 h 14 (58%) | delta +5 [+4, +7] | MMBench h 9 | share of gap closed 50%

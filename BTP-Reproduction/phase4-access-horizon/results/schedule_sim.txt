@@ -1,0 +1,114 @@
+================================================================================================
+Qwen2.5-VL-7B   L = 28   rule: every task keeps >= 95% of full accuracy   200 splits
+policy          vis saved       time   worst task  worst (5% q.)   typical cut
+full                0.0%      100%       100.0%         100.0%   c = 28
+released BTP       21.4%       88%        22.3%          17.4%   c = 22
+uniform             2.5%       94%        96.8%          93.3%   c = 27.3
+format-aware       24.2%       88%        95.7%          92.3%   open 27.5, closed 17.7
+task oracle        30.1%       86%        92.2%          89.1%   mmbench 16, pope 16, scienceqa 15, ai2d 16, gqa 24, chartqa 24, docvqa 24, textvqa 27
+  per-task accuracy kept (mean over splits):
+                   mmbench      pope scienceqa      ai2d       gqa   chartqa    docvqa   textvqa
+  full             100.0%    100.0%    100.0%    100.0%    100.0%    100.0%    100.0%    100.0% 
+  released BTP      99.6%    100.0%    100.0%    101.6%     90.5%     31.4%     22.6%     27.8% 
+  uniform           99.7%    100.0%    100.0%    100.3%     98.9%     99.6%     99.4%     96.8% 
+  format-aware      98.9%     99.1%     99.6%    100.0%     96.2%     99.7%     99.6%     97.8% 
+  task oracle       95.9%     97.6%     97.8%     96.2%     95.4%     98.2%     98.2%     96.8% 
+  held-out sets, format cuts from the natural tasks (open 27, closed 17):
+    textvqa_mc     closed full 0.985  at cut 0.985  kept 100.0%  vis saved 39%  time 73%
+    chartqa_mc     closed full 0.940  at cut 0.900  kept 95.7%  vis saved 39%  time 79%
+    textvqa_hard   closed full 0.980  at cut 0.980  kept 100.0%  vis saved 39%  time 82%
+    mmbench_fmc    closed full 0.875  at cut 0.875  kept 100.0%  vis saved 39%  time 87%
+    ai2d_fmc       closed full 0.880  at cut 0.890  kept 101.1%  vis saved 39%  time 84%
+    mmbench_fopen  open   full 0.310  at cut 0.320  kept 103.2%  vis saved 4%  time 93%
+    ai2d_fopen     open   full 0.400  at cut 0.415  kept 103.7%  vis saved 4%  time 95%
+================================================================================================
+Qwen2.5-VL-7B   L = 28   rule: every task keeps >= 98% of full accuracy   200 splits
+policy          vis saved       time   worst task  worst (5% q.)   typical cut
+full                0.0%      100%       100.0%         100.0%   c = 28
+released BTP       21.4%       88%        22.3%          17.4%   c = 22
+uniform             0.2%       99%        99.6%          93.4%   c = 27.9
+format-aware       17.5%       90%        98.5%          95.3%   open 28.0, closed 20.4
+task oracle        25.1%       88%        95.1%          91.2%   mmbench 18, pope 17, scienceqa 16, ai2d 17, gqa 26, chartqa 26, docvqa 26, textvqa 28
+  per-task accuracy kept (mean over splits):
+                   mmbench      pope scienceqa      ai2d       gqa   chartqa    docvqa   textvqa
+  full             100.0%    100.0%    100.0%    100.0%    100.0%    100.0%    100.0%    100.0% 
+  released BTP      99.6%    100.0%    100.0%    101.6%     90.5%     31.4%     22.6%     27.8% 
+  uniform          100.0%    100.0%    100.0%    100.0%     99.9%     99.9%     99.9%     99.6% 
+  format-aware      99.4%     99.9%    100.0%    101.2%     98.7%    100.0%    100.0%     99.9% 
+  task oracle       98.5%     99.0%     98.8%     99.8%     97.5%     98.5%     98.3%     99.3% 
+  held-out sets, format cuts from the natural tasks (open 28, closed 20):
+    textvqa_mc     closed full 0.985  at cut 0.985  kept 100.0%  vis saved 29%  time 77%
+    chartqa_mc     closed full 0.940  at cut 0.935  kept 99.5%  vis saved 29%  time 83%
+    textvqa_hard   closed full 0.980  at cut 0.980  kept 100.0%  vis saved 29%  time 86%
+    mmbench_fmc    closed full 0.875  at cut 0.875  kept 100.0%  vis saved 29%  time 89%
+    ai2d_fmc       closed full 0.880  at cut 0.885  kept 100.6%  vis saved 29%  time 87%
+    mmbench_fopen  open   full 0.310  at cut 0.310  kept 100.0%  vis saved 0%  time 100%
+    ai2d_fopen     open   full 0.400  at cut 0.400  kept 100.0%  vis saved 0%  time 100%
+================================================================================================
+Qwen2.5-VL-3B   L = 36   rule: every task keeps >= 95% of full accuracy   200 splits
+policy          vis saved       time   worst task  worst (5% q.)   typical cut
+full                0.0%      100%       100.0%         100.0%   c = 36
+uniform             7.2%       91%        96.2%          91.8%   c = 33.4
+format-aware       26.9%       91%        95.7%          91.9%   open 33.9, closed 22.1
+task oracle        28.6%       91%        90.4%          84.3%   mmbench 22, pope 22, scienceqa 17, ai2d 22, gqa 32, chartqa 32, docvqa 33, textvqa 33
+  per-task accuracy kept (mean over splits):
+                   mmbench      pope scienceqa      ai2d       gqa   chartqa    docvqa   textvqa
+  full             100.0%    100.0%    100.0%    100.0%    100.0%    100.0%    100.0%    100.0% 
+  uniform          100.0%    100.0%    100.0%    100.0%     99.6%    100.3%    100.1%     96.7% 
+  format-aware      99.4%     98.9%     99.2%     97.2%     98.9%    100.4%    100.0%     98.3% 
+  task oracle       96.4%     97.0%     94.9%     97.1%     96.9%     96.9%    100.1%     96.7% 
+================================================================================================
+Qwen2.5-VL-3B   L = 36   rule: every task keeps >= 98% of full accuracy   200 splits
+policy          vis saved       time   worst task  worst (5% q.)   typical cut
+full                0.0%      100%       100.0%         100.0%   c = 36
+uniform             5.5%       91%        98.8%          91.9%   c = 34.0
+format-aware       22.8%       93%        98.4%          95.3%   open 35.3, closed 23.6
+task oracle        25.3%       91%        94.5%          89.2%   mmbench 22, pope 23, scienceqa 21, ai2d 23, gqa 33, chartqa 33, docvqa 33, textvqa 34
+  per-task accuracy kept (mean over splits):
+                   mmbench      pope scienceqa      ai2d       gqa   chartqa    docvqa   textvqa
+  full             100.0%    100.0%    100.0%    100.0%    100.0%    100.0%    100.0%    100.0% 
+  uniform          100.0%    100.0%    100.0%    100.0%     99.4%    100.6%    100.0%     99.9% 
+  format-aware     100.0%     99.2%     99.9%     99.4%    100.9%    100.3%    100.0%    100.1% 
+  task oracle       99.0%     98.8%     97.4%     98.3%     98.4%     99.2%    100.1%     99.6% 
+================================================================================================
+InternVL2-2B   L = 24   rule: every task keeps >= 95% of full accuracy   200 splits
+policy          vis saved       time   worst task  worst (5% q.)   typical cut
+full                0.0%      100%       100.0%         100.0%   c = 24
+uniform            16.5%       85%        97.9%          94.8%   c = 20.0
+format-aware       31.6%       82%        97.1%          94.3%   open 20.1, closed 14.4
+task oracle        33.0%       81%        91.2%          83.8%   mmbench 13, pope 14, scienceqa 13, ai2d 14, gqa 19, chartqa 20, docvqa 20, textvqa 20
+  per-task accuracy kept (mean over splits):
+                   mmbench      pope scienceqa      ai2d       gqa   chartqa    docvqa   textvqa
+  full             100.0%    100.0%    100.0%    100.0%    100.0%    100.0%    100.0%    100.0% 
+  uniform          100.4%     99.5%    100.0%    100.0%    101.1%     98.6%    101.4%    101.2% 
+  format-aware     100.2%     99.9%     98.6%     99.6%     99.7%     98.7%    101.4%    101.1% 
+  task oracle       96.4%     97.9%     96.6%     96.9%     97.7%     96.5%    101.4%    101.2% 
+  held-out sets, format cuts from the natural tasks (open 20, closed 14):
+    textvqa_mc     closed full 0.950  at cut 0.955  kept 100.5%  vis saved 42%  time 80%
+    chartqa_mc     closed full 0.860  at cut 0.865  kept 100.6%  vis saved 42%  time 78%
+    textvqa_hard   closed full 0.905  at cut 0.905  kept 100.0%  vis saved 42%  time 79%
+    mmbench_fmc    closed full 0.790  at cut 0.780  kept 98.7%  vis saved 42%  time 79%
+    ai2d_fmc       closed full 0.760  at cut 0.755  kept 99.3%  vis saved 42%  time 79%
+    mmbench_fopen  open   full 0.285  at cut 0.290  kept 101.8%  vis saved 17%  time 87%
+    ai2d_fopen     open   full 0.310  at cut 0.325  kept 104.8%  vis saved 17%  time 87%
+================================================================================================
+InternVL2-2B   L = 24   rule: every task keeps >= 98% of full accuracy   200 splits
+policy          vis saved       time   worst task  worst (5% q.)   typical cut
+full                0.0%      100%       100.0%         100.0%   c = 24
+uniform             7.9%       92%        98.4%          95.9%   c = 22.1
+format-aware       23.0%       87%        97.9%          95.9%   open 22.4, closed 16.3
+task oracle        29.4%       82%        94.7%          84.8%   mmbench 14, pope 14, scienceqa 15, ai2d 14, gqa 20, chartqa 21, docvqa 21, textvqa 21
+  per-task accuracy kept (mean over splits):
+                   mmbench      pope scienceqa      ai2d       gqa   chartqa    docvqa   textvqa
+  full             100.0%    100.0%    100.0%    100.0%    100.0%    100.0%    100.0%    100.0% 
+  uniform           99.9%     99.6%     99.9%    100.3%    100.8%     99.2%    100.1%    100.4% 
+  format-aware     100.5%    100.1%     99.7%    100.6%     99.5%     99.3%    100.1%    100.2% 
+  task oracle       99.1%     99.9%     98.5%     99.1%     99.0%     97.5%    100.9%    100.7% 
+  held-out sets, format cuts from the natural tasks (open 20, closed 16):
+    textvqa_mc     closed full 0.950  at cut 0.945  kept 99.5%  vis saved 33%  time 81%
+    chartqa_mc     closed full 0.860  at cut 0.855  kept 99.4%  vis saved 33%  time 80%
+    textvqa_hard   closed full 0.905  at cut 0.890  kept 98.3%  vis saved 33%  time 81%
+    mmbench_fmc    closed full 0.790  at cut 0.795  kept 100.6%  vis saved 33%  time 81%
+    ai2d_fmc       closed full 0.760  at cut 0.760  kept 100.0%  vis saved 33%  time 82%
+    mmbench_fopen  open   full 0.285  at cut 0.290  kept 101.8%  vis saved 17%  time 87%
+    ai2d_fopen     open   full 0.310  at cut 0.325  kept 104.8%  vis saved 17%  time 87%

@@ -1,318 +1,280 @@
 const pptx = require("pptxgenjs");
 const fs = require("fs");
 const p = new pptx();
-p.layout = "LAYOUT_WIDE";                 // 13.3 x 7.5
+p.layout = "LAYOUT_WIDE";
 p.author = "P. S. Kedar";
-p.title  = "A Task-Specific Visual Token Access Threshold in Vision-Language Models";
+p.title = "Visual Token Pruning and Text-Reading Performance in Vision-Language Models";
 
-const FIG = "/sessions/modest-epic-cerf/mnt/divya_maam/reports/figs/";
-const NAVY="1E2761", ICE="CADCFC", WHITE="FFFFFF", CRIMS="A3312F", TEAL="1D6B6B",
-      INK="1A1A1A", MUTE="5A5A5A", TINT="F4F6FA", LINE="D8DEE9", ROSE="FCE9E7", MINT="E9F2EC";
-const HEAD="Cambria", BODY="Calibri";
+const FIG = "" + require("path").join(__dirname, "figs") + "/";
+// one primary, one accent, neutrals
+const NAVY = "1E2761", ACC = "A3312F", INK = "1A1A1A", MUTE = "5A5A5A",
+      FILL = "F4F5F8", LINE = "C9CED8", ACCFILL = "FBEDEC", WHITE = "FFFFFF";
+const HEAD = "Cambria", BODY = "Calibri";
 const img = f => ({ data: "image/png;base64," + fs.readFileSync(FIG + f).toString("base64") });
 
-// ---------------------------------------------------------------- helpers
-function T(s, text, o) { s.addText(text, Object.assign({ isTextBox: true, fontFace: BODY, color: INK, margin: 0 }, o)); }
-
-function head(s, t, kicker) {
-  if (kicker) T(s, kicker.toUpperCase(), { x: 0.7, y: 0.4, w: 11.9, h: 0.3, fontSize: 11, bold: true, color: CRIMS, charSpacing: 2 });
-  T(s, t, { x: 0.7, y: 0.72, w: 11.9, h: 0.75, fontFace: HEAD, fontSize: 28, bold: true, color: NAVY });
+function T(s, t, o) { s.addText(t, Object.assign({ isTextBox: true, fontFace: BODY, fontSize: 14, color: INK, margin: 0, valign: "top" }, o)); }
+function box(s, x, y, w, h, accent) {
+  s.addShape(p.ShapeType.rect, { x, y, w, h, fill: { color: accent ? ACCFILL : FILL }, line: { color: accent ? ACC : LINE, width: 1 } });
 }
-
-function label(s, text, x, y, colour) {
-  T(s, text.toUpperCase(), { x, y, w: 5, h: 0.28, fontSize: 11, bold: true, color: colour, charSpacing: 2 });
+function H(s, title, q) {
+  T(s, title, { x: 0.6, y: 0.4, w: 12.1, h: 0.65, fontFace: HEAD, fontSize: 28, bold: true, color: NAVY, valign: "middle" });
+  if (q) T(s, q, { x: 0.6, y: 1.02, w: 12.1, h: 0.4, fontSize: 15, italic: true, color: MUTE });
 }
-
-function card(s, x, y, w, h, fill, lineColour) {
-  s.addShape(p.ShapeType.roundRect, { x, y, w, h, rectRadius: 0.08, fill: { color: fill }, line: { color: lineColour || LINE, width: 1 } });
-}
-
-// tested / got / means layout. result() draws inside the left box.
-function experiment(s, tested, result, means) {
-  label(s, "What we tested", 0.7, 1.6, NAVY);
-  T(s, tested, { x: 0.7, y: 1.92, w: 11.9, h: 0.75, fontSize: 16 });
-  label(s, "What we got", 0.7, 2.85, TEAL);
-  result(s, { x: 0.7, y: 3.2, w: 7.5, h: 3.6 });
-  card(s, 8.55, 2.85, 4.05, 3.95, ROSE, CRIMS);
-  label(s, "What it tells us", 8.8, 3.05, CRIMS);
-  T(s, means, { x: 8.8, y: 3.45, w: 3.6, h: 3.2, fontSize: 16, valign: "top" });
-}
-
-// a row of token squares; kept(i) decides filled or hollow
-function tokens(s, x, y, n, kept, sz) {
-  sz = sz || 0.32;
-  for (let i = 0; i < n; i++) {
-    const on = kept(i);
-    s.addShape(p.ShapeType.rect, { x: x + i * (sz + 0.08), y, w: sz, h: sz,
-      fill: { color: on ? NAVY : WHITE }, line: { color: on ? NAVY : "B8BFCC", width: 1, dashType: on ? "solid" : "dash" } });
-  }
-}
-
-function arrow(s, x, y, w) {
-  s.addShape(p.ShapeType.rightArrow, { x, y, w, h: 0.4, fill: { color: "9AA5BF" }, line: { color: "9AA5BF" } });
-}
-
 function table(s, rows, o) {
   const hdr = rows[0].map(c => ({ text: c, options: { bold: true, color: WHITE, fill: NAVY } }));
-  s.addTable([hdr, ...rows.slice(1)], Object.assign({ fontFace: BODY, fontSize: 14, border: { pt: 1, color: "000000" },
-    align: "center", valign: "middle", rowH: 0.45 }, o));
+  s.addTable([hdr, ...rows.slice(1)], Object.assign({ fontFace: BODY, fontSize: 14, color: INK, border: { pt: 1, color: "000000" },
+    align: "center", valign: "middle", rowH: 0.44 }, o));
+}
+// labelled line: "Why:" text
+function L(label, text, colour) {
+  return [{ text: label + "  ", options: { bold: true, color: colour || NAVY } }, { text: text, options: { breakLine: true } }];
+}
+function lines(s, parts, o) { T(s, parts.flat(), Object.assign({ paraSpaceAfter: 5 }, o)); }
+
+// token squares
+function tokens(s, x, y, n, kept, sz) {
+  sz = sz || 0.16;
+  for (let i = 0; i < n; i++) {
+    const on = kept(i);
+    s.addShape(p.ShapeType.rect, { x: x + i * (sz + 0.05), y, w: sz, h: sz, fill: { color: on ? NAVY : WHITE },
+      line: { color: on ? NAVY : "9AA3B5", width: 0.75, dashType: on ? "solid" : "dash" } });
+  }
+}
+// pipeline of labelled steps; each step {t, tok (fn or null), accent}
+function pipeline(s, x, y, steps, stepW, h) {
+  stepW = stepW || 1.9; h = h || 0.85;
+  const gap = 0.32;
+  steps.forEach((st, k) => {
+    const sx = x + k * (stepW + gap);
+    box(s, sx, y, stepW, h, st.accent);
+    if (st.tok) {
+      tokens(s, sx + (stepW - (8 * 0.16 + 7 * 0.05)) / 2, y + 0.13, 8, st.tok, 0.16);
+      const ty = h < 0.7 ? y + 0.3 : y + 0.42;
+      T(s, st.t, { x: sx + 0.05, y: ty, w: stepW - 0.1, h: Math.max(h - (ty - y) - 0.02, 0.2), fontSize: h < 0.7 ? 10.5 : 12, align: "center", bold: true, color: st.accent ? ACC : NAVY });
+    } else {
+      T(s, st.t, { x: sx + 0.05, y, w: stepW - 0.1, h, fontSize: 12, align: "center", valign: "middle", bold: true, color: st.accent ? ACC : NAVY });
+    }
+    if (k < steps.length - 1)
+      T(s, "→", { x: sx + stepW, y, w: gap, h, fontSize: 18, align: "center", valign: "middle", color: MUTE });
+  });
 }
 
-// ================================================================ 1 title
-let s = p.addSlide(); s.background = { color: NAVY };
-T(s, "When does a vision-language model\nstop needing the image?", { x: 0.7, y: 1.9, w: 11.9, h: 1.8, fontFace: HEAD, fontSize: 40, bold: true, color: WHITE });
-T(s, "Phase 3: why Balanced Token Pruning breaks text reading on Qwen2.5-VL", { x: 0.7, y: 3.8, w: 11.9, h: 0.6, fontSize: 20, color: ICE });
-T(s, "P. S. Kedar   |   Supervised by Prof. Divya Saxena   |   Mentored by Aditya Sharma, PhD Scholar", { x: 0.7, y: 5.5, w: 11.9, h: 0.4, fontSize: 14, color: ICE });
-T(s, "IIT Jodhpur", { x: 0.7, y: 5.9, w: 11.9, h: 0.4, fontSize: 13, color: "9FB3D9" });
-s.addNotes("Subject paper: Balanced Token Pruning, NeurIPS 2025. Phase 1 reproduced it; this phase explains a failure we found.");
+// ============================================================ 1 TITLE
+let s = p.addSlide();
+T(s, "Visual Token Pruning and Text-Reading Performance\nin Vision-Language Models", { x: 0.8, y: 1.9, w: 11.7, h: 1.6, fontFace: HEAD, fontSize: 34, bold: true, color: NAVY });
+T(s, "Phase 3 Investigation using Qwen2.5-VL-7B", { x: 0.8, y: 3.55, w: 11.7, h: 0.5, fontSize: 20, color: MUTE });
+s.addShape(p.ShapeType.line, { x: 0.8, y: 4.35, w: 5.0, h: 0, line: { color: LINE, width: 1 } });
+T(s, "P. S. Kedar", { x: 0.8, y: 4.6, w: 11.7, h: 0.4, fontSize: 17, bold: true });
+T(s, "Supervised by Prof. Divya Saxena\nMentored by Aditya Sharma\nIIT Jodhpur", { x: 0.8, y: 5.05, w: 11.7, h: 1.1, fontSize: 14, color: MUTE, paraSpaceAfter: 2 });
 
-// ================================================================ 2 terms
+// ============================================================ 2 SETUP
 s = p.addSlide();
-head(s, "Three terms we use throughout", "before we start");
-const terms = [
-  ["Baseline", i => true, "The original model, no pruning. Every visual token is kept.", "It is the reference: every other result is compared against it."],
-  ["Pruning", i => i % 2 === 0, "Remove some visual tokens, keep the rest.", "Fewer tokens to process, so the model runs faster."],
-  ["Deletion", i => false, "Remove all remaining visual tokens at one layer.", "From that layer onward, the model cannot see the image at all."]
+H(s, "Experimental Setup", "An image is converted into many visual tokens before the language model processes it.");
+const rows2 = [
+  { name: "Baseline", desc: "The original model without BTP. All visual tokens are kept.",
+    why: "Tells us how well the model performs when we do not interfere with its visual information.",
+    steps: [{ t: "Image", tok: i => true }, { t: "All visual tokens", tok: i => true }, { t: "Model" }, { t: "Answer" }] },
+  { name: "Pruning (BTP)", desc: "BTP removes some visual tokens so the model processes less visual information.",
+    why: "Some visual tokens remain, so the model can still use the image.",
+    steps: [{ t: "Image", tok: i => true }, { t: "BTP pruning", tok: i => i % 2 === 0 }, { t: "Model" }, { t: "Answer" }] },
+  { name: "Complete deletion", desc: "Removes every visual token still remaining at a particular layer.", accent: true,
+    why: "After that layer, the model cannot receive any further visual information from the image.",
+    steps: [{ t: "Image", tok: i => true }, { t: "Pruning: 12.5% remain", tok: i => i === 0 }, { t: "Complete deletion: 0 remain", tok: i => false, accent: true }, { t: "Answer" }] }
 ];
-terms.forEach((t, k) => {
-  const x = 0.7 + k * 4.1;
-  card(s, x, 1.7, 3.85, 4.6, k === 2 ? ROSE : TINT, k === 2 ? CRIMS : LINE);
-  T(s, t[0], { x: x + 0.3, y: 1.95, w: 3.3, h: 0.5, fontFace: HEAD, fontSize: 22, bold: true, color: k === 2 ? CRIMS : NAVY });
-  tokens(s, x + 0.3, 2.65, 8, t[1], 0.33);
-  T(s, t[2], { x: x + 0.3, y: 3.3, w: 3.3, h: 1.0, fontSize: 16, bold: true });
-  T(s, t[3], { x: x + 0.3, y: 4.35, w: 3.3, h: 1.4, fontSize: 15, color: MUTE });
+rows2.forEach((r, k) => {
+  const y = 1.6 + k * 1.52;
+  box(s, 0.6, y, 12.1, 1.38, r.accent);
+  T(s, r.name, { x: 0.8, y: y + 0.12, w: 3.2, h: 0.35, fontFace: HEAD, fontSize: 17, bold: true, color: r.accent ? ACC : NAVY });
+  T(s, r.desc, { x: 0.8, y: y + 0.5, w: 3.6, h: 0.45, fontSize: 12.5 });
+  T(s, r.why, { x: 0.8, y: y + 0.95, w: 3.6, h: 0.4, fontSize: 11.5, italic: true, color: MUTE });
+  pipeline(s, 4.6, y + 0.27, r.steps, 1.75, 0.85);
 });
-T(s, "Pruning and deletion are not the same thing. That difference is the whole story of this phase.", { x: 0.7, y: 6.5, w: 11.9, h: 0.45, fontSize: 15, italic: true, color: NAVY });
-s.addNotes("Filled squares are visual tokens the model can still see. Pruning thins them out; deletion removes whatever is left.");
+box(s, 0.6, 6.25, 12.1, 0.85, false);
+T(s, [{ text: "Pruning", options: { bold: true, color: NAVY } }, { text: " = reducing visual information          " },
+      { text: "Complete deletion", options: { bold: true, color: ACC } }, { text: " = cutting off visual information completely" }],
+  { x: 0.8, y: 6.3, w: 11.7, h: 0.4, fontSize: 16, valign: "middle", align: "center" });
+T(s, "This distinction is essential for every experiment that follows.", { x: 0.8, y: 6.7, w: 11.7, h: 0.3, fontSize: 12, italic: true, color: MUTE, align: "center" });
 
-// ================================================================ 3 observation
+// ============================================================ 3 OBSERVATION
 s = p.addSlide();
-head(s, "Qwen stays fine on general tasks, but stops reading", "1. what we observed");
-s.addChart(p.charts.BAR, [
-  { name: "Baseline", labels: ["POPE", "MMBench", "GQA", "TextVQA", "DocVQA", "ChartQA"], values: [87.6, 83.7, 60.9, 86.2, 94.7, 76.8] },
-  { name: "With BTP", labels: ["POPE", "MMBench", "GQA", "TextVQA", "DocVQA", "ChartQA"], values: [86.2, 79.3, 55.9, 23.3, 19.2, 29.0] }
-], { x: 0.7, y: 1.65, w: 8.2, h: 4.9, barDir: "col", barGrouping: "clustered",
-  chartColors: [NAVY, CRIMS], showValue: true, dataLabelPosition: "outEnd", dataLabelFontSize: 11,
-  dataLabelFormatCode: "0.0", showLegend: true, legendPos: "t", legendFontSize: 13,
-  valAxisMinVal: 0, valAxisMaxVal: 100, valAxisLabelFontSize: 11, catAxisLabelFontSize: 13,
-  valGridLine: { color: "E5E5E5", size: 0.5 }, catGridLine: { style: "none" } });
-card(s, 9.2, 1.9, 3.4, 4.4, TINT);
-T(s, "General tasks", { x: 9.45, y: 2.1, w: 3.0, h: 0.4, fontFace: HEAD, fontSize: 17, bold: true, color: NAVY });
-T(s, "Lose only a few points.", { x: 9.45, y: 2.5, w: 3.0, h: 0.6, fontSize: 15 });
-T(s, "Reading tasks", { x: 9.45, y: 3.35, w: 3.0, h: 0.4, fontFace: HEAD, fontSize: 17, bold: true, color: CRIMS });
-T(s, "Collapse. TextVQA falls from 86.2% to 23.3%.", { x: 9.45, y: 3.75, w: 3.0, h: 0.9, fontSize: 15 });
-T(s, "The paper reports only general tasks, so it would not show this.", { x: 9.45, y: 4.85, w: 3.0, h: 1.2, fontSize: 14, italic: true, color: MUTE });
-s.addNotes("Qwen2.5-VL-7B. Reading tasks are the ones where the answer is text written inside the image.");
-
-// ================================================================ 4 hypotheses
-s = p.addSlide();
-head(s, "Four possible explanations", "2. what could be causing it?");
-const hyp = [
-  ["Wrong tokens chosen", "BTP keeps the wrong visual tokens and throws away the text."],
-  ["Text looks redundant", "Text patches look alike, so BTP treats them as duplicates."],
-  ["Too much removed", "Simply too many tokens are thrown away for reading to work."],
-  ["Text not protected", "If we made sure every text token survived, reading would come back."]
-];
-hyp.forEach((h, k) => {
-  const x = 0.7 + (k % 2) * 6.05, y = 1.75 + Math.floor(k / 2) * 2.35;
-  card(s, x, y, 5.85, 2.1, TINT);
-  s.addShape(p.ShapeType.ellipse, { x: x + 0.3, y: y + 0.35, w: 0.7, h: 0.7, fill: { color: NAVY }, line: { color: NAVY } });
-  T(s, String(k + 1), { x: x + 0.3, y: y + 0.35, w: 0.7, h: 0.7, fontFace: HEAD, fontSize: 22, bold: true, color: WHITE, align: "center", valign: "middle" });
-  T(s, h[0], { x: x + 1.25, y: y + 0.3, w: 4.4, h: 0.5, fontFace: HEAD, fontSize: 19, bold: true, color: NAVY });
-  T(s, h[1], { x: x + 1.25, y: y + 0.85, w: 4.4, h: 1.0, fontSize: 15 });
-});
-s.addNotes("Each idea is testable. We designed one experiment per idea.");
-
-// ================================================================ 5 all ruled out
-s = p.addSlide();
-head(s, "All four were ruled out", "3. what those experiments told us");
+H(s, "Initial Observation", "We compared the original model (baseline) with BTP on Qwen2.5-VL-7B.");
+const rt = (t) => ({ text: t, options: { bold: true, fill: ACCFILL } });
 table(s, [
-  ["Explanation", "What we tested", "What we got", "What it tells us"],
-  ["Wrong tokens chosen", "Replaced BTP's token choice with other rules, including random", "All scored 17 to 19% on TextVQA", "Which tokens are kept does not matter here"],
-  ["Text looks redundant", "Compared how similar text patches are to background patches", "Text patches were less alike, not more (0.38 vs 0.44)", "Our starting idea was wrong"],
-  ["Too much removed", "Gradually reduced the tokens kept, from 100% down to 12.5%", "At 90% kept, TextVQA had already dropped to the same low level as at 12.5%", "The collapse is not just about removing too many"],
-  ["Text not protected", "Forced every text token to survive, using the true text locations", "No improvement: 19.7% with, 19.7% without", "Even a perfect choice of tokens does not fix it"]
-], { x: 0.7, y: 1.7, w: 11.9, colW: [2.3, 3.4, 3.3, 2.9], fontSize: 13, rowH: 0.9, align: "left" });
-T(s, "Four unrelated changes, and the score barely moved. That pointed somewhere else.", { x: 0.7, y: 6.45, w: 11.9, h: 0.45, fontSize: 15, italic: true, color: NAVY });
-s.addNotes("All four changed how tokens are chosen or how many are kept. None of them helped, which suggested the loss was happening somewhere else.");
+  ["Task", "Baseline", "BTP"],
+  ["POPE", "87.6", "86.2"], ["MMBench", "83.7", "79.3"], ["GQA", "60.9", "55.9"], ["AI2D", "86.4", "79.6"],
+  [rt("TextVQA *"), { text: "86.2", options: { fill: ACCFILL } }, { text: "23.3", options: { bold: true, color: ACC, fill: ACCFILL } }],
+  [rt("DocVQA *"), { text: "94.7", options: { fill: ACCFILL } }, { text: "19.2", options: { bold: true, color: ACC, fill: ACCFILL } }],
+  [rt("ChartQA *"), { text: "76.8", options: { fill: ACCFILL } }, { text: "29.0", options: { bold: true, color: ACC, fill: ACCFILL } }]
+], { x: 0.6, y: 1.65, w: 5.4, colW: [2.4, 1.5, 1.5], rowH: 0.52 });
+T(s, "* reading task", { x: 0.6, y: 5.9, w: 5.4, h: 0.3, fontSize: 12, italic: true, color: ACC });
+box(s, 6.35, 1.65, 6.35, 1.3, false);
+T(s, "General visual tasks", { x: 6.55, y: 1.78, w: 6.0, h: 0.35, fontFace: HEAD, fontSize: 16, bold: true, color: NAVY });
+T(s, "POPE, MMBench, GQA, AI2D: performance decreases only moderately.", { x: 6.55, y: 2.18, w: 6.0, h: 0.7, fontSize: 14 });
+box(s, 6.35, 3.1, 6.35, 1.95, false);
+T(s, "Reading tasks: performance collapses", { x: 6.55, y: 3.22, w: 6.0, h: 0.35, fontFace: HEAD, fontSize: 16, bold: true, color: ACC });
+T(s, "Tasks where the model must identify and understand text physically present inside the image.", { x: 6.55, y: 3.6, w: 6.0, h: 0.55, fontSize: 13.5 });
+T(s, [{ text: "TextVQA", options: { bold: true } }, { text: "  questions answered from text in images", options: { breakLine: true } },
+      { text: "DocVQA", options: { bold: true } }, { text: "  understanding text in documents", options: { breakLine: true } },
+      { text: "ChartQA", options: { bold: true } }, { text: "  reading information from charts" }],
+  { x: 6.55, y: 4.15, w: 6.0, h: 0.85, fontSize: 13 });
+box(s, 6.35, 5.2, 6.35, 1.3, true);
+T(s, "Main observation", { x: 6.55, y: 5.3, w: 6.0, h: 0.35, fontFace: HEAD, fontSize: 15, bold: true, color: ACC });
+T(s, "The degradation is not uniform. It is especially severe when the model must read text from the image.", { x: 6.55, y: 5.68, w: 6.0, h: 0.75, fontSize: 14 });
 
-// ================================================================ 6 the redirect
+// ============================================================ 4 POSSIBLE CAUSES
 s = p.addSlide();
-head(s, "So where is the loss happening?", "4. the experiment that redirected us");
-experiment(s,
-  "We kept every visual token through all of BTP's pruning stages, so nothing was pruned at all. If pruning were the cause, performance should come back to the baseline.",
-  (s, b) => {
-    table(s, [["Condition", "TextVQA"], ["Baseline", "87.6%"], ["BTP, but keeping 100% of tokens", { text: "17.8%", options: { bold: true, color: CRIMS } }]],
-      { x: b.x, y: b.y + 0.2, w: b.w, colW: [5.0, 2.5], fontSize: 16, rowH: 0.6 });
-    T(s, "Nothing pruned, and it still collapsed.", { x: b.x, y: b.y + 2.4, w: b.w, h: 0.5, fontSize: 18, bold: true, color: CRIMS });
-  },
-  "The damage is not coming from the pruning stages.\n\nSomething after them is removing the image. That is where we looked next.");
-s.addNotes("This was meant as a sanity check. It turned out to be the key result, because it ruled out pruning as the main cause.");
-
-// ================================================================ 7 what we found
-s = p.addSlide();
-head(s, "The code removes every remaining visual token at one layer", "5. what we found");
-const stages = [
-  ["Image enters", i => true, NAVY],
-  ["After BTP's pruning stages", i => i === 0, NAVY],
-  ["At one fixed later layer", i => false, CRIMS]
+H(s, "Possible Causes", "Why does BTP make Qwen fail on reading tasks? We tested four explanations.");
+const exps = [
+  { q: "1. Are we keeping the wrong visual tokens?",
+    why: "Perhaps BTP removes useful tokens and keeps unhelpful ones.",
+    what: "Replaced BTP's token selection with other methods, including random selection.",
+    res: "All methods stayed around 17–19% on TextVQA.",
+    so: "Changing which tokens are selected does not recover performance." },
+  { q: "2. Are text regions too similar or redundant?",
+    why: "If text patches look alike, BTP may treat them as duplicates and remove them.",
+    what: "Compared how similar text patches are to each other versus background patches.",
+    res: "Text similarity 0.38, background similarity 0.44.",
+    so: "Text was not more redundant than background. This explanation was not supported." },
+  { q: "3. Are too many tokens being removed?",
+    why: "Removing a large share of tokens might destroy the information needed for reading.",
+    what: "Gradually changed token retention from 100% down to 12.5%.",
+    res: "Even at 90% retention, TextVQA had already fallen to the same low level.",
+    so: "The collapse happens even when almost all tokens are kept, so it is not the amount removed." },
+  { q: "4. OCR-based text-token protection",
+    why: "If BTP accidentally removes text, protecting the text tokens should restore performance.",
+    what: "OCR gives the text locations in the image. We forced the visual tokens at those locations to survive pruning, a best-case test.",
+    res: "19.7% with OCR-based protection, 19.7% without.",
+    so: "Even explicitly protecting the text tokens does not recover performance." }
 ];
-stages.forEach((st, k) => {
-  const x = 0.7 + k * 4.2;
-  card(s, x, 1.8, 3.5, 2.3, k === 2 ? ROSE : TINT, k === 2 ? CRIMS : LINE);
-  tokens(s, x + 0.3, 2.2, 8, st[1], 0.3);
-  T(s, st[0], { x: x + 0.3, y: 2.75, w: 3.0, h: 0.45, fontFace: HEAD, fontSize: 17, bold: true, color: st[2] });
-  T(s, ["All visual tokens", "Only 12.5% remain", "All of them removed"][k], { x: x + 0.3, y: 3.25, w: 3.0, h: 0.6, fontSize: 15 });
-  if (k < 2) arrow(s, x + 3.55, 2.75, 0.6);
+exps.forEach((e, k) => {
+  const x = 0.6 + (k % 2) * 6.15, y = 1.55 + Math.floor(k / 2) * 2.5;
+  box(s, x, y, 5.95, 2.38, false);
+  T(s, e.q, { x: x + 0.2, y: y + 0.1, w: 5.55, h: 0.35, fontFace: HEAD, fontSize: 14.5, bold: true, color: NAVY });
+  lines(s, [L("Why:", e.why), L("What:", e.what), L("Result:", e.res), L("So what:", e.so, ACC)],
+    { x: x + 0.2, y: y + 0.5, w: 5.55, h: 1.82, fontSize: 11.5 });
 });
-card(s, 0.7, 4.5, 11.9, 1.9, TINT);
-T(s, "Pruning keeps 12.5% of the visual tokens. Then, at a later layer, the released code deletes all of them.", { x: 1.0, y: 4.7, w: 11.3, h: 0.6, fontSize: 17, bold: true });
-T(s, "For Qwen, the paper describes keeping 12.5% at this last stage. The released implementation removes everything instead. This is a difference between the description and the code we tested; it says nothing about why it is there.", { x: 1.0, y: 5.3, w: 11.3, h: 1.0, fontSize: 15, color: MUTE });
-s.addNotes("Plain version: some tokens are removed by pruning, then all the rest are removed. The model finishes answering without any view of the image.");
+T(s, "None of the four explanations can account for the collapse.", { x: 0.6, y: 6.6, w: 12.1, h: 0.4, fontSize: 15, bold: true, color: ACC });
 
-// ================================================================ 8 intervention
+// ============================================================ 5 CONTROL
 s = p.addSlide();
-head(s, "Does that deletion actually cause the collapse?", "6. the intervention");
-experiment(s,
-  "We kept BTP's 12.5% pruning exactly as it is, and switched off only the final step that deletes the remaining tokens.",
-  (s, b) => {
-    s.addChart(p.charts.BAR, [{ name: "TextVQA", labels: ["No pruning", "BTP as released", "Deletion switched off"], values: [85.65, 17.25, 78.60] }],
-      { x: b.x, y: b.y, w: b.w, h: b.h, barDir: "col", chartColors: [NAVY], showValue: true, dataLabelPosition: "outEnd",
-        dataLabelFormatCode: "0.00\"%\"", dataLabelFontSize: 14, showLegend: false, valAxisMinVal: 0, valAxisMaxVal: 100,
-        valAxisLabelFontSize: 11, catAxisLabelFontSize: 14, valGridLine: { color: "E5E5E5", size: 0.5 }, catGridLine: { style: "none" } });
-  },
-  "Switching off that one step brings TextVQA from 17% back to 79%.\n\nThe collapse on Qwen is mainly caused by removing all remaining tokens, not by the earlier pruning.");
-s.addNotes("Only one thing changed between the middle and right bars. Pruning is still there in both.");
+H(s, "Control Experiment: 100% Token Retention", "Is the pruning itself responsible for the collapse?");
+box(s, 0.6, 1.55, 12.1, 2.15, false);
+T(s, "What does “BTP + 100% retention” mean?", { x: 0.8, y: 1.65, w: 11.7, h: 0.35, fontFace: HEAD, fontSize: 15, bold: true, color: NAVY });
+T(s, "We keep the BTP procedure active, but every pruning stage is set to retain 100% of the visual tokens. BTP runs, but nothing is removed by pruning.", { x: 0.8, y: 2.02, w: 11.7, h: 0.45, fontSize: 13.5 });
+T(s, "Normal BTP", { x: 0.8, y: 2.6, w: 2.2, h: 0.4, fontSize: 13, bold: true, valign: "middle" });
+pipeline(s, 3.0, 2.55, [{ t: "100% tokens", tok: i => true }, { t: "Pruning stage", tok: i => i % 2 === 0 }, { t: "Fewer tokens", tok: i => i === 0 }], 1.75, 0.5);
+T(s, "100% retention", { x: 0.8, y: 3.1, w: 2.2, h: 0.4, fontSize: 13, bold: true, valign: "middle", color: ACC });
+pipeline(s, 3.0, 3.05, [{ t: "100% tokens", tok: i => true }, { t: "Pruning stage", tok: i => true }, { t: "100% remain", tok: i => true }], 1.75, 0.5);
+lines(s, [L("Why:", "if pruning causes the collapse, removing the pruning should restore the original performance.")], { x: 0.6, y: 3.9, w: 12.1, h: 0.4, fontSize: 14 });
+table(s, [["Condition", "TextVQA"], ["Baseline", "87.6%"], ["BTP + 100% retention", { text: "17.8%", options: { bold: true, color: ACC } }]],
+  { x: 0.6, y: 4.35, w: 5.6, colW: [3.6, 2.0], fontSize: 15, rowH: 0.55 });
+box(s, 6.55, 4.35, 6.15, 2.3, true);
+T(s, "So what", { x: 6.75, y: 4.45, w: 5.8, h: 0.35, fontFace: HEAD, fontSize: 15, bold: true, color: ACC });
+T(s, "The model still collapses even when no visual tokens are removed by pruning.\n\nThe major loss must be happening after the pruning stages.", { x: 6.75, y: 4.85, w: 5.8, h: 1.7, fontSize: 14 });
 
-// ================================================================ 9 is the layer special
+// ============================================================ 6 IMPLEMENTATION
 s = p.addSlide();
-head(s, "Is that layer special, or just too early?", "7. moving the deletion point");
-label(s, "What we tested", 0.7, 1.6, NAVY);
-T(s, "We moved the point of complete deletion through the model, from early layers to late ones, and measured TextVQA each time. On two models.", { x: 0.7, y: 1.92, w: 11.9, h: 0.7, fontSize: 16 });
-label(s, "What we got", 0.7, 2.75, TEAL);
-s.addImage(Object.assign({ x: 0.7, y: 3.05, w: 7.6, h: 3.1 }, img("fig7_depth_sweep.png")));
-card(s, 8.55, 2.75, 4.05, 3.95, ROSE, CRIMS);
-label(s, "What it tells us", 8.8, 2.95, CRIMS);
-T(s, "Delete too early and reading collapses. Delete late enough and it barely hurts.\n\nThe change is sudden, not gradual. There is a threshold.\n\nBoth models show the same pattern, at different depths.", { x: 8.8, y: 3.35, w: 3.6, h: 3.3, fontSize: 15, valign: "top" });
-s.addNotes("Left panel: by number of layers. Right panel: the same, as a share of the model. Qwen and InternVL are very different models, yet the curve has the same shape.");
+H(s, "Implementation Finding", "What happens to the visual tokens after the pruning stages?");
+pipeline(s, 0.6, 1.55, [
+  { t: "Image", tok: i => true }, { t: "All visual tokens", tok: i => true }, { t: "BTP pruning: 12.5% remain", tok: i => i === 0 },
+  { t: "Complete deletion", tok: i => false, accent: true }, { t: "0 visual tokens", accent: true }], 2.14, 0.85);
+lines(s, [L("What we changed:", "kept the 12.5% pruning exactly the same, and switched off only the complete-deletion step.")], { x: 0.6, y: 2.6, w: 12.1, h: 0.4, fontSize: 14 });
+table(s, [["Condition", "TextVQA"], ["No pruning", "85.65%"], ["BTP as released", { text: "17.25%", options: { bold: true, color: ACC } }], ["Complete deletion switched off", { text: "78.60%", options: { bold: true, color: NAVY } }]],
+  { x: 0.6, y: 3.15, w: 5.6, colW: [3.6, 2.0], fontSize: 14, rowH: 0.5 });
+box(s, 6.55, 3.15, 6.15, 1.55, false);
+T(s, "Intuition", { x: 6.75, y: 3.25, w: 5.8, h: 0.35, fontFace: HEAD, fontSize: 15, bold: true, color: NAVY });
+T(s, "If pruning were responsible, switching off deletion would leave the score low. Instead it rises from 17.25% to 78.60%, with the pruning still in place.", { x: 6.75, y: 3.62, w: 5.8, h: 1.0, fontSize: 13 });
+box(s, 6.55, 4.85, 6.15, 1.2, true);
+T(s, "Conclusion", { x: 6.75, y: 4.93, w: 5.8, h: 0.35, fontFace: HEAD, fontSize: 15, bold: true, color: ACC });
+T(s, "Most of the TextVQA collapse comes from completely removing the remaining tokens, not from the earlier pruning.", { x: 6.75, y: 5.3, w: 5.8, h: 0.7, fontSize: 13 });
+T(s, "Note: the paper specifies retaining 12.5% of visual tokens for Qwen at the final stage, while the implementation tested here removes the remaining tokens.", { x: 0.6, y: 6.35, w: 12.1, h: 0.6, fontSize: 12.5, italic: true, color: MUTE });
 
-// ================================================================ 10 threshold and depth
+// ============================================================ 7 THRESHOLD
 s = p.addSlide();
-head(s, "Threshold and depth, in plain terms", "8. what these numbers mean");
-card(s, 0.7, 1.7, 5.85, 2.3, TINT);
-T(s, "Threshold", { x: 1.0, y: 1.9, w: 5.3, h: 0.45, fontFace: HEAD, fontSize: 20, bold: true, color: NAVY });
-T(s, "How many layers the model needs to see the image for, to keep at least half of its original TextVQA score.", { x: 1.0, y: 2.4, w: 5.3, h: 1.4, fontSize: 15 });
-card(s, 6.75, 1.7, 5.85, 2.3, TINT);
-T(s, "Depth %", { x: 7.05, y: 1.9, w: 5.3, h: 0.45, fontFace: HEAD, fontSize: 20, bold: true, color: NAVY });
-T(s, "The same threshold as a share of the model. How far through the model the image needs to stay visible.", { x: 7.05, y: 2.4, w: 5.3, h: 1.4, fontSize: 15 });
+H(s, "Visual Token Access Threshold", "Complete deletion at one layer causes a large drop. Does the exact layer matter?");
+lines(s, [L("What:", "we moved the complete-deletion point from early layers to later ones, and measured TextVQA at each point.")], { x: 0.6, y: 1.5, w: 12.1, h: 0.4, fontSize: 14 });
+s.addImage(Object.assign({ x: 0.6, y: 1.95, w: 7.9, h: 3.95 }, img("fig9_threshold_single.png")));
+box(s, 8.75, 1.95, 3.95, 1.55, false);
+T(s, "Threshold", { x: 8.95, y: 2.05, w: 3.6, h: 0.35, fontFace: HEAD, fontSize: 15, bold: true, color: NAVY });
+T(s, "The point where the model still keeps at least 50% of its original TextVQA performance.", { x: 8.95, y: 2.43, w: 3.6, h: 1.0, fontSize: 13 });
+box(s, 8.75, 3.62, 3.95, 1.25, false);
+T(s, [{ text: "Qwen2.5-VL-7B", options: { bold: true, color: NAVY, breakLine: true } }, { text: "≈ 22.5 of 28 layers  →  ≈ 80%", options: { breakLine: true } },
+      { text: "InternVL2-2B", options: { bold: true, color: ACC, breakLine: true } }, { text: "≈ 18 of 24 layers  →  ≈ 75%" }],
+  { x: 8.95, y: 3.72, w: 3.6, h: 1.1, fontSize: 13 });
+T(s, "Relative threshold position: the threshold as a share of the model's layers.", { x: 8.75, y: 4.95, w: 3.95, h: 0.6, fontSize: 11, italic: true, color: MUTE });
+box(s, 0.6, 6.05, 12.1, 1.0, true);
+T(s, [{ text: "Remove visual information too early → reading collapses.   Keep it available longer → performance recovers sharply.", options: { bold: true, breakLine: true } },
+      { text: "Measured on TextVQA, so these are task-specific measurements, not a universal law.", options: { italic: true, color: ACC } }],
+  { x: 0.8, y: 6.13, w: 11.7, h: 0.85, fontSize: 13.5 });
 
-function big(x, model, calc, pct, colour) {
-  card(s, x, 4.25, 5.85, 1.75, WHITE, colour);
-  T(s, model, { x: x + 0.3, y: 4.4, w: 5.3, h: 0.4, fontFace: HEAD, fontSize: 17, bold: true, color: colour });
-  T(s, calc, { x: x + 0.3, y: 4.85, w: 3.4, h: 0.9, fontSize: 15 });
-  T(s, pct, { x: x + 3.5, y: 4.55, w: 2.1, h: 1.1, fontFace: HEAD, fontSize: 34, bold: true, color: colour, align: "right" });
-}
-big(0.7, "Qwen2.5-VL", "22.5 of 28 layers\n22.5 / 28 × 100", "80.3%", NAVY);
-big(6.75, "InternVL2", "18.0 of 24 layers\n(17.95 before rounding)", "74.8%", TEAL);
-T(s, "Measured on TextVQA, so these are TextVQA-specific. BTP's Qwen setting keeps the image for 22 layers, just short of 22.5.", { x: 0.7, y: 6.3, w: 11.9, h: 0.6, fontSize: 15, italic: true, color: CRIMS });
-s.addNotes("Say it as: Qwen needs to see the image through roughly 80% of its layers. BTP's setting stops half a layer short, which is why it lands on the wrong side of the cliff.");
-
-// ================================================================ 11 two costs defined
+// ============================================================ 8 COSTS
 s = p.addSlide();
-head(s, "Two separate costs, worked through on TextVQA", "9. what actually causes the loss?");
-T(s, "Corrected BTP = BTP with only the final deletion switched off. It still prunes to 12.5%.", { x: 0.7, y: 1.6, w: 11.9, h: 0.45, fontSize: 15, italic: true, color: MUTE });
-// staircase of three bars
-const base = 5.95, scale = 0.036;
-const bars = [["Baseline", 86.2, NAVY], ["Corrected BTP", 80.5, TEAL], ["BTP as released", 23.3, CRIMS]];
-bars.forEach((b, k) => {
-  const h = b[1] * scale, x = 0.9 + k * 2.3;
-  s.addShape(p.ShapeType.rect, { x, y: base - h, w: 1.5, h, fill: { color: b[2] }, line: { color: b[2] } });
-  T(s, b[1].toFixed(1) + "%", { x, y: base - h - 0.4, w: 1.5, h: 0.35, fontSize: 15, bold: true, align: "center" });
-  T(s, b[0], { x: x - 0.2, y: base + 0.1, w: 1.9, h: 0.5, fontSize: 13, align: "center" });
+H(s, "Pruning and Deletion Costs", "Which part of the loss comes from pruning, and which from complete deletion?");
+box(s, 0.6, 1.55, 5.2, 0.9, false);
+T(s, [{ text: "Corrected BTP", options: { bold: true, color: NAVY } }, { text: " = normal BTP pruning to 12.5%, but without the complete-deletion step." }], { x: 0.8, y: 1.63, w: 4.8, h: 0.75, fontSize: 12.5 });
+const defs = [["Pruning cost", "Baseline → Corrected BTP", "the cost of removing some visual tokens"],
+              ["Deletion cost", "Corrected BTP → Released BTP", "the additional cost of removing all remaining tokens"],
+              ["Dominant effect", "", "whichever causes the larger share of the total drop"]];
+defs.forEach((d, k) => {
+  const y = 2.6 + k * 1.05;
+  box(s, 0.6, y, 5.2, 0.92, k === 1);
+  T(s, d[0], { x: 0.8, y: y + 0.08, w: 2.0, h: 0.3, fontSize: 14, bold: true, color: k === 1 ? ACC : NAVY });
+  if (d[1]) T(s, d[1], { x: 2.75, y: y + 0.08, w: 2.95, h: 0.3, fontSize: 12.5, bold: true });
+  T(s, "This tells us " + d[2] + ".", { x: 0.8, y: y + 0.45, w: 4.8, h: 0.42, fontSize: 12 });
 });
-card(s, 7.8, 2.2, 4.8, 1.75, TINT);
-T(s, "Pruning cost", { x: 8.05, y: 2.35, w: 4.3, h: 0.4, fontFace: HEAD, fontSize: 18, bold: true, color: TEAL });
-T(s, "baseline − corrected BTP\n86.2 − 80.5 = 5.7 points", { x: 8.05, y: 2.8, w: 4.3, h: 1.0, fontSize: 15 });
-card(s, 7.8, 4.15, 4.8, 1.75, ROSE, CRIMS);
-T(s, "Deletion cost", { x: 8.05, y: 4.3, w: 4.3, h: 0.4, fontFace: HEAD, fontSize: 18, bold: true, color: CRIMS });
-T(s, "corrected BTP − released BTP\n80.5 − 23.3 = 57.2 points", { x: 8.05, y: 4.75, w: 4.3, h: 1.0, fontSize: 15 });
-T(s, "On TextVQA, almost all of the loss comes from deletion.", { x: 0.7, y: 6.55, w: 11.9, h: 0.45, fontSize: 16, bold: true, color: NAVY });
-s.addNotes("Pruning cost: what we lose by removing some tokens. Deletion cost: the extra we lose by then removing all of them.");
-
-// ================================================================ 12 across tasks
-s = p.addSlide();
-head(s, "Which cost dominates depends on the task", "10. does this hold across tasks?");
+const B = t => ({ text: t, options: { bold: true } });
 table(s, [
   ["Task", "Pruning cost", "Deletion cost", "Dominant"],
-  ["TextVQA", "5.7", "57.2", "deletion"],
-  ["DocVQA", "17.9", "57.6", "deletion"],
-  [{ text: "ChartQA", options: { bold: true, fill: ROSE } }, { text: "31.4", options: { bold: true, color: CRIMS, fill: ROSE } },
-   { text: "16.4", options: { fill: ROSE } }, { text: "pruning", options: { bold: true, color: CRIMS, fill: ROSE } }],
-  ["AI2D", "7.2", "0.4", "pruning"],
-  ["GQA", "2.1", "2.9", "both small"],
-  ["POPE", "1.3", "0.1", "both small"],
-  ["MMBench", "4.7", "0.3", "both small"]
-], { x: 0.7, y: 1.7, w: 7.5, colW: [2.1, 1.8, 1.8, 1.8], rowH: 0.52 });
-card(s, 8.55, 1.7, 4.05, 4.2, ROSE, CRIMS);
-label(s, "What it tells us", 8.8, 1.9, CRIMS);
-T(s, "Dominant = whichever caused the bigger share of the drop.\n\nOn TextVQA and DocVQA, deletion does most of the damage.\n\nOn ChartQA, pruning itself costs twice as much as deletion.", { x: 8.8, y: 2.3, w: 3.6, h: 3.5, fontSize: 15, valign: "top" });
-T(s, "So the finding is not simply \"deletion is bad\". The main source of loss depends on the task.", { x: 0.7, y: 6.3, w: 11.9, h: 0.5, fontSize: 16, bold: true, color: NAVY });
-s.addNotes("Points lost on each benchmark, Qwen2.5-VL. Charts need fine visual detail, so removing tokens hurts even before deletion.");
+  ["TextVQA", "5.7", B("57.2"), B("Deletion")], ["DocVQA", "17.9", B("57.6"), B("Deletion")],
+  ["ChartQA", B("31.4"), "16.4", B("Pruning")], ["AI2D", B("7.2"), "0.4", B("Pruning")],
+  ["GQA", "2.1", "2.9", "Both small"], ["POPE", "1.3", "0.1", "Both small"], ["MMBench", "4.7", "0.3", "Both small"]
+], { x: 6.1, y: 1.55, w: 6.6, colW: [1.7, 1.6, 1.6, 1.7], rowH: 0.5, fontSize: 13.5 });
+T(s, "Points of performance lost, Qwen2.5-VL-7B.", { x: 6.1, y: 5.62, w: 6.6, h: 0.3, fontSize: 11, italic: true, color: MUTE });
+box(s, 0.6, 5.95, 12.1, 1.1, true);
+T(s, [{ text: "There is no single dominant effect for every task.", options: { bold: true, color: ACC, breakLine: true } },
+      { text: "TextVQA and DocVQA: deletion dominates.   ChartQA: pruning dominates.   General tasks: both effects relatively small." }],
+  { x: 0.8, y: 6.05, w: 11.7, h: 0.9, fontSize: 13.5 });
 
-// ================================================================ 13 why paper missed it
-s = p.addSlide(); s.background = { color: NAVY };
-T(s, "11. WHY THE PAPER DID NOT SHOW THIS", { x: 0.7, y: 0.4, w: 11.9, h: 0.3, fontSize: 11, bold: true, color: ICE, charSpacing: 2 });
-T(s, "Its benchmarks cannot see the reading loss", { x: 0.7, y: 0.72, w: 11.9, h: 0.75, fontFace: HEAD, fontSize: 28, bold: true, color: WHITE });
-s.addTable([
-  [{ text: "Share of baseline kept", options: { bold: true, color: NAVY, fill: ICE } },
-   { text: "Paper's benchmarks", options: { bold: true, color: NAVY, fill: ICE } },
-   { text: "Reading tasks", options: { bold: true, color: NAVY, fill: ICE } }],
-  [{ text: "Qwen, BTP as released", options: { color: WHITE, fill: "2A3A7A" } }, { text: "96.1%", options: { color: WHITE, fill: "2A3A7A", bold: true } }, { text: "28.4%", options: { color: "FF9B9B", fill: "2A3A7A", bold: true } }],
-  [{ text: "Qwen, deletion switched off", options: { color: WHITE, fill: "2A3A7A" } }, { text: "96.9%", options: { color: WHITE, fill: "2A3A7A", bold: true } }, { text: "77.9%", options: { color: "9FE8C8", fill: "2A3A7A", bold: true } }],
-  [{ text: "InternVL, pruning only", options: { color: WHITE, fill: "2A3A7A" } }, { text: "94.9%", options: { color: WHITE, fill: "2A3A7A", bold: true } }, { text: "56.5%", options: { color: "FFC48C", fill: "2A3A7A", bold: true } }]
-], { x: 0.7, y: 1.8, w: 7.6, colW: [3.2, 2.2, 2.2], fontFace: BODY, fontSize: 15, border: { pt: 1, color: "4A5A9A" }, align: "center", valign: "middle", rowH: 0.6 });
-T(s, "On the paper's benchmarks, every row looks healthy.\n\nOn reading, the same configurations lose between a quarter and three quarters of their ability.\n\nInternVL has no deletion step at all, and the gap is still there.", { x: 8.65, y: 1.8, w: 4.0, h: 3.6, fontSize: 15, color: WHITE, valign: "top" });
-T(s, "A benchmark set with no reading task cannot tell a model that reads from one that does not.", { x: 0.7, y: 4.9, w: 11.9, h: 0.8, fontFace: HEAD, fontSize: 21, italic: true, color: ICE });
-s.addNotes("This is the finding that does not depend on the Qwen code at all. The InternVL row has no deletion step.");
-
-// ================================================================ 14 takeaway
+// ============================================================ 9 EVALUATION
 s = p.addSlide();
-head(s, "Three separate findings", "12. final takeaway");
-[
-  ["Implementation", "In the Qwen configuration we tested, removing all remaining visual tokens causes most of the reading collapse.", NAVY],
-  ["Model", "Each model needs to see the image up to a measurable depth: about 80% of Qwen, 75% of InternVL, on TextVQA.", TEAL],
-  ["Evaluation", "Standard benchmarks can hide large losses on reading tasks, with or without the deletion step.", CRIMS]
+H(s, "Evaluation Results", "Why did the standard evaluation not clearly reveal this problem?");
+table(s, [
+  ["Configuration", "Standard benchmarks", "Reading tasks"],
+  ["Qwen, BTP as released", "96.1%", { text: "28.4%", options: { bold: true, color: ACC } }],
+  ["Qwen, deletion switched off", "96.9%", { text: "77.9%", options: { bold: true } }],
+  ["InternVL, pruning only", "94.9%", { text: "56.5%", options: { bold: true, color: ACC } }]
+], { x: 0.6, y: 1.6, w: 7.2, colW: [3.2, 2.0, 2.0], fontSize: 15, rowH: 0.6 });
+T(s, "Share of each model's original performance retained.", { x: 0.6, y: 4.08, w: 7.2, h: 0.3, fontSize: 11.5, italic: true, color: MUTE });
+box(s, 8.1, 1.6, 4.6, 2.65, false);
+T(s, [{ text: "Standard benchmarks", options: { bold: true, color: NAVY, breakLine: true } },
+      { text: "Around 95–97% retained, so pruning appears largely successful.", options: { breakLine: true } },
+      { text: " ", options: { breakLine: true, fontSize: 6 } },
+      { text: "Reading tasks", options: { bold: true, color: ACC, breakLine: true } },
+      { text: "Large losses become visible." }],
+  { x: 8.3, y: 1.72, w: 4.25, h: 2.4, fontSize: 13.5 });
+box(s, 0.6, 4.55, 12.1, 0.95, false);
+T(s, [{ text: "Important comparison: ", options: { bold: true, color: NAVY } },
+      { text: "InternVL does not have the complete-deletion issue, yet its reading performance still drops substantially. The blind spot is not only caused by the Qwen implementation." }],
+  { x: 0.8, y: 4.65, w: 11.7, h: 0.8, fontSize: 14 });
+box(s, 0.6, 5.7, 12.1, 1.0, true);
+T(s, "A benchmark suite without a suitable text-reading task can miss substantial degradation in visual reading ability.", { x: 0.8, y: 5.7, w: 11.7, h: 1.0, fontSize: 16, bold: true, color: ACC, valign: "middle" });
+
+// ============================================================ 10 CONCLUSION
+s = p.addSlide();
+H(s, "Conclusion and Next Steps");
+[["Finding 1: Implementation", "In the Qwen configuration tested, complete removal of the remaining visual tokens causes most of the TextVQA collapse."],
+ ["Finding 2: Model behaviour", "The model needs visual information to remain accessible up to a measurable point in the network. TextVQA threshold: Qwen ≈ 80%, InternVL ≈ 75%."],
+ ["Finding 3: Evaluation", "Standard benchmarks can show healthy overall performance while visual text-reading ability has degraded substantially."]
 ].forEach((r, k) => {
-  const y = 1.75 + k * 1.6;
-  card(s, 0.7, y, 11.9, 1.4, TINT);
-  s.addShape(p.ShapeType.ellipse, { x: 1.0, y: y + 0.35, w: 0.7, h: 0.7, fill: { color: r[2] }, line: { color: r[2] } });
-  T(s, String(k + 1), { x: 1.0, y: y + 0.35, w: 0.7, h: 0.7, fontFace: HEAD, fontSize: 22, bold: true, color: WHITE, align: "center", valign: "middle" });
-  T(s, r[0], { x: 2.0, y: y + 0.2, w: 2.6, h: 1.0, fontFace: HEAD, fontSize: 20, bold: true, color: r[2], valign: "middle" });
-  T(s, r[1], { x: 4.6, y: y + 0.2, w: 7.7, h: 1.0, fontSize: 16, valign: "middle" });
+  const y = 1.3 + k * 1.3;
+  box(s, 0.6, y, 12.1, 1.15, k === 2);
+  T(s, r[0], { x: 0.8, y: y + 0.1, w: 11.7, h: 0.35, fontFace: HEAD, fontSize: 16, bold: true, color: k === 2 ? ACC : NAVY });
+  T(s, r[1], { x: 0.8, y: y + 0.5, w: 11.7, h: 0.6, fontSize: 14 });
 });
-T(s, "These stand separately. The third holds even if the first did not.", { x: 0.7, y: 6.6, w: 11.9, h: 0.45, fontSize: 15, italic: true, color: MUTE });
-s.addNotes("Keep them apart when discussing. The evaluation finding is the one most useful beyond this paper.");
+T(s, "Next steps", { x: 0.6, y: 5.35, w: 12.1, h: 0.4, fontFace: HEAD, fontSize: 16, bold: true, color: NAVY });
+T(s, [{ text: "1.  Measure the threshold on DocVQA and ChartQA", options: { breakLine: true } },
+      { text: "2.  Repeat on a third architecture", options: { breakLine: true } },
+      { text: "3.  Consolidate the results into the manuscript" }],
+  { x: 0.6, y: 5.8, w: 12.1, h: 1.1, fontSize: 14, paraSpaceAfter: 4 });
 
-// ================================================================ 15 limits and next
-s = p.addSlide();
-head(s, "Limits, and what comes next", "scope");
-card(s, 0.7, 1.7, 5.85, 2.85, TINT);
-T(s, "What we would not claim", { x: 1.0, y: 1.9, w: 5.3, h: 0.45, fontFace: HEAD, fontSize: 18, bold: true, color: CRIMS });
-s.addText([
-  "Two models only. The shared pattern is worth testing further, not a rule",
-  "Thresholds come from TextVQA. Other tasks may differ",
-  "The InternVL pruning is our own, simplified version",
-  "Results use 500-question subsets per task"
-].map((t, i, a) => ({ text: t, options: { bullet: true, breakLine: i < a.length - 1 } })),
-  { x: 1.0, y: 2.45, w: 5.3, h: 3.3, isTextBox: true, fontFace: BODY, fontSize: 15, color: INK, paraSpaceAfter: 10, valign: "top" });
-card(s, 6.75, 1.7, 5.85, 2.85, MINT, TEAL);
-T(s, "Next", { x: 7.05, y: 1.9, w: 5.3, h: 0.45, fontFace: HEAD, fontSize: 18, bold: true, color: TEAL });
-s.addText([
-  "Measure the threshold on ChartQA and DocVQA, ChartQA first",
-  "Repeat on a third model",
-  "Prepare the manuscript"
-].map((t, i, a) => ({ text: t, options: { bullet: true, breakLine: i < a.length - 1 } })),
-  { x: 7.05, y: 2.45, w: 5.3, h: 3.3, isTextBox: true, fontFace: BODY, fontSize: 15, color: INK, paraSpaceAfter: 10, valign: "top" });
-s.addNotes("ChartQA first because it is the task where pruning, not deletion, is the bigger cost.");
-
-p.writeFile({ fileName: "/sessions/modest-epic-cerf/work/deck/BTP_Phase3_Deck.pptx" }).then(f => console.log("WROTE", f));
+p.writeFile({ fileName: "BTP_Phase3_Deck.pptx" }).then(f => console.log("WROTE", f));

@@ -28,6 +28,12 @@ Beyond Local Optimization"** (NeurIPS 2025, [arXiv:2505.22038](https://arxiv.org
   the code still retains 96.1% of baseline across five of its six benchmarks. InternVL2-2B,
   with no discrepancy at all, still loses half its reading ability while the same suite
   reports 95%.
+- **How long a model needs the image depends mainly on the answer format.** Across 8 tasks
+  and 3 models the order of tasks by access depth is reproducible (Spearman 0.90 to 0.96),
+  and open-ended questions need the image far longer than multiple-choice ones. Turning
+  TextVQA into multiple choice moves its depth from layer 23 to 8 on Qwen; asking MMBench
+  without options moves it from 10 to 20. A schedule that reads the format from the prompt
+  saves 17.5 to 23% of visual layers at 98% accuracy, where a single cut saves under 8%.
 
 ---
 
@@ -35,16 +41,13 @@ Beyond Local Optimization"** (NeurIPS 2025, [arXiv:2505.22038](https://arxiv.org
 
 | Path | Contents |
 |---|---|
-| [`BTP-Reproduction/RESULTS.md`](BTP-Reproduction/RESULTS.md) | Every result, all three phases, with conclusions and withdrawn claims |
-| `BTP-Reproduction/scripts/` | Phase 1 SLURM job scripts |
-| `BTP-Reproduction/results/` | Phase 1 aggregate scores from lmms-eval |
-| `BTP-Reproduction/logs/` | Phase 1 job logs |
-| `BTP-Reproduction/text-failure-study/` | Phase 2: report, deck, figures, scripts, results |
+| [`BTP-Reproduction/RESULTS.md`](BTP-Reproduction/RESULTS.md) | Every result, all four phases, with conclusions and withdrawn claims |
+| `BTP-Reproduction/phase1-reproduction/` | Phase 1: SLURM scripts, lmms-eval scores, deck and workbook |
+| `BTP-Reproduction/phase2-text-failure/` | Phase 2: report, deck, figures, scripts, results |
 | `BTP-Reproduction/phase3-mechanism/` | Phase 3: the cause, the threshold, the tool |
 | `BTP-Reproduction/phase3-mechanism/RESULTS_LOG.md` | Run-by-run record, VERIFIED and HYPOTHESIS marked separately |
-| `BTP-Reproduction/phase3-mechanism/report/` | Phase 3 report, docx and pdf, plus the scripts that build it |
-| `BTP-Reproduction/BTP_Reproduction_Deck.pptx` | Phase 1 slides |
-| `BTP-Reproduction/BTP_Reproduction_Results.xlsx` | Phase 1 workbook |
+| `BTP-Reproduction/phase3-mechanism/report/` | Phase 3 report and deck, docx/pptx and pdf, plus build scripts |
+| [`BTP-Reproduction/phase4-access-horizon/`](BTP-Reproduction/phase4-access-horizon/README.md) | Phase 4: access horizons across tasks and models, format controls, schedule |
 
 ---
 
@@ -117,7 +120,8 @@ grep -c "def div_prune" $MODFILE                     # 1 means BTP is live, 0 me
 - Phase 1 reproduction: **done**
 - Phase 2 failure-mode study: **done**
 - Phase 3 cause, threshold and tooling: **done**
-- Open: thresholds on DocVQA and ChartQA, a third architecture, manuscript
+- Phase 4 access horizons and format controls: **done**; format-aware BTP on GPU in progress
+- Open: per-question format detection inside the model, manuscript
 
 **Not reproducible:** LLaVA-1.6. The authors never released the LLaVA-Next patch.
 

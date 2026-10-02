@@ -1,8 +1,8 @@
 # Results
 
-Every number in this file comes from a logged run. Raw aggregate scores are under
-`results/` and `text-failure-study/results/`; the full run-by-run record with methodology
-is `phase3-mechanism/RESULTS_LOG.md`.
+Every number in this file comes from a logged run. Raw scores are under each phase folder:
+`phase1-reproduction/results/`, `phase2-text-failure/results/`, `phase4-access-horizon/results/`.
+The run-by-run record for Phase 3, with methodology, is `phase3-mechanism/RESULTS_LOG.md`.
 
 Subject paper: Balanced Token Pruning, NeurIPS 2025, arXiv:2505.22038.
 Code examined: `NeurIPS2025-Balanced-Token-Pruning` at commit `9682db0`.
@@ -201,9 +201,29 @@ Reading tasks average 56.5%. GQA, POPE and MMBench average 94.9%. In points lost
 Deleting all tokens at layer 20 of InternVL costs nothing (0.7234 against a 0.7156
 baseline), because layer 20 falls above its threshold.
 
+## Phase 4: visual access horizons
+
+Full write-up: [`phase4-access-horizon/README.md`](phase4-access-horizon/README.md).
+All visual tokens deleted before layer l, for every l, on 8 tasks and 3 models
+(Qwen2.5-VL-7B, Qwen2.5-VL-3B, InternVL2-2B). Horizon = first layer after which the model
+keeps half of what the image adds over the no-image floor.
+
+- **Task order is reproducible across models and families.** MMBench earliest (36-39% of
+  depth), POPE, ScienceQA and AI2D near the middle, GQA later, ChartQA, DocVQA and TextVQA
+  last (75-89%). Spearman rho 0.895 within Qwen, 0.962 and 0.932 across families, all p < 0.01.
+- **The order is driven mainly by answer format.** The same TextVQA questions as multiple
+  choice move from layer 23 to 8 on Qwen 7B (19 to 9 on InternVL), and to 10 and 11 with
+  distractors taken from the same image. MMBench and AI2D asked without options move late:
+  10 to 20 and 15 to 23 on Qwen 7B, 9 to 17 and 14 to 19 on InternVL. All paired intervals
+  exclude zero.
+- **A format-aware schedule saves what a single cut cannot.** Offline and exact, at a 98%
+  per-task rule: 17.5-23.0% of visual layers saved against 0.2-7.9% for one cut, worst task
+  at 97.9-98.5%. The released BTP deletion saves 21.4% on Qwen 7B but keeps 22% of the worst
+  task. Cuts transfer unchanged to held-out format variants.
+
 ---
 
-## Conclusions
+## Conclusions (Phases 1-3)
 
 **Implementation.** The released BTP code deletes all remaining image tokens just below the
 measured threshold for Qwen2.5-VL, while the paper's appendix asks for retention on that

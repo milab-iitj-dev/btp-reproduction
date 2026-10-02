@@ -1,0 +1,2102 @@
+{
+ "gqa_202218649": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What is hanging above the chalkboard?",
+  "answer": "picture"
+ },
+ "gqa_20866249": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "chooseAttr",
+  "question": "Is the freezer near the wall small or large?",
+  "answer": "large"
+ },
+ "gqa_201974972": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "categoryThat",
+  "question": "Which kind of clothing is pink?",
+  "answer": "tank top"
+ },
+ "gqa_202023424": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "categoryThat",
+  "question": "How is the item of furniture that is plaid called?",
+  "answer": "bed"
+ },
+ "gqa_202244009": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What is inside the bowl to the right of the beans?",
+  "answer": "cookies"
+ },
+ "gqa_20631973": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "Where is the catcher standing on?",
+  "answer": "field"
+ },
+ "gqa_20287551": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "directOf",
+  "question": "What is the color of the glove?",
+  "answer": "black"
+ },
+ "gqa_20300425": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "Which kind of vehicle is waiting for the traffic light?",
+  "answer": "cars"
+ },
+ "gqa_201896034": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What is the item of furniture to the right of the lady that is looking down at the cake called?",
+  "answer": "table"
+ },
+ "gqa_20716925": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "chooseAttr",
+  "question": "Is the jacket made of cotton large or small?",
+  "answer": "small"
+ },
+ "gqa_201879167": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What is the person below the crowd bigger than?",
+  "answer": "sneakers"
+ },
+ "gqa_201887286": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What is in the basket?",
+  "answer": "broccoli"
+ },
+ "gqa_201590142": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerify",
+  "question": "Is the player to the right of the frisbee that looks white?",
+  "answer": "yes"
+ },
+ "gqa_202082102": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "Which kind of device is to the left of the lamp?",
+  "answer": "laptop"
+ },
+ "gqa_201859351": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "material",
+  "question": "What is the lid made of?",
+  "answer": "plastic"
+ },
+ "gqa_20711540": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "categoryThat",
+  "question": "Which kind of toy is soft?",
+  "answer": "stuffed bear"
+ },
+ "gqa_20866521": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "positionChoose",
+  "question": "Which side of the picture is the plastic container on, the right or the left?",
+  "answer": "right"
+ },
+ "gqa_201153290": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who is staring at the giraffe?",
+  "answer": "woman"
+ },
+ "gqa_201621812": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What is the device to the right of the couch?",
+  "answer": "speaker"
+ },
+ "gqa_20518339": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelSC",
+  "question": "Do you see any drawers under the sink?",
+  "answer": "no"
+ },
+ "gqa_202174529": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrs",
+  "question": "Is the window rectangular and white?",
+  "answer": "yes"
+ },
+ "gqa_20306592": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "positionVerifyC",
+  "question": "Is the camera on the right side of the picture?",
+  "answer": "no"
+ },
+ "gqa_201770899": {
+  "structural": "choose",
+  "semantic": "cat",
+  "detailed": "objThisChoose",
+  "question": "What is this, a cup or a bottle?",
+  "answer": "bottle"
+ },
+ "gqa_201795103": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "directOf",
+  "question": "What color is the large animal?",
+  "answer": "dark brown"
+ },
+ "gqa_201735541": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelO",
+  "question": "Which kind of furniture are the shelves sitting on top of?",
+  "answer": "desk"
+ },
+ "gqa_201935164": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttrKC",
+  "question": "Does the smooth table have brown color?",
+  "answer": "no"
+ },
+ "gqa_201037055": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrs",
+  "question": "Is the traffic sign behind the girl octagonal and red?",
+  "answer": "yes"
+ },
+ "gqa_202073305": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "categoryThat",
+  "question": "What kind of animal is beautiful?",
+  "answer": "deer"
+ },
+ "gqa_202218780": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrs",
+  "question": "Is the cooking utensil in front of the window blue and metallic?",
+  "answer": "yes"
+ },
+ "gqa_201935304": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerify",
+  "question": "Is the woman near the man standing on the bricks?",
+  "answer": "yes"
+ },
+ "gqa_201599787": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "categoryThat",
+  "question": "What kind of furniture is made of wood?",
+  "answer": "chair"
+ },
+ "gqa_20151749": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "chooseAttr",
+  "question": "Which color is the bag that is made of leather, tan or purple?",
+  "answer": "tan"
+ },
+ "gqa_20309040": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Does the knife in the knife block have black color and short length?",
+  "answer": "no"
+ },
+ "gqa_201185307": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "material",
+  "question": "What is the ground made of?",
+  "answer": "concrete"
+ },
+ "gqa_201498423": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Does the tape that is made of plastic look small and yellow?",
+  "answer": "no"
+ },
+ "gqa_201247292": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What is located on top of the side table?",
+  "answer": "plant"
+ },
+ "gqa_20790005": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "activityWho",
+  "question": "Who is riding?",
+  "answer": "people"
+ },
+ "gqa_201438619": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerify",
+  "question": "Is the batter in front of the catcher?",
+  "answer": "yes"
+ },
+ "gqa_201037195": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who is wearing the skirt?",
+  "answer": "girl"
+ },
+ "gqa_202060013": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What animal is wearing the hat?",
+  "answer": "dog"
+ },
+ "gqa_20899335": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerify",
+  "question": "Is the bottle to the left of the purse?",
+  "answer": "yes"
+ },
+ "gqa_20891232": {
+  "structural": "query",
+  "semantic": "global",
+  "detailed": "place",
+  "question": "Which place is it?",
+  "answer": "street"
+ },
+ "gqa_201346485": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttr",
+  "question": "Is the van blue?",
+  "answer": "yes"
+ },
+ "gqa_20306358": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What does the woman wear?",
+  "answer": "sweater"
+ },
+ "gqa_202012841": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who is playing at the television?",
+  "answer": "man"
+ },
+ "gqa_202012848": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelO",
+  "question": "Which kind of device is the man playing at?",
+  "answer": "television"
+ },
+ "gqa_2046539": {
+  "structural": "verify",
+  "semantic": "obj",
+  "detailed": "existAttrNot",
+  "question": "Are there women that are not young?",
+  "answer": "yes"
+ },
+ "gqa_202162658": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "directWhich",
+  "question": "Which color is the bookcase?",
+  "answer": "black"
+ },
+ "gqa_202158779": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "material",
+  "question": "What is the sidewalk made of?",
+  "answer": "concrete"
+ },
+ "gqa_20618861": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrs",
+  "question": "Is the shirt orange and short sleeved?",
+  "answer": "yes"
+ },
+ "gqa_202258139": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelS",
+  "question": "Is there any bag near the fence?",
+  "answer": "yes"
+ },
+ "gqa_202244695": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Does the bowl that is to the left of the other bowl look white and empty?",
+  "answer": "no"
+ },
+ "gqa_201663548": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "how",
+  "question": "How clean is the appliance underneath the countertop?",
+  "answer": "clean"
+ },
+ "gqa_202023469": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "Which kind of furniture is in front of the bookshelf?",
+  "answer": "bed"
+ },
+ "gqa_201412482": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "activityWho",
+  "question": "Who in the image is looking down?",
+  "answer": "skier"
+ },
+ "gqa_201765608": {
+  "structural": "choose",
+  "semantic": "global",
+  "detailed": "placeChoose",
+  "question": "Is this a farm or a beach?",
+  "answer": "beach"
+ },
+ "gqa_20652501": {
+  "structural": "logical",
+  "semantic": "obj",
+  "detailed": "existAndC",
+  "question": "Do you see both mattresses and soccer balls there?",
+  "answer": "no"
+ },
+ "gqa_20330319": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What is standing on the stage?",
+  "answer": "statue"
+ },
+ "gqa_20542959": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What animal is inside the zoo?",
+  "answer": "elephant"
+ },
+ "gqa_20262814": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelSC",
+  "question": "Are there any airplanes above the grass in this photograph?",
+  "answer": "no"
+ },
+ "gqa_201859383": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "positionQuery",
+  "question": "On which side of the picture is the white cream?",
+  "answer": "right"
+ },
+ "gqa_20149600": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What's located on top of the cabinet?",
+  "answer": "sink"
+ },
+ "gqa_202023593": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "categoryThat",
+  "question": "What piece of furniture is not covered?",
+  "answer": "bed"
+ },
+ "gqa_20157335": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What meat is to the right of the pancake?",
+  "answer": "bacon"
+ },
+ "gqa_202144469": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerifyCo",
+  "question": "Is the man that is to the left of the liquor wearing gloves?",
+  "answer": "no"
+ },
+ "gqa_201228021": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "positionChoose",
+  "question": "On which side of the photo is the dark vehicle, the left or the right?",
+  "answer": "left"
+ },
+ "gqa_201593816": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who is wearing the glasses?",
+  "answer": "girl"
+ },
+ "gqa_20953992": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "chooseAttr",
+  "question": "Is the person that is to the right of the woman walking or standing?",
+  "answer": "standing"
+ },
+ "gqa_201956943": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerify",
+  "question": "Is the clean wall behind the dark boots?",
+  "answer": "yes"
+ },
+ "gqa_201576942": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What animal is to the right of the child?",
+  "answer": "goat"
+ },
+ "gqa_201671802": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Does the window look triangular and bright?",
+  "answer": "no"
+ },
+ "gqa_201479496": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What kind of meat is above the fork?",
+  "answer": "chicken"
+ },
+ "gqa_20385576": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelS",
+  "question": "Is there any remote control next to the book?",
+  "answer": "yes"
+ },
+ "gqa_202228707": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "positionQuery",
+  "question": "On which side of the picture is the book?",
+  "answer": "right"
+ },
+ "gqa_201738889": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "activityWho",
+  "question": "Who is sitting?",
+  "answer": "spectators"
+ },
+ "gqa_201738092": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "directOf",
+  "question": "What size is the baseball bat that is made of metal?",
+  "answer": "large"
+ },
+ "gqa_201859171": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who is on the skateboard?",
+  "answer": "skateboarder"
+ },
+ "gqa_20177513": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "material",
+  "question": "What is the serving dish made of?",
+  "answer": "metal"
+ },
+ "gqa_202100609": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrs",
+  "question": "Are the boats to the left of the sailboats still and white?",
+  "answer": "yes"
+ },
+ "gqa_20178224": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelS",
+  "question": "Do you see a plate on top of the table?",
+  "answer": "yes"
+ },
+ "gqa_20836733": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Is the purse blue and large?",
+  "answer": "no"
+ },
+ "gqa_20647946": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What is the man holding?",
+  "answer": "sign"
+ },
+ "gqa_20226794": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelS",
+  "question": "Are there any tables in front of the chair below the light fixture?",
+  "answer": "yes"
+ },
+ "gqa_20149623": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "directOf",
+  "question": "What shape is the brown thing in the cabinet?",
+  "answer": "square"
+ },
+ "gqa_20891494": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "how",
+  "question": "How old is the small person?",
+  "answer": "young"
+ },
+ "gqa_202023634": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "Which kind of furniture is underneath the jacket?",
+  "answer": "chair"
+ },
+ "gqa_201497850": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "categoryThat",
+  "question": "What device is not large?",
+  "answer": "computer mouse"
+ },
+ "gqa_201528048": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who is holding the utensil near the candles?",
+  "answer": "girl"
+ },
+ "gqa_202036826": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttr",
+  "question": "Does the pepper look green?",
+  "answer": "yes"
+ },
+ "gqa_20361323": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerify",
+  "question": "Is the snowboarder wearing goggles?",
+  "answer": "yes"
+ },
+ "gqa_202121522": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What is covered by the curtains?",
+  "answer": "window"
+ },
+ "gqa_202021431": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "chooseAttr",
+  "question": "Is the cloudy sky beautiful or ugly?",
+  "answer": "ugly"
+ },
+ "gqa_20621988": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "directWhich",
+  "question": "Which color is the hair that is not long?",
+  "answer": "white"
+ },
+ "gqa_2012681": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What is the person next to the sign eating?",
+  "answer": "donut"
+ },
+ "gqa_202004255": {
+  "structural": "logical",
+  "semantic": "obj",
+  "detailed": "existOrC",
+  "question": "Are there TVs or controllers?",
+  "answer": "no"
+ },
+ "gqa_202133524": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrs",
+  "question": "Is the shirt white and short sleeved?",
+  "answer": "yes"
+ },
+ "gqa_201498370": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What kind of device is to the left of the phone?",
+  "answer": "computer mouse"
+ },
+ "gqa_201859190": {
+  "structural": "logical",
+  "semantic": "obj",
+  "detailed": "existAttrOr",
+  "question": "Do you see dark backpacks or cars?",
+  "answer": "yes"
+ },
+ "gqa_201061277": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttrThis",
+  "question": "Is that a short fence?",
+  "answer": "yes"
+ },
+ "gqa_201996982": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "activityWho",
+  "question": "Who is sitting?",
+  "answer": "pilot"
+ },
+ "gqa_20861262": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What is under the mirror in the top?",
+  "answer": "sand"
+ },
+ "gqa_201639103": {
+  "structural": "logical",
+  "semantic": "obj",
+  "detailed": "existOr",
+  "question": "Is there either a fence or a flag in the picture?",
+  "answer": "yes"
+ },
+ "gqa_201080373": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "chooseAttr",
+  "question": "How does the silver lamp appear to be, on or off?",
+  "answer": "off"
+ },
+ "gqa_201997275": {
+  "structural": "choose",
+  "semantic": "rel",
+  "detailed": "relChooser",
+  "question": "Is the large chair to the right or to the left of the controller?",
+  "answer": "right"
+ },
+ "gqa_20644781": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What animal is the man watching?",
+  "answer": "cat"
+ },
+ "gqa_20411738": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What's on the table?",
+  "answer": "food container"
+ },
+ "gqa_201490981": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What animal is this woman petting?",
+  "answer": "goats"
+ },
+ "gqa_201535791": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerifyCo",
+  "question": "Is she wearing a skirt?",
+  "answer": "no"
+ },
+ "gqa_2098088": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What is the bottle in front of?",
+  "answer": "bowl"
+ },
+ "gqa_202223355": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What is the crowd in front of?",
+  "answer": "trees"
+ },
+ "gqa_20856868": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What food is to the left of the hair clip?",
+  "answer": "snack"
+ },
+ "gqa_20856865": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerify",
+  "question": "Is the black food to the left of the wallet that is lying on top of the bed?",
+  "answer": "yes"
+ },
+ "gqa_202053391": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerifyCo",
+  "question": "Is the person to the left of the baseball wearing a helmet?",
+  "answer": "no"
+ },
+ "gqa_20511394": {
+  "structural": "query",
+  "semantic": "global",
+  "detailed": "weather",
+  "question": "How is the weather?",
+  "answer": "cloudy"
+ },
+ "gqa_20508584": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Is the woman that is not sad brunette and young?",
+  "answer": "no"
+ },
+ "gqa_20308413": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerify",
+  "question": "Is the oven to the left of the bread on the counter?",
+  "answer": "yes"
+ },
+ "gqa_20754716": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerifyCo",
+  "question": "Is the person that is looking down wearing a coat?",
+  "answer": "no"
+ },
+ "gqa_202081011": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "how",
+  "question": "How big is the house?",
+  "answer": "tiny"
+ },
+ "gqa_201498633": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What is the device on top of the desk that is made of wood?",
+  "answer": "keyboard"
+ },
+ "gqa_201047331": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerify",
+  "question": "Is he wearing a necktie?",
+  "answer": "yes"
+ },
+ "gqa_20611536": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelS",
+  "question": "Are there any candies to the right of the dessert in the middle?",
+  "answer": "yes"
+ },
+ "gqa_20151608": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "Who is the coffee in front of?",
+  "answer": "woman"
+ },
+ "gqa_20550466": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "chooseAttr",
+  "question": "Is the grass wet or dry?",
+  "answer": "dry"
+ },
+ "gqa_201638717": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "positionVerify",
+  "question": "Is the blue car in the bottom part of the photo?",
+  "answer": "yes"
+ },
+ "gqa_20508001": {
+  "structural": "compare",
+  "semantic": "attr",
+  "detailed": "twoCommon",
+  "question": "What do both the blinds and the pants have in common?",
+  "answer": "color"
+ },
+ "gqa_201804173": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Does the mouse that is made of plastic look large and black?",
+  "answer": "no"
+ },
+ "gqa_20472962": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "activity",
+  "question": "What is the boy doing?",
+  "answer": "playing"
+ },
+ "gqa_201462494": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who is catching the round ball?",
+  "answer": "catcher"
+ },
+ "gqa_201795930": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelS",
+  "question": "Are there men near the baskets that are in front of the tree?",
+  "answer": "yes"
+ },
+ "gqa_201998421": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What is under the table near the windows?",
+  "answer": "rug"
+ },
+ "gqa_202225815": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelSC",
+  "question": "Are there any fries on the plate that sits atop the table?",
+  "answer": "no"
+ },
+ "gqa_202243924": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerify",
+  "question": "Are the green vegetables to the left of the bowl that is on the right of the picture?",
+  "answer": "yes"
+ },
+ "gqa_201347437": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Do the sneakers look blue and comfortable?",
+  "answer": "no"
+ },
+ "gqa_201347316": {
+  "structural": "compare",
+  "semantic": "attr",
+  "detailed": "twoSameC",
+  "question": "Is the color of the jeans the same as the sneakers?",
+  "answer": "no"
+ },
+ "gqa_20317016": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttrC",
+  "question": "Is the color of the drawer blue?",
+  "answer": "no"
+ },
+ "gqa_202266164": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "directOf",
+  "question": "What shape are the pillows to the right of her?",
+  "answer": "square"
+ },
+ "gqa_201737756": {
+  "structural": "compare",
+  "semantic": "attr",
+  "detailed": "twoSameMaterialC",
+  "question": "Is the helmet made of the same material as the bench?",
+  "answer": "no"
+ },
+ "gqa_201428826": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "directOf",
+  "question": "What is the shape of the appliance the box is smaller than?",
+  "answer": "round"
+ },
+ "gqa_20412506": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "Where are the boxes?",
+  "answer": "floor"
+ },
+ "gqa_202147712": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "chooseAttr",
+  "question": "Is the short sleeved shirt black and white or colorful?",
+  "answer": "colorful"
+ },
+ "gqa_201616210": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttrC",
+  "question": "Is the shirt long sleeved?",
+  "answer": "no"
+ },
+ "gqa_20636767": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "sameRelate",
+  "question": "What is the vegetable that is the same shape as the stove top called?",
+  "answer": "potato"
+ },
+ "gqa_20752299": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "directOf",
+  "question": "What is the pattern of the towel?",
+  "answer": "striped"
+ },
+ "gqa_20667606": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "Which kind of furniture is in front of the couch?",
+  "answer": "coffee table"
+ },
+ "gqa_201479475": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "categoryAttr",
+  "question": "What do you think is the crispy meat?",
+  "answer": "chicken"
+ },
+ "gqa_201896394": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who is standing behind the cake?",
+  "answer": "lady"
+ },
+ "gqa_2098187": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrs",
+  "question": "Is the black speaker both little and narrow?",
+  "answer": "yes"
+ },
+ "gqa_20456639": {
+  "structural": "logical",
+  "semantic": "obj",
+  "detailed": "existThatOrC",
+  "question": "Are there any tables or lamps that are not metallic?",
+  "answer": "no"
+ },
+ "gqa_20508281": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelS",
+  "question": "Do you see chairs to the left of the books?",
+  "answer": "yes"
+ },
+ "gqa_201175149": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerifyCo",
+  "question": "Is the bottle cap on top of a wine glass?",
+  "answer": "no"
+ },
+ "gqa_20403274": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelS",
+  "question": "Is there any towel near the sink?",
+  "answer": "yes"
+ },
+ "gqa_20721859": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Does the toy above the girl look small and white?",
+  "answer": "no"
+ },
+ "gqa_20452137": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What's the Christmas light hanging off of?",
+  "answer": "picture frame"
+ },
+ "gqa_20182827": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelS",
+  "question": "Are there any men to the left of the vegetable that is not rotten?",
+  "answer": "yes"
+ },
+ "gqa_20308749": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "directOf",
+  "question": "What is the color of the stove?",
+  "answer": "dark"
+ },
+ "gqa_20899401": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrs",
+  "question": "Does the notebook which is to the left of the napkin look black and closed?",
+  "answer": "yes"
+ },
+ "gqa_201639149": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "positionVerifyC",
+  "question": "Is the small vehicle on the left side of the picture?",
+  "answer": "no"
+ },
+ "gqa_202073425": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What is under the trees?",
+  "answer": "grass"
+ },
+ "gqa_202162559": {
+  "structural": "choose",
+  "semantic": "rel",
+  "detailed": "relChooser",
+  "question": "Is the pillow to the right or to the left of the books?",
+  "answer": "left"
+ },
+ "gqa_201455934": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What is the vehicle that is in front of the hill that is in front of the sky?",
+  "answer": "car"
+ },
+ "gqa_201571143": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttrK",
+  "question": "Does the suitcase that is not big look square?",
+  "answer": "yes"
+ },
+ "gqa_20609280": {
+  "structural": "logical",
+  "semantic": "obj",
+  "detailed": "existAnd",
+  "question": "Are there both a strawberry and a plate in the picture?",
+  "answer": "yes"
+ },
+ "gqa_201509856": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelS",
+  "question": "Is there a pot beside the motorbike that is above the stone?",
+  "answer": "yes"
+ },
+ "gqa_20226564": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What is the piece of furniture underneath the light fixture?",
+  "answer": "chair"
+ },
+ "gqa_20706220": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelO",
+  "question": "What device is the mouse pad in front of?",
+  "answer": "monitor"
+ },
+ "gqa_20178101": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What are the fries inside of?",
+  "answer": "serving dish"
+ },
+ "gqa_20596219": {
+  "structural": "compare",
+  "semantic": "attr",
+  "detailed": "twoDifferentC",
+  "question": "Is the color of the coat different than the color of the garbage bin?",
+  "answer": "no"
+ },
+ "gqa_201623309": {
+  "structural": "compare",
+  "semantic": "attr",
+  "detailed": "twoCommon",
+  "question": "What do the cupboards and the cabinets have in common?",
+  "answer": "material"
+ },
+ "gqa_20940029": {
+  "structural": "logical",
+  "semantic": "obj",
+  "detailed": "existOrC",
+  "question": "Are there chairs or blankets in the scene?",
+  "answer": "no"
+ },
+ "gqa_202162303": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "how",
+  "question": "How big is the chair that is made of wood?",
+  "answer": "small"
+ },
+ "gqa_2066007": {
+  "structural": "choose",
+  "semantic": "rel",
+  "detailed": "relChooser",
+  "question": "Is the boy to the right or to the left of the person the man is sitting next to?",
+  "answer": "right"
+ },
+ "gqa_201407286": {
+  "structural": "verify",
+  "semantic": "obj",
+  "detailed": "existC",
+  "question": "Are there any women?",
+  "answer": "no"
+ },
+ "gqa_20247158": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttr",
+  "question": "Does the necklace look large?",
+  "answer": "yes"
+ },
+ "gqa_202284837": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Does the knife on top of the napkin look green and thin?",
+  "answer": "no"
+ },
+ "gqa_201207201": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What fruits are sitting on the leafy vegetables?",
+  "answer": "apples"
+ },
+ "gqa_20783141": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelO",
+  "question": "What device is the laptop behind of?",
+  "answer": "screen"
+ },
+ "gqa_20306961": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What is the piece of furniture to the left of the cell phone?",
+  "answer": "chair"
+ },
+ "gqa_20657099": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelSC",
+  "question": "Is there a truck in the street?",
+  "answer": "no"
+ },
+ "gqa_202100681": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What do you think is sitting in the utensil holder?",
+  "answer": "utensils"
+ },
+ "gqa_201935776": {
+  "structural": "compare",
+  "semantic": "attr",
+  "detailed": "twoSameMaterialC",
+  "question": "Are both the jar and the shelf made of the same material?",
+  "answer": "no"
+ },
+ "gqa_201430608": {
+  "structural": "compare",
+  "semantic": "attr",
+  "detailed": "twoSameMaterialC",
+  "question": "Is the bag made of the same material as the door frame?",
+  "answer": "no"
+ },
+ "gqa_201411240": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "material",
+  "question": "Of what material the toilet brush?",
+  "answer": "plastic"
+ },
+ "gqa_201527825": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What is in front of the appliance that is to the right of the girl?",
+  "answer": "table"
+ },
+ "gqa_20827214": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What piece of furniture is to the right of the sofa?",
+  "answer": "side table"
+ },
+ "gqa_20752312": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What is the towel on?",
+  "answer": "wall"
+ },
+ "gqa_202107806": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttrK",
+  "question": "Does the boy to the right of the person appear to be standing?",
+  "answer": "yes"
+ },
+ "gqa_201896041": {
+  "structural": "choose",
+  "semantic": "rel",
+  "detailed": "relChooser",
+  "question": "Is the table to the left or to the right of the lady that is standing behind the cake?",
+  "answer": "right"
+ },
+ "gqa_20136567": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who wears shoes?",
+  "answer": "woman"
+ },
+ "gqa_20287585": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "activityWho",
+  "question": "Who is standing?",
+  "answer": "batter"
+ },
+ "gqa_202162542": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What is on the soft bed?",
+  "answer": "pillow"
+ },
+ "gqa_202100898": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What is sitting in front of the wall the artwork is leaning against?",
+  "answer": "stove"
+ },
+ "gqa_201886793": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "positionChoose",
+  "question": "Is the vehicle in the top or in the bottom of the photo?",
+  "answer": "top"
+ },
+ "gqa_20865393": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrs",
+  "question": "Is the pasture open and grassy?",
+  "answer": "yes"
+ },
+ "gqa_20302869": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelS",
+  "question": "Do you see fences in front of the bench that the man is sitting on?",
+  "answer": "yes"
+ },
+ "gqa_20302866": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What's the fence in front of?",
+  "answer": "bench"
+ },
+ "gqa_20302864": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What is the fence in front of?",
+  "answer": "bench"
+ },
+ "gqa_201959835": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "categoryThat",
+  "question": "What kind of aircraft is blue?",
+  "answer": "airplane"
+ },
+ "gqa_201235536": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "How are the pieces of furniture on top of the floor called?",
+  "answer": "shelves"
+ },
+ "gqa_20652793": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerifyCr",
+  "question": "Is the tall building in front of the trees next to the cars?",
+  "answer": "no"
+ },
+ "gqa_201859269": {
+  "structural": "logical",
+  "semantic": "obj",
+  "detailed": "existThatOrC",
+  "question": "Do you see bicycles or scooters that are not gray?",
+  "answer": "no"
+ },
+ "gqa_2046656": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Is the bowl to the right of the bench square and smooth?",
+  "answer": "no"
+ },
+ "gqa_202218927": {
+  "structural": "logical",
+  "semantic": "obj",
+  "detailed": "existOrC",
+  "question": "Do you see rolling pins or microwaves in this scene?",
+  "answer": "no"
+ },
+ "gqa_201987763": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What is in front of the orange thing that is on the wall?",
+  "answer": "cookie"
+ },
+ "gqa_202285331": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerify",
+  "question": "Is the round plate on top of the square tray?",
+  "answer": "yes"
+ },
+ "gqa_202285336": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "category",
+  "question": "What vegetables are in this image?",
+  "answer": "beans"
+ },
+ "gqa_202144533": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What drink is to the left of the blender?",
+  "answer": "liquor"
+ },
+ "gqa_20345101": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrs",
+  "question": "Does the racket look metallic and round?",
+  "answer": "yes"
+ },
+ "gqa_20345108": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "material",
+  "question": "What material makes up the tennis racket to the right of the athlete?",
+  "answer": "metal"
+ },
+ "gqa_201047526": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttrK",
+  "question": "Does the suit appear to be clean?",
+  "answer": "yes"
+ },
+ "gqa_201676456": {
+  "structural": "choose",
+  "semantic": "cat",
+  "detailed": "categoryThatChoose",
+  "question": "Which kind of furniture is not brown, the shelf or the table?",
+  "answer": "shelf"
+ },
+ "gqa_201393708": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "chooseAttr",
+  "question": "Does the window look open or closed?",
+  "answer": "closed"
+ },
+ "gqa_20340887": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "material",
+  "question": "What's the school made of?",
+  "answer": "brick"
+ },
+ "gqa_201185777": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Do the shorts made out of cotton look orange and long?",
+  "answer": "no"
+ },
+ "gqa_201759205": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What's in front of the door?",
+  "answer": "mat"
+ },
+ "gqa_20588934": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who rides on the skateboard?",
+  "answer": "skater"
+ },
+ "gqa_20861028": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "chooseAttr",
+  "question": "Is the old vehicle in front of the building small or large?",
+  "answer": "large"
+ },
+ "gqa_20898634": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "chooseAttr",
+  "question": "Does the shirt look long sleeved or sleeveless?",
+  "answer": "long sleeved"
+ },
+ "gqa_201887106": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What vegetable is on the table?",
+  "answer": "cabbage"
+ },
+ "gqa_201638704": {
+  "structural": "compare",
+  "semantic": "attr",
+  "detailed": "twoCommon",
+  "question": "What do the sign post and the street have in common?",
+  "answer": "color"
+ },
+ "gqa_20240975": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "activityWho",
+  "question": "Who is waiting?",
+  "answer": "customers"
+ },
+ "gqa_201624281": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What rests on the pan?",
+  "answer": "spatula"
+ },
+ "gqa_202125978": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "category",
+  "question": "Which kind of furniture is it?",
+  "answer": "chairs"
+ },
+ "gqa_20609506": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerifyCo",
+  "question": "Is this fork on top of a napkin?",
+  "answer": "no"
+ },
+ "gqa_2066047": {
+  "structural": "choose",
+  "semantic": "cat",
+  "detailed": "categoryThatChoose",
+  "question": "What type of clothing is brown, the sweater or the baseball mitt?",
+  "answer": "baseball mitt"
+ },
+ "gqa_20183336": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttr",
+  "question": "Is the cane hard?",
+  "answer": "yes"
+ },
+ "gqa_201757669": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "materialChoose",
+  "question": "What is the white object to the left of the laptop made of, paper or glass?",
+  "answer": "paper"
+ },
+ "gqa_2093936": {
+  "structural": "logical",
+  "semantic": "obj",
+  "detailed": "existAnd",
+  "question": "Are there both mud and grass in this image?",
+  "answer": "yes"
+ },
+ "gqa_201404266": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "positionChoose",
+  "question": "On which side of the image is the large mother, the left or the right?",
+  "answer": "right"
+ },
+ "gqa_202023260": {
+  "structural": "compare",
+  "semantic": "attr",
+  "detailed": "twoDifferent",
+  "question": "Do the jacket and the tray have a different colors?",
+  "answer": "yes"
+ },
+ "gqa_202005853": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What type of furniture is above the shelves?",
+  "answer": "cabinet"
+ },
+ "gqa_20709903": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttrK",
+  "question": "Does the person to the right of the umbrella appear to be skating?",
+  "answer": "yes"
+ },
+ "gqa_201067918": {
+  "structural": "verify",
+  "semantic": "obj",
+  "detailed": "existAttrNotC",
+  "question": "Is there a bag that is not white?",
+  "answer": "no"
+ },
+ "gqa_20306387": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What is the woman sitting beside?",
+  "answer": "gift"
+ },
+ "gqa_201920442": {
+  "structural": "compare",
+  "semantic": "attr",
+  "detailed": "twoSameMaterialC",
+  "question": "Is the frisbee made of the same material as the street light?",
+  "answer": "no"
+ },
+ "gqa_201984169": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who is holding onto the papers to the left of the bag?",
+  "answer": "woman"
+ },
+ "gqa_201480348": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who wears the shirt?",
+  "answer": "boy"
+ },
+ "gqa_20902780": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrs",
+  "question": "Is the animal in the backpack brown and small?",
+  "answer": "yes"
+ },
+ "gqa_20622007": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What is located on top of the horses that the window is over?",
+  "answer": "hair"
+ },
+ "gqa_201982132": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelO",
+  "question": "What item of furniture does the white man below the frame sit on?",
+  "answer": "couch"
+ },
+ "gqa_2066187": {
+  "structural": "choose",
+  "semantic": "cat",
+  "detailed": "categoryThatChoose",
+  "question": "Which kind of clothing is not white, the baseball mitt or the sweater?",
+  "answer": "baseball mitt"
+ },
+ "gqa_2091139": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Does the vehicle to the right of the fence look silver and small?",
+  "answer": "no"
+ },
+ "gqa_20865560": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttrK",
+  "question": "Does the barn appear to be large?",
+  "answer": "yes"
+ },
+ "gqa_20865566": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrs",
+  "question": "Does the barn seem to be wooden and large?",
+  "answer": "yes"
+ },
+ "gqa_201347392": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who is wearing sneakers?",
+  "answer": "skateboarder"
+ },
+ "gqa_202102615": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "categoryThis",
+  "question": "What is the name of this items of furniture?",
+  "answer": "cabinets"
+ },
+ "gqa_20536194": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What animal is in front of the animal in the middle?",
+  "answer": "giraffe"
+ },
+ "gqa_201759264": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "positionChoose",
+  "question": "In which part of the picture is the pot, the top or the bottom?",
+  "answer": "bottom"
+ },
+ "gqa_2053763": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "Who is the cow watching?",
+  "answer": "crowd"
+ },
+ "gqa_20258659": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelS",
+  "question": "Do you see a chair to the left of the toy that is made of plastic?",
+  "answer": "yes"
+ },
+ "gqa_20667684": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What is the remote made of plastic lying on top of?",
+  "answer": "coffee table"
+ },
+ "gqa_20953099": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who is wearing socks?",
+  "answer": "player"
+ },
+ "gqa_20178188": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "positionChoose",
+  "question": "In which part is the plate, the top or the bottom?",
+  "answer": "top"
+ },
+ "gqa_202226066": {
+  "structural": "logical",
+  "semantic": "obj",
+  "detailed": "existThatOrC",
+  "question": "Are there any lamps or tables that are made of metal?",
+  "answer": "no"
+ },
+ "gqa_201639249": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "Where are the people?",
+  "answer": "field"
+ },
+ "gqa_20836922": {
+  "structural": "logical",
+  "semantic": "obj",
+  "detailed": "verifyAttrAnd",
+  "question": "Are both the palm tree in front of the wall and the palm to the left of the flag brown?",
+  "answer": "yes"
+ },
+ "gqa_202106373": {
+  "structural": "choose",
+  "semantic": "rel",
+  "detailed": "relChooser",
+  "question": "Is the metal fence in front or behind the man that is holding the tennis racket?",
+  "answer": "behind"
+ },
+ "gqa_20491900": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrs",
+  "question": "Is the bear that is not little brown and tall?",
+  "answer": "yes"
+ },
+ "gqa_2065971": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Is the boy to the right of the man happy and old?",
+  "answer": "no"
+ },
+ "gqa_2056122": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "directOf",
+  "question": "What color is the large mirror?",
+  "answer": "yellow"
+ },
+ "gqa_20120396": {
+  "structural": "logical",
+  "semantic": "obj",
+  "detailed": "existAttrOrC",
+  "question": "Are there any red rackets or bats?",
+  "answer": "no"
+ },
+ "gqa_20790006": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttrC",
+  "question": "Are the people skiing?",
+  "answer": "no"
+ },
+ "gqa_202240367": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "directWhich",
+  "question": "Which color is the shirt the girl is standing next to?",
+  "answer": "blue"
+ },
+ "gqa_201947515": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What's in front of the bathtub?",
+  "answer": "shower curtain"
+ },
+ "gqa_201882969": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "What is in front of the curtains that look white?",
+  "answer": "chair"
+ },
+ "gqa_202156878": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Do the animals that are standing look gray and wet?",
+  "answer": "no"
+ },
+ "gqa_20245861": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrs",
+  "question": "Do the trees in front of the fence look green and abundant?",
+  "answer": "yes"
+ },
+ "gqa_20942865": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "Who is the soccer ball in front of?",
+  "answer": "soccer player"
+ },
+ "gqa_202231931": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "positionVerifyC",
+  "question": "Is the silver lamp on the right side of the picture?",
+  "answer": "no"
+ },
+ "gqa_202121913": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "positionQuery",
+  "question": "On which side of the picture is the large refrigerator?",
+  "answer": "right"
+ },
+ "gqa_201498771": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What is the phone in front of?",
+  "answer": "computer"
+ },
+ "gqa_201682317": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who is holding onto the tennis racket?",
+  "answer": "man"
+ },
+ "gqa_202081963": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "material",
+  "question": "What is the pot made of?",
+  "answer": "glass"
+ },
+ "gqa_2076301": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "categoryThat",
+  "question": "What is the name of the vehicle that is made of metal?",
+  "answer": "bus"
+ },
+ "gqa_20482312": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Is the wristband Nike and orange?",
+  "answer": "no"
+ },
+ "gqa_202228644": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "directWhich",
+  "question": "Which shape does the tissue box have?",
+  "answer": "rectangular"
+ },
+ "gqa_20621886": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttrKC",
+  "question": "Does the fence near the wall have black color?",
+  "answer": "no"
+ },
+ "gqa_201896084": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttrKC",
+  "question": "Does the gray coat appear to be thick?",
+  "answer": "no"
+ },
+ "gqa_20935990": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttrKC",
+  "question": "Does the animal beside the fence have small size?",
+  "answer": "no"
+ },
+ "gqa_201988059": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "verifyAttrC",
+  "question": "Is the tape white?",
+  "answer": "no"
+ },
+ "gqa_202144463": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who is wearing the glasses?",
+  "answer": "man"
+ },
+ "gqa_201110717": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What food is on top of the cake?",
+  "answer": "chocolate"
+ },
+ "gqa_20303102": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerifyCo",
+  "question": "Is the man to the left of the glasses wearing a tie?",
+  "answer": "no"
+ },
+ "gqa_20442051": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelO",
+  "question": "What is the item of furniture that the door is behind of?",
+  "answer": "chair"
+ },
+ "gqa_202180433": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "directWhich",
+  "question": "What color is the head band?",
+  "answer": "green"
+ },
+ "gqa_202258186": {
+  "structural": "choose",
+  "semantic": "cat",
+  "detailed": "categoryThisChoose",
+  "question": "Which animal is this, a horse or a pig?",
+  "answer": "horse"
+ },
+ "gqa_201556790": {
+  "structural": "logical",
+  "semantic": "obj",
+  "detailed": "existAttrOr",
+  "question": "Are there large laptops or cats?",
+  "answer": "yes"
+ },
+ "gqa_201935073": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "how",
+  "question": "How tall is the lamp that is behind the tree?",
+  "answer": "tall"
+ },
+ "gqa_202101162": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relS",
+  "question": "Who is wearing the jeans?",
+  "answer": "skateboarder"
+ },
+ "gqa_202060197": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelO",
+  "question": "What is the item of furniture that the curtains are behind of?",
+  "answer": "couch"
+ },
+ "gqa_201346477": {
+  "structural": "choose",
+  "semantic": "attr",
+  "detailed": "positionChoose",
+  "question": "Is the van in the top part or in the bottom of the photo?",
+  "answer": "top"
+ },
+ "gqa_20317285": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "categoryRelS",
+  "question": "What is the appliance above the drawer called?",
+  "answer": "toaster"
+ },
+ "gqa_201302009": {
+  "structural": "verify",
+  "semantic": "obj",
+  "detailed": "existAttr",
+  "question": "Are there white rackets in this image?",
+  "answer": "yes"
+ },
+ "gqa_201175487": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "relVerify",
+  "question": "Does she wear a necklace?",
+  "answer": "yes"
+ },
+ "gqa_202081880": {
+  "structural": "query",
+  "semantic": "rel",
+  "detailed": "relO",
+  "question": "What is the cat lying on?",
+  "answer": "mouse pad"
+ },
+ "gqa_201654586": {
+  "structural": "verify",
+  "semantic": "attr",
+  "detailed": "positionVerify",
+  "question": "Is the fence on the right of the image?",
+  "answer": "yes"
+ },
+ "gqa_201446920": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrsC",
+  "question": "Is the tap silver and large?",
+  "answer": "no"
+ },
+ "gqa_201207509": {
+  "structural": "query",
+  "semantic": "cat",
+  "detailed": "categoryThat",
+  "question": "Which kind of food is not green?",
+  "answer": "apples"
+ },
+ "gqa_201621810": {
+  "structural": "verify",
+  "semantic": "rel",
+  "detailed": "existRelS",
+  "question": "Is there any speaker behind the couch near the wall?",
+  "answer": "yes"
+ },
+ "gqa_20602871": {
+  "structural": "query",
+  "semantic": "attr",
+  "detailed": "positionQuery",
+  "question": "On which side of the photo is the huge animal?",
+  "answer": "right"
+ },
+ "gqa_202227938": {
+  "structural": "logical",
+  "semantic": "attr",
+  "detailed": "verifyAttrs",
+  "question": "Is that entertainment center full and wooden?",
+  "answer": "yes"
+ }
+}

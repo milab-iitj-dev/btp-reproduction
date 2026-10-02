@@ -1,0 +1,25 @@
+All models were measured on the same 300 GQA questions.
+groups shown only with n >= 25 and image contribution >= 0.10
+
+==============================================================================
+grouping: semantic
+==============================================================================
+group         n  |       Qwen2.5-VL-7B         |       Qwen2.5-VL-3B         |        InternVL2-2B       
+                 | floor base  h0.5 [CI] depth  | floor base  h0.5 [CI] depth  | floor base  h0.5 [CI] depth
+attr        116  | 0.53 0.76  15 [13-22]  54%  | 0.47 0.76  18 [10-22]  50%  | 0.51 0.80  12 [8-14]   50%
+cat          25  | 0.12 0.60  22 [12-24]  79%  | 0.20 0.52  32 [23-35]  89%  | 0.16 0.64  19 [13-20]  79%
+global        3  |      too few samples        |      too few samples        |      too few samples      
+obj          18  |      too few samples        |      too few samples        |      too few samples      
+rel         138  | 0.19 0.64  20 [15-22]  71%  | 0.28 0.54  28 [22-30]  78%  | 0.28 0.56  17 [16-19]  71%
+
+==============================================================================
+grouping: structural
+==============================================================================
+group         n  |       Qwen2.5-VL-7B         |       Qwen2.5-VL-3B         |        InternVL2-2B       
+                 | floor base  h0.5 [CI] depth  | floor base  h0.5 [CI] depth  | floor base  h0.5 [CI] depth
+choose       30  | 0.43 0.87  12 [4-15]   43%  | 0.50 0.83  20 [13-23]  56%  | 0.53 0.93   9 [3-12]   38%
+compare      10  |      too few samples        |      too few samples        |      too few samples      
+logical      46  | 0.67 0.85  15 [13-23]  54%  | 0.57 0.85  17 [3-20]   47%  | 0.63 0.83  13 [11-14]  54%
+query       150  | 0.12 0.53  22 [22-22]  79%  | 0.15 0.47  29 [28-32]  81%  | 0.14 0.50  17 [17-19]  71%
+verify       64  | 0.50 0.83  15 [13-17]  54%  | 0.55 0.77  20 [20-22]  56%  | 0.56 0.84  11 [9-16]   46%
+
