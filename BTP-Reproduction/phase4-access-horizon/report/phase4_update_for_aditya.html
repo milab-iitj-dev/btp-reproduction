@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Phase 4 update</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,500;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg: #ECEEF2;
+    --surface: #FFFFFF;
+    --text: #1A1F2E;
+    --muted: #5B6375;
+    --faint: #9AA1B0;
+    --line: #E3E6EE;
+    --tint: #F4F6FA;
+    --navy: #1E2761;
+    --navy-soft: #DCE0F0;
+    --crimson: #A3312F;
+    --crimson-soft: #F6E3E2;
+    --font-sans: "Inter", "Segoe UI", Arial, sans-serif;
+    --font-serif: "Source Serif 4", Cambria, Georgia, serif;
+  }
+  html, body { background: var(--bg); }
+  body {
+    font-family: var(--font-sans); color: var(--text);
+    display: flex; flex-direction: column; align-items: center; gap: 32px; padding: 32px;
+    -webkit-font-smoothing: antialiased;
+  }
+  .slide {
+    width: 1600px; height: 900px; background: var(--surface); position: relative;
+    overflow: hidden; padding: 72px 96px 64px; display: flex; flex-direction: column;
+    box-shadow: 0 8px 40px rgba(0,0,0,.08);
+  }
+  .kicker { font-size: 18px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--crimson); }
+  h1 { font-family: var(--font-serif); font-weight: 600; font-size: 50px; line-height: 1.12; letter-spacing: -.01em; margin-top: 14px; max-width: 1300px; }
+  h2 { font-family: var(--font-serif); font-weight: 600; font-size: 26px; line-height: 1.25; }
+  p, li { font-size: 22px; line-height: 1.5; color: var(--text); }
+  .muted { color: var(--muted); }
+  .small { font-size: 18px; line-height: 1.45; }
+  .num { font-variant-numeric: tabular-nums; }
+  b { font-weight: 600; }
+  .pageno { position: absolute; right: 96px; bottom: 36px; font-size: 16px; color: var(--faint); }
+  .foot { position: absolute; left: 96px; bottom: 36px; font-size: 16px; color: var(--faint); }
+  .rule { height: 2px; background: var(--line); margin: 28px 0; }
+  .takeaway {
+    border-left: 6px solid var(--crimson); background: var(--tint);
+    padding: 20px 28px; font-size: 24px; line-height: 1.45; font-weight: 500;
+  }
+  .row { display: flex; gap: 56px; }
+  ul.plain { list-style: none; }
+  ul.plain li { padding-left: 26px; position: relative; margin-bottom: 14px; }
+  ul.plain li::before { content: ""; position: absolute; left: 0; top: 13px; width: 10px; height: 10px; background: var(--navy); border-radius: 2px; }
+  .legend { display: flex; gap: 28px; font-size: 18px; color: var(--muted); align-items: center; }
+  .legend span { display: inline-flex; align-items: center; gap: 8px; }
+  svg text { font-family: var(--font-sans); }
+
+  /* slide 1 */
+  .cover { justify-content: center; }
+  .cover h1 { font-size: 72px; max-width: 1250px; }
+  .cover .lede { font-size: 30px; line-height: 1.4; color: var(--muted); margin-top: 32px; max-width: 1150px; }
+  .cover .who { margin-top: 64px; font-size: 22px; line-height: 1.6; }
+  .cover .bar { position: absolute; left: 0; top: 0; bottom: 0; width: 18px; background: var(--navy); }
+
+  /* slide 4 example card */
+  .ex { background: var(--tint); padding: 28px 32px; }
+  .ex .q { font-family: var(--font-serif); font-size: 28px; font-weight: 600; margin-bottom: 18px; }
+  .ex .opt { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 24px; margin: 10px 0 0; }
+  .ex .opt div { background: #fff; border: 1.5px solid var(--line); padding: 10px 16px; font-size: 20px; }
+  .ex .opt div.ok { border-color: var(--navy); }
+  .tag { display: inline-block; font-size: 15px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; padding: 4px 10px; }
+  .tag.open { background: var(--crimson-soft); color: var(--crimson); }
+  .tag.closed { background: var(--navy-soft); color: var(--navy); }
+
+  /* tables */
+  table { border-collapse: collapse; width: 100%; font-size: 21px; }
+  th { text-align: right; font-weight: 600; color: var(--muted); font-size: 17px; letter-spacing: .03em; padding: 10px 14px; border-bottom: 2px solid var(--text); }
+  th:first-child, td:first-child { text-align: left; }
+  td { text-align: right; padding: 9px 14px; border-bottom: 1px solid var(--line); font-variant-numeric: tabular-nums; }
+  td.hl { font-weight: 700; color: var(--navy); background: var(--tint); }
+  td.bad { color: var(--crimson); }
+  tr.group td { border-bottom: none; padding-top: 16px; font-size: 15px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+  @media print {
+    @page { size: 1600px 900px; margin: 0; }
+    html, body { background: #fff; padding: 0; gap: 0; display: block; }
+    .slide { box-shadow: none; page-break-after: always; break-after: page; }
+  }
+  body.solo { padding: 0; gap: 0; background: #fff; }
+  body.solo .slide { box-shadow: none; display: none; }
+  body.solo .slide.on { display: flex; }
+</style>
+</head>
+<body>
+
+<!-- 1 -->
+<section class="slide cover">
+  <div class="bar"></div>
+  <div class="kicker">Phase 4 update for Aditya sir</div>
+  <h1>How long does a vision-language model need to look at the image?</h1>
+  <p class="lede">It depends less on what the task is about and more on one thing: whether the model has to write the answer or pick it from options.</p>
+  <p class="who">P. S. Kedar, Research Intern, IIT Jodhpur<br><span class="muted">Supervisor: Prof. Divya Saxena &nbsp;·&nbsp; October 2026</span></p>
+</section>
+
+<!-- 2 -->
+<section class="slide">
+  <div class="kicker">The test</div>
+  <h1>Take the image away after layer L, and see what the model still gets right</h1>
+  <div style="margin-top:44px" id="layers"></div>
+  <div class="row" style="margin-top:44px">
+    <ul class="plain" style="flex:1.15">
+      <li>Every visual token is deleted after layer L. The question keeps going up the network without the picture.</li>
+      <li>Layer 0 means no image at all. That gives the floor: what the model scores from the question alone.</li>
+      <li>Run for every L, on 8 tasks and 3 models: Qwen2.5-VL 7B, Qwen2.5-VL 3B and InternVL2 2B.</li>
+    </ul>
+    <div style="flex:1">
+      <div class="ex">
+        <p class="small muted" style="margin-bottom:8px">How we read one curve (Qwen 7B, MMBench)</p>
+        <p>With the image: <b class="num">88</b>. Without it: <b class="num">40</b>. So the image is worth <b class="num">48</b> points.</p>
+        <p style="margin-top:12px">The <b>horizon</b> is the layer after which the model holds on to at least half of those 48 points for good. Here that is layer <b class="num">10</b> of 28.</p>
+      </div>
+    </div>
+  </div>
+  <div class="pageno">2</div>
+</section>
+
+<!-- 3 -->
+<section class="slide">
+  <div class="kicker">Finding 1</div>
+  <h1>Tasks need the image for different lengths of time, and the order holds across models</h1>
+  <div class="row" style="margin-top:28px; align-items:flex-start">
+    <div style="flex:1.55">
+      <div class="legend" style="margin-bottom:6px">
+        <span><svg width="16" height="16"><circle cx="8" cy="8" r="7" fill="#1E2761"/></svg>Qwen 7B</span>
+        <span><svg width="16" height="16"><circle cx="8" cy="8" r="6" fill="#fff" stroke="#1E2761" stroke-width="2.5"/></svg>Qwen 3B</span>
+        <span><svg width="16" height="16"><rect x="2" y="2" width="12" height="12" transform="rotate(45 8 8)" fill="#A3312F"/></svg>InternVL 2B</span>
+      </div>
+      <div id="dots"></div>
+    </div>
+    <div style="flex:1; padding-top:40px">
+      <p class="small muted">Do the three models rank the 8 tasks the same way?</p>
+      <table style="margin-top:10px">
+        <tr><th>Pair</th><th>Rank agreement</th></tr>
+        <tr><td>Qwen 7B and Qwen 3B</td><td class="num">0.90</td></tr>
+        <tr><td>Qwen 7B and InternVL</td><td class="num"><b>0.96</b></td></tr>
+        <tr><td>Qwen 3B and InternVL</td><td class="num"><b>0.93</b></td></tr>
+      </table>
+      <p class="small muted" style="margin-top:10px">Spearman correlation, all p &lt; 0.01. The two cross-family pairs agree as well as the two Qwen models do.</p>
+      <p class="small" style="margin-top:26px">The <b>order</b> carries over between models. The exact layer does not, so it still has to be measured per model.</p>
+    </div>
+  </div>
+  <div class="pageno">3</div>
+</section>
+
+<!-- 4 -->
+<section class="slide">
+  <div class="kicker">The catch</div>
+  <h1>Every early task was multiple choice. Every late task made the model write its answer.</h1>
+  <div class="row" style="margin-top:36px">
+    <div style="flex:1">
+      <p>So "reading needs the image longer" and "writing the answer needs the image longer" were tangled together. GQA was the first hint, because it mixes both kinds of question:</p>
+      <div id="gqa" style="margin-top:22px"></div>
+    </div>
+    <div style="flex:1" class="ex">
+      <p class="q">"What brand is on the bottle?"</p>
+      <p><span class="tag open">Open-ended</span></p>
+      <p style="margin-top:8px">The model has to spell out "Coca-Cola". It needs the actual letters, so it keeps looking until late.</p>
+      <p style="margin-top:22px"><span class="tag closed">Multiple choice</span></p>
+      <div class="opt">
+        <div>A &nbsp;Pepsi</div><div class="ok">B &nbsp;Coca-Cola</div>
+        <div>C &nbsp;Fanta</div><div>D &nbsp;Sprite</div>
+      </div>
+      <p style="margin-top:14px">A glance at the red logo is enough to pick B.</p>
+    </div>
+  </div>
+  <div class="pageno">4</div>
+</section>
+
+<!-- 5 -->
+<section class="slide">
+  <div class="kicker">Finding 2</div>
+  <h1>Change only the answer format, and the horizon moves. In both directions.</h1>
+  <div class="legend" style="margin-top:22px">
+    <span><svg width="16" height="16"><circle cx="8" cy="8" r="7" fill="#A3312F"/></svg>open-ended</span>
+    <span><svg width="16" height="16"><circle cx="8" cy="8" r="7" fill="#1E2761"/></svg>multiple choice</span>
+    <span class="muted">Same questions and images in both formats. Horizon shown as a share of the model's depth.</span>
+  </div>
+  <div id="dumb" style="margin-top:8px"></div>
+  <div class="takeaway" style="margin-top:8px">Writing an answer keeps the model looking almost to the top. Picking from options is settled by the middle. Every shift's paired 95% interval excludes zero.</div>
+  <div class="pageno">5</div>
+</section>
+
+<!-- 6 -->
+<section class="slide">
+  <div class="kicker">What it means for pruning</div>
+  <h1>A pruner can read the format from the prompt, and drop the image early only when that is safe</h1>
+  <div class="row" style="margin-top:30px; align-items:flex-start">
+    <div style="flex:1.3">
+      <p class="small muted">Share of layers that no longer carry visual tokens, with every task keeping at least 98% of its accuracy</p>
+      <div id="bars" style="margin-top:8px"></div>
+      <div class="legend" style="margin-top:4px">
+        <span><svg width="16" height="16"><rect width="16" height="16" fill="#C9CEDB"/></svg>one cut for every input</span>
+        <span><svg width="16" height="16"><rect width="16" height="16" fill="#1E2761"/></svg>cut chosen by answer format</span>
+      </div>
+    </div>
+    <div style="flex:1">
+      <ul class="plain">
+        <li>Without the format, one cut has to protect the reading tasks, so it barely moves from the top.</li>
+        <li>With it, Qwen 7B keeps the image for all 28 layers on open questions and drops it after layer 20 on closed ones.</li>
+        <li>For comparison, the released BTP deletion saves 21% on Qwen 7B but leaves the worst task at <b style="color:var(--crimson)">22%</b> of its accuracy.</li>
+        <li>These numbers come straight from stored runs, which record right or wrong for each question at each layer. Cuts learned on the 8 tasks also held on the format-control sets they never saw.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="pageno">6</div>
+</section>
+
+<!-- 7 -->
+<section class="slide">
+  <div class="kicker">Checked on GPU</div>
+  <h1>Inside BTP: keep the final deletion where it is safe, remove it where it is not</h1>
+  <div class="row" style="margin-top:22px; align-items:flex-start">
+    <div style="flex:1.45">
+      <table>
+        <tr><th>Qwen2.5-VL 7B</th><th>Baseline</th><th>Released BTP</th><th>Corrected BTP</th><th>Format-aware</th></tr>
+        <tr class="group"><td colspan="5">Closed-form: image dropped after layer 20</td></tr>
+        <tr><td>POPE</td><td>87.6</td><td>86.2</td><td>86.3</td><td class="hl">86.3</td></tr>
+        <tr><td>MME (perception)</td><td>1674.5</td><td>1658.7</td><td>1651.2</td><td class="hl">1664.1</td></tr>
+        <tr><td>MMBench</td><td>83.7</td><td>79.3</td><td>79.0</td><td class="hl">79.6</td></tr>
+        <tr><td>ScienceQA</td><td>88.1</td><td>85.1</td><td>85.0</td><td class="hl">85.1</td></tr>
+        <tr><td>AI2D</td><td>86.4</td><td>79.6</td><td>79.2</td><td class="hl">79.6</td></tr>
+        <tr class="group"><td colspan="5">Open-ended: never dropped</td></tr>
+        <tr><td>TextVQA</td><td>86.2</td><td class="bad">23.3</td><td>80.5</td><td class="hl">80.5</td></tr>
+        <tr><td>DocVQA</td><td>94.7</td><td class="bad">19.2</td><td>76.8</td><td class="hl">76.8</td></tr>
+        <tr><td>ChartQA</td><td>76.8</td><td class="bad">29.0</td><td>45.4</td><td class="hl">45.4</td></tr>
+      </table>
+    </div>
+    <div style="flex:1; padding-top:8px">
+      <ul class="plain">
+        <li>Closed-form tasks lose nothing when the image goes two layers earlier than the released code drops it. All five match or beat both other versions.</li>
+        <li>Reading tasks recover from 28% to 78% of baseline.</li>
+        <li>One caveat: inside BTP the extra compute saved is small, because only 12.5% of visual tokens are left after layer 16. The bigger saving is on slide 6.</li>
+        <li>ChartQA stays low in every version. There, the pruning itself costs more than the deletion.</li>
+      </ul>
+    </div>
+  </div>
+  <div class="pageno">7</div>
+</section>
+
+<!-- 8 -->
+<section class="slide">
+  <div class="kicker">Where this leaves us</div>
+  <h1>What I think we can claim, and where I would like your view</h1>
+  <div class="row" style="margin-top:34px; align-items:flex-start">
+    <div style="flex:1.1">
+      <h2>The claim</h2>
+      <p style="margin-top:12px">How long a vision-language model needs its visual tokens depends mainly on the answer format. The ordering of tasks is stable across model sizes and families, and a pruner that knows the format saves 17 to 23% of visual layers at 98% accuracy, where a single cut saves under 8%.</p>
+      <h2 style="margin-top:30px">What could weaken it</h2>
+      <ul class="plain small" style="margin-top:12px">
+        <li>Three models, two families, 200 to 300 questions per task.</li>
+        <li>Reading questions turned into multiple choice still score 0.51 to 0.61 with no image, so the options alone rule some answers out.</li>
+        <li>Open-ended MMBench and AI2D score only 0.28 to 0.40, so those curves are noisier.</li>
+        <li>Content still matters a little: ChartQA keeps about a third of its gap even as multiple choice.</li>
+      </ul>
+    </div>
+    <div style="flex:1">
+      <div class="ex">
+        <h2>Questions for you</h2>
+        <ol style="margin:14px 0 0 24px">
+          <li>For the paper, should the framing be "answer format" rather than "task families"?</li>
+          <li style="margin-top:10px">Next step: detect the format from the prompt inside the model, and add a larger model or a third family?</li>
+          <li style="margin-top:10px">Is this ready to take to ma'am, or should we close any of the gaps on the left first?</li>
+        </ol>
+      </div>
+      <p class="small muted" style="margin-top:22px">Code, raw results and all numbers: github.com/milab-iitj-dev/btp-reproduction, folder phase4-access-horizon.</p>
+    </div>
+  </div>
+  <div class="pageno">8</div>
+</section>
+
+<script>
+const NAVY = "#1E2761", CRIMS = "#A3312F", MUTED = "#5B6375", FAINT = "#9AA1B0", LINE = "#E3E6EE", SOFT = "#C9CEDB";
+const ns = "http://www.w3.org/2000/svg";
+function svg(w, h) { const s = document.createElementNS(ns, "svg"); s.setAttribute("width", w); s.setAttribute("height", h); s.setAttribute("viewBox", `0 0 ${w} ${h}`); return s; }
+function el(p, tag, a, txt) { const e = document.createElementNS(ns, tag); for (const k in a) e.setAttribute(k, a[k]); if (txt !== undefined) e.textContent = txt; p.appendChild(e); return e; }
+
+// slide 2: layer strip
+(function () {
+  const W = 1408, H = 120, n = 28, cut = 10, gap = 6, cw = (W - gap * (n - 1)) / n, s = svg(W, H);
+  for (let i = 0; i < n; i++) {
+    const x = i * (cw + gap);
+    el(s, "rect", { x, y: 34, width: cw, height: 46, fill: i < cut ? NAVY : "#E6E8EE" });
+  }
+  const xc = cut * (cw + gap) - gap / 2;
+  el(s, "line", { x1: xc, x2: xc, y1: 18, y2: 96, stroke: CRIMS, "stroke-width": 4 });
+  el(s, "text", { x: xc + 12, y: 22, fill: CRIMS, "font-size": 19, "font-weight": 600 }, "image removed after layer L");
+  el(s, "text", { x: 0, y: 112, fill: MUTED, "font-size": 17 }, "layer 1");
+  el(s, "text", { x: W, y: 112, fill: MUTED, "font-size": 17, "text-anchor": "end" }, "layer 28 (answer)");
+  el(s, "text", { x: (cut * (cw + gap)) / 2, y: 112, fill: NAVY, "font-size": 17, "text-anchor": "middle", "font-weight": 600 }, "can see the image");
+  el(s, "text", { x: xc + (W - xc) / 2, y: 112, fill: MUTED, "font-size": 17, "text-anchor": "middle" }, "works only from what it already took in");
+  document.getElementById("layers").appendChild(s);
+})();
+
+// slide 3: dot plot of horizon as % depth
+(function () {
+  const rows = [["MMBench", 35.7, 38.9, 37.5], ["POPE", 50.0, 55.6, 50.0], ["ScienceQA", 53.6, 38.9, 50.0], ["AI2D", 53.6, 61.1, 50.0],
+                ["GQA", 67.9, 61.1, 58.3], ["ChartQA", 82.1, 77.8, 75.0], ["DocVQA", 82.1, 86.1, 75.0], ["TextVQA", 82.1, 88.9, 79.2]];
+  const W = 860, rh = 52, top = 10, left = 150, right = 20, H = top + rows.length * rh + 56, s = svg(W, H);
+  const x = v => left + (v - 20) / 80 * (W - left - right);
+  for (const t of [20, 40, 60, 80, 100]) {
+    el(s, "line", { x1: x(t), x2: x(t), y1: top, y2: top + rows.length * rh, stroke: LINE, "stroke-width": 1.5 });
+    el(s, "text", { x: x(t), y: top + rows.length * rh + 26, fill: MUTED, "font-size": 16, "text-anchor": "middle" }, t + "%");
+  }
+  el(s, "text", { x: x(60), y: H - 4, fill: MUTED, "font-size": 16, "text-anchor": "middle" }, "horizon, as a share of the model's depth (later = needs the image longer)");
+  rows.forEach((r, i) => {
+    const y = top + i * rh + rh / 2;
+    const reading = i >= 5;
+    el(s, "text", { x: left - 22, y: y + 6, fill: reading ? CRIMS : "#1A1F2E", "font-size": 19, "text-anchor": "end", "font-weight": reading ? 600 : 500 }, r[0]);
+    const vs = [r[1], r[2], r[3]];
+    el(s, "line", { x1: x(Math.min(...vs)), x2: x(Math.max(...vs)), y1: y, y2: y, stroke: "#C9CEDB", "stroke-width": 3 });
+    el(s, "circle", { cx: x(r[1]), cy: y, r: 9, fill: NAVY });
+    el(s, "circle", { cx: x(r[2]), cy: y, r: 8, fill: "#fff", stroke: NAVY, "stroke-width": 3 });
+    const d = x(r[3]);
+    el(s, "rect", { x: d - 7, y: y - 7, width: 14, height: 14, fill: CRIMS, transform: `rotate(45 ${d} ${y})` });
+  });
+  document.getElementById("dots").appendChild(s);
+})();
+
+// slide 4: GQA split
+(function () {
+  const rows = [["Open questions", [79, 81, 71], CRIMS], ["Yes/no: verify", [54, 56, 46], NAVY], ["Yes/no: logical", [54, 47, 54], NAVY], ["Pick one of two", [43, 56, 38], NAVY]];
+  const W = 680, left = 190, rh = 58, H = rows.length * rh + 40, s = svg(W, H);
+  const x = v => left + v / 100 * (W - left - 70);
+  rows.forEach((r, i) => {
+    const y = i * rh + 10, lo = Math.min(...r[1]), hi = Math.max(...r[1]);
+    el(s, "text", { x: left - 18, y: y + 25, fill: "#1A1F2E", "font-size": 19, "text-anchor": "end" }, r[0]);
+    el(s, "rect", { x: x(0), y: y + 6, width: x(lo) - x(0), height: 28, fill: r[2] });
+    el(s, "rect", { x: x(lo), y: y + 6, width: x(hi) - x(lo), height: 28, fill: r[2], opacity: .35 });
+    el(s, "text", { x: x(hi) + 10, y: y + 27, fill: r[2], "font-size": 18, "font-weight": 600 }, `${lo} to ${hi}%`);
+  });
+  el(s, "text", { x: left, y: H - 4, fill: MUTED, "font-size": 15 }, "share of depth; bar spans the 3 models; same 300 questions");
+  document.getElementById("gqa").appendChild(s);
+})();
+
+// slide 5: dumbbells
+(function () {
+  const groups = [
+    ["Reading tasks, asked as multiple choice", [
+      ["Qwen 7B · TextVQA", 82, 29, "open 23 · MC 8 (of 28)"],
+      ["Qwen 7B · TextVQA, options from the same image", 82, 36, "open 23 · MC 10"],
+      ["InternVL · TextVQA", 79, 38, "open 19 · MC 9 (of 24)"],
+      ["Qwen 7B · ChartQA", 82, 54, "open 23 · MC 15"],
+      ["InternVL · ChartQA", 75, 50, "open 18 · MC 12"]]],
+    ["Multiple-choice tasks, asked open-ended", [
+      ["Qwen 7B · MMBench", 71, 36, "open 20 · MC 10"],
+      ["Qwen 7B · AI2D", 82, 54, "open 23 · MC 15"],
+      ["InternVL · MMBench", 71, 38, "open 17 · MC 9"],
+      ["InternVL · AI2D", 79, 58, "open 19 · MC 14"]]]];
+  const W = 1408, left = 470, right = 210, rh = 38, gh = 38;
+  const H = groups.reduce((a, g) => a + gh + g[1].length * rh, 0) + 36, s = svg(W, H);
+  const x = v => left + (v - 20) / 70 * (W - left - right);
+  let y = 0;
+  for (const t of [20, 40, 60, 80]) {
+    el(s, "line", { x1: x(t), x2: x(t), y1: 8, y2: H - 30, stroke: LINE, "stroke-width": 1.5 });
+    el(s, "text", { x: x(t), y: H - 8, fill: MUTED, "font-size": 15, "text-anchor": "middle" }, t + "%");
+  }
+  for (const [gname, rows] of groups) {
+    el(s, "text", { x: 0, y: y + 28, fill: MUTED, "font-size": 16, "font-weight": 600, "letter-spacing": ".05em" }, gname.toUpperCase());
+    y += gh;
+    for (const [lab, open, mc, note] of rows) {
+      const cy = y + rh / 2;
+      el(s, "text", { x: left - 24, y: cy + 6, fill: "#1A1F2E", "font-size": 18, "text-anchor": "end" }, lab);
+      el(s, "line", { x1: x(mc), x2: x(open), y1: cy, y2: cy, stroke: "#C9CEDB", "stroke-width": 5 });
+      el(s, "circle", { cx: x(open), cy, r: 10, fill: CRIMS });
+      el(s, "circle", { cx: x(mc), cy, r: 10, fill: NAVY });
+      el(s, "text", { x: W - right + 20, y: cy + 6, fill: MUTED, "font-size": 15 }, note);
+      y += rh;
+    }
+  }
+  document.getElementById("dumb").appendChild(s);
+})();
+
+// slide 6: grouped bars
+(function () {
+  const data = [["Qwen 7B", 0.2, 17.5], ["Qwen 3B", 5.5, 22.8], ["InternVL 2B", 7.9, "23.0"]];
+  const W = 800, H = 440, base = 380, top = 30, left = 56, s = svg(W, H);
+  const y = v => base - v / 25 * (base - top);
+  for (const t of [0, 5, 10, 15, 20, 25]) {
+    el(s, "line", { x1: left, x2: W, y1: y(t), y2: y(t), stroke: t ? LINE : "#1A1F2E", "stroke-width": t ? 1.2 : 2 });
+    el(s, "text", { x: left - 10, y: y(t) + 5, fill: MUTED, "font-size": 15, "text-anchor": "end" }, t + "%");
+  }
+  const gw = (W - left) / 3, bw = 84;
+  data.forEach((d, i) => {
+    const cx = left + gw * i + gw / 2;
+    el(s, "rect", { x: cx - bw - 6, y: y(d[1]), width: bw, height: base - y(d[1]), fill: SOFT });
+    el(s, "rect", { x: cx + 6, y: y(+d[2]), width: bw, height: base - y(+d[2]), fill: NAVY });
+    el(s, "text", { x: cx - bw / 2 - 6, y: y(d[1]) - 10, fill: MUTED, "font-size": 19, "text-anchor": "middle", "font-weight": 600 }, d[1] + "%");
+    el(s, "text", { x: cx + bw / 2 + 6, y: y(+d[2]) - 10, fill: NAVY, "font-size": 22, "text-anchor": "middle", "font-weight": 700 }, d[2] + "%");
+    el(s, "text", { x: cx, y: base + 32, fill: "#1A1F2E", "font-size": 19, "text-anchor": "middle", "font-weight": 500 }, d[0]);
+  });
+  document.getElementById("bars").appendChild(s);
+})();
+
+// ?slide=N shows one slide only (used for image export)
+const m = location.search.match(/slide=(\d+)/);
+if (m) { document.body.classList.add("solo"); document.querySelectorAll(".slide")[+m[1] - 1].classList.add("on"); }
+</script>
+</body>
+</html>

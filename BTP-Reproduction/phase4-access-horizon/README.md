@@ -124,7 +124,7 @@ same limits as the earlier arms (AI2D 500, the rest full).
 ## Limitations
 
 - Three models, two families, 200-300 samples per task.
-- Multiple-choice controls still score 0.55-0.66 without the image; open-ended MMBench and
+- Multiple-choice reading controls still score 0.51-0.61 without the image (0.66 on the fully hard subset); open-ended MMBench and
   AI2D score only 0.28-0.40, so those curves are noisier.
 - POPE scores below chance under partial access, so per-sample horizons on yes/no tasks are
   unreliable; task-level horizons are used instead.
@@ -145,6 +145,7 @@ phase4-access-horizon/
                            GQA split, format control, schedule simulation
   results/btp_format/      lmms-eval scores of format-aware BTP (closed-form tasks)
   figures/                 curves, horizons, cross-model and format-control figures
+  report/                  8-slide summary deck (pdf, and the html source it is built from)
 ```
 
 | Script | Purpose |
