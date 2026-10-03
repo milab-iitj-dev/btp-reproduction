@@ -5,7 +5,7 @@ p.layout = "LAYOUT_WIDE";
 p.author = "P. S. Kedar";
 p.title = "Visual Token Pruning and Text-Reading Performance in Vision-Language Models";
 
-const FIG = "" + require("path").join(__dirname, "figs") + "/";
+const FIG = "" + require("path").join(__dirname, "..", "figures") + "/";
 // one primary, one accent, neutrals
 const NAVY = "1E2761", ACC = "A3312F", INK = "1A1A1A", MUTE = "5A5A5A",
       FILL = "F4F5F8", LINE = "C9CED8", ACCFILL = "FBEDEC", WHITE = "FFFFFF";

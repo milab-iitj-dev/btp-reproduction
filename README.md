@@ -34,20 +34,33 @@ Beyond Local Optimization"** (NeurIPS 2025, [arXiv:2505.22038](https://arxiv.org
   TextVQA into multiple choice moves its depth from layer 23 to 8 on Qwen; asking MMBench
   without options moves it from 10 to 20. A schedule that reads the format from the prompt
   saves 17.5 to 23% of visual layers at 98% accuracy, where a single cut saves under 8%.
+  Inside BTP, the same rule keeps the deletion on closed-form tasks with no loss and removes
+  it on open-ended ones, recovering reading from 28.4% to 77.9% of baseline.
 
 ---
 
 ## Repository layout
 
-| Path | Contents |
+Every phase folder has the same shape: `README.md` (question, answer, file list),
+`scripts/`, `results/`, `figures/` (where a phase has figures), `report/`.
+
+```
+BTP-Reproduction/
+  RESULTS.md                 every number from all four phases, in one place
+  phase1-reproduction/       does BTP reproduce?               yes, within ~1 point
+  phase2-text-failure/       where does it break?               reading tasks collapse
+  phase3-mechanism/          why?                               a layer-23 deletion; access threshold
+    RESULTS_LOG.md           run-by-run record, incl. invalid runs and withdrawn claims
+  phase4-access-horizon/     does the needed depth depend on the task, and can pruning use it?
+```
+
+| Looking for | Go to |
 |---|---|
-| [`BTP-Reproduction/RESULTS.md`](BTP-Reproduction/RESULTS.md) | Every result, all four phases, with conclusions and withdrawn claims |
-| `BTP-Reproduction/phase1-reproduction/` | Phase 1: SLURM scripts, lmms-eval scores, deck and workbook |
-| `BTP-Reproduction/phase2-text-failure/` | Phase 2: report, deck, figures, scripts, results |
-| `BTP-Reproduction/phase3-mechanism/` | Phase 3: the cause, the threshold, the tool |
-| `BTP-Reproduction/phase3-mechanism/RESULTS_LOG.md` | Run-by-run record, VERIFIED and HYPOTHESIS marked separately |
-| `BTP-Reproduction/phase3-mechanism/report/` | Phase 3 report and deck, docx/pptx and pdf, plus build scripts |
-| [`BTP-Reproduction/phase4-access-horizon/`](BTP-Reproduction/phase4-access-horizon/README.md) | Phase 4: access horizons across tasks and models, format controls, schedule |
+| A number | `BTP-Reproduction/RESULTS.md` |
+| A phase's story and file list | `BTP-Reproduction/phaseN-*/README.md` |
+| Reports and decks | `BTP-Reproduction/phaseN-*/report/` |
+| Raw scores | `BTP-Reproduction/phaseN-*/results/` (Phases 1 and 2 have an `INDEX.csv`) |
+| Job scripts and code | `BTP-Reproduction/phaseN-*/scripts/` |
 
 ---
 
@@ -59,6 +72,7 @@ Beyond Local Optimization"** (NeurIPS 2025, [arXiv:2505.22038](https://arxiv.org
 - `make_internvl_btp.py` implements BTP-style pruning for InternVL2 by injecting into its
   Hub remote code. The authors released patches for LLaVA and Qwen only.
 - `e9` to `e13` job scripts and their `submit_*.sh` chains reproduce every Phase 3 result.
+- All of these live in `BTP-Reproduction/phase3-mechanism/scripts/`.
 
 ---
 
@@ -120,7 +134,7 @@ grep -c "def div_prune" $MODFILE                     # 1 means BTP is live, 0 me
 - Phase 1 reproduction: **done**
 - Phase 2 failure-mode study: **done**
 - Phase 3 cause, threshold and tooling: **done**
-- Phase 4 access horizons and format controls: **done**; format-aware BTP on GPU in progress
+- Phase 4 access horizons, format controls and format-aware BTP: **done**
 - Open: per-question format detection inside the model, manuscript
 
 **Not reproducible:** LLaVA-1.6. The authors never released the LLaVA-Next patch.

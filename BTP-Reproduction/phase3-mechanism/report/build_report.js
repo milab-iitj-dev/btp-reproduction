@@ -7,7 +7,7 @@ const {
   LevelFormat, TableLayoutType, VerticalAlign
 } = d;
 
-const FIG = "/sessions/modest-epic-cerf/mnt/divya_maam/reports/figs/";
+const FIG = require("path").join(__dirname, "..", "figures") + "/";
 const BODY = "Times New Roman", HEAD = "Kalam", MONO = "Consolas";
 const NAVY = "1F3864", CRIMS = "A3312F", TEAL = "1D6B6B", GREY = "444444", BLACK = "000000";
 
@@ -384,7 +384,7 @@ children.push(TBL(
   ["Artefact", "Location"],
   [["Run-by-run record", "phase3-mechanism/RESULTS_LOG.md, observed output marked VERIFIED, untested statements HYPOTHESIS"],
    ["Scripts and jobs", "phase3-mechanism/, job scripts e9 to e13 and their submit chains"],
-   ["Threshold tool", "phase3-mechanism/measure_visual_depth.py, runs on any Hugging Face VLM"],
+   ["Threshold tool", "phase3-mechanism/scripts/measure_visual_depth.py, runs on any Hugging Face VLM"],
    ["Figures and this file", "report/make_depth_figures.py, make_workflow_figure.py and build_report.js, so every number comes out of a script"],
    ["Repository", "github.com/milab-iitj-dev/btp-reproduction, commit 9214e75"],
    ["Jobs", "411681, 412401, 414662, 416734-5, 416896-904, 417968, 418974-419012, 421205-421237, 423959"],
@@ -419,6 +419,6 @@ const doc = new Document({
 });
 
 Packer.toBuffer(doc).then(buf => {
-  fs.writeFileSync("/sessions/modest-epic-cerf/work/BTP_Phase3_Report.docx", buf);
+  fs.writeFileSync(require("path").join(__dirname, "BTP_Phase3_Report.docx"), buf);
   console.log("WROTE", buf.length, "bytes");
 });

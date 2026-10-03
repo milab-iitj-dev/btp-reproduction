@@ -652,7 +652,7 @@ Verified in the job log before trusting any number:
 Remaining in chain: docvqa_val, chartqa, ai2d (limit 500), then pope, mme, mmbench_en_dev,
 gqa, scienceqa_img (full).
 
-Scripts: phase3-mechanism/e9_job.sh, phase3-mechanism/submit_e9.sh
+Scripts: phase3-mechanism/scripts/e9_job.sh, phase3-mechanism/scripts/submit_e9.sh
 
 ### E9 full suite result (jobs 416896-416904, 417968), VERIFIED
 
@@ -774,7 +774,7 @@ If the pattern reproduces here, position handling and patch layout are ruled out
 ### Implementation
 
 The BTP authors released patches for LLaVA and Qwen2.5-VL only, so we implemented the
-pruning ourselves: phase3-mechanism/make_internvl_btp.py injects into the two remote-code
+pruning ourselves: phase3-mechanism/scripts/make_internvl_btp.py injects into the two remote-code
 files InternVL2 ships on the Hub. Arms are selected by the IVL_MODE env var:
 
   unpatched   pristine files, true baseline

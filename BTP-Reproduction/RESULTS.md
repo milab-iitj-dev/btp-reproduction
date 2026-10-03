@@ -170,7 +170,7 @@ earlier draft conflated the two and reported Qwen as 83.9%.
 
 ### Instrument validation
 
-`phase3-mechanism/measure_visual_depth.py` repeats the measurement with a forward hook and
+`phase3-mechanism/scripts/measure_visual_depth.py` repeats the measurement with a forward hook and
 no source patching. Job 423959, different sample set:
 
 | Layers with access | Source patch | Forward hook |
@@ -220,6 +220,10 @@ keeps half of what the image adds over the no-image floor.
   per-task rule: 17.5-23.0% of visual layers saved against 0.2-7.9% for one cut, worst task
   at 97.9-98.5%. The released BTP deletion saves 21.4% on Qwen 7B but keeps 22% of the worst
   task. Cuts transfer unchanged to held-out format variants.
+- **Format-aware BTP on GPU (Qwen 7B).** Final deletion after layer 20 for closed-form tasks,
+  none for open-ended. Closed-form tasks match or beat both released and corrected BTP
+  (POPE 86.3, MME 1664.1, MMBench 79.6, ScienceQA 85.1, AI2D 79.6); open-ended tasks keep
+  corrected BTP's scores (TextVQA 80.5, DocVQA 76.8, ChartQA 45.4).
 
 ---
 

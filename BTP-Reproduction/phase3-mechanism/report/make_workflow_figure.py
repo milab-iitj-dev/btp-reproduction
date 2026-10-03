@@ -6,7 +6,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch
 
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figs")
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "figures")
 os.makedirs(OUT, exist_ok=True)
 plt.rcParams.update({"font.family": "serif",
                      "font.serif": ["Times New Roman", "DejaVu Serif"], "font.size": 9})

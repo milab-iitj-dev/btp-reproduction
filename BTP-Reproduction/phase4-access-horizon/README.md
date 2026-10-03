@@ -94,8 +94,32 @@ to the format-control sets (98.3-100.6% kept). Measured end-to-end time falls to
 
 ### 4. Format-aware BTP on GPU
 
-In progress: released BTP with the final deletion moved to layer 21 for closed-form tasks;
-open-ended tasks use corrected BTP (Phase 3 E9). See `p4_btp_format_job.sh`.
+Released BTP with one change: the final "delete all remaining image tokens" step runs after
+layer 20 for closed-form tasks and never for open-ended ones. The open-ended arm is identical
+to corrected BTP from Phase 3, so only closed-form tasks needed new runs. Qwen2.5-VL-7B,
+same limits as the earlier arms (AI2D 500, the rest full).
+
+| Task | Format | Baseline | Released BTP | Corrected BTP | Format-aware BTP |
+|---|---|---|---|---|---|
+| POPE | closed | 87.6 | 86.2 | 86.3 | **86.3** |
+| MME (perception) | closed | 1674.5 | 1658.7 | 1651.2 | **1664.1** |
+| MMBench-EN | closed | 83.7 | 79.3 | 79.0 | **79.6** |
+| ScienceQA-IMG | closed | 88.1 | 85.1 | 85.0 | **85.1** |
+| AI2D | closed | 86.4 | 79.6 | 79.2 | **79.6** |
+| TextVQA | open | 86.2 | 23.3 | 80.5 | **80.5** |
+| DocVQA (ANLS) | open | 94.7 | 19.2 | 76.8 | **76.8** |
+| ChartQA | open | 76.8 | 29.0 | 45.4 | **45.4** |
+| GQA | mixed, run as open | 60.9 | 55.9 | 58.8 | **58.8** |
+
+- Closed-form tasks lose nothing when the image is dropped two layers earlier than the
+  released code does; all five match or beat both released and corrected BTP.
+- Open-ended tasks keep corrected BTP's recovery: reading tasks at 77.9% of baseline against
+  28.4% for released BTP.
+- So the format rule keeps the deletion where it is safe and removes it where it is not.
+  Inside BTP the extra compute saved is small, because only 12.5% of visual tokens remain
+  after layer 16; the larger saving is the deletion-only schedule in section 3.
+- ChartQA stays at 59% of baseline under any BTP arm: there the graded pruning, not the
+  deletion, is the main cost (Phase 3).
 
 ## Limitations
 
@@ -106,30 +130,41 @@ open-ended tasks use corrected BTP (Phase 3 E9). See `p4_btp_format_job.sh`.
   unreliable; task-level horizons are used instead.
 - ChartQA and DocVQA images capped at 2048 tokens on Qwen and 6 tiles on InternVL, so
   baselines differ slightly from official numbers.
-- The schedule result is deletion only; its interaction with graded pruning is what step 4 tests.
+- The schedule result in section 3 is deletion only; section 4 checks it inside BTP on one model.
 
 ## Files
 
-| File | Purpose |
+```
+phase4-access-horizon/
+  README.md                this file
+  scripts/                 all code (run from the workspace root on the HPC)
+  results/raw/             per-sample deletion sweeps: <model>_<task>_n<N>.json
+                           (<task>_mc, _hard, _fmc, _fopen are the format controls)
+                           plus gqa_types.json and textvqa_hard_ids.json
+  results/summary/         horizon tables (*_summary.csv), rank correlations,
+                           GQA split, format control, schedule simulation
+  results/btp_format/      lmms-eval scores of format-aware BTP (closed-form tasks)
+  figures/                 curves, horizons, cross-model and format-control figures
+```
+
+| Script | Purpose |
 |---|---|
 | `measure_access_horizon.py` | Deletion sweep and analysis (`--analyse`); all task loaders and format variants |
 | `internvl_adapter.py` | InternVL2 support for the hook tool |
-| `compare_models.py` | Cross-model rank correlation and relative-depth figures |
+| `compare_models.py` | Cross-model rank correlation and relative-depth figure |
 | `make_horizon_figure.py` | Per-model curves and horizon figures |
 | `gqa_types.py`, `gqa_split.py` | GQA question types and the per-type split |
 | `hard_ids.py` | Lists TextVQA questions whose distractors all come from the same image |
 | `format_compare.py` | Paired open-ended vs multiple-choice comparison |
 | `schedule_sim.py` | Offline pruning-schedule evaluation |
-| `p4_pilot_job.sh`, `p4_ivl_job.sh` | SLURM jobs (Qwen, InternVL) |
-| `submit_p4_*.sh` | Submitters for pilot, full suite, InternVL, format, hard, mirror and BTP runs |
-| `p4_btp_format_job.sh` | Format-aware BTP on the closed-form suite |
-| `results/` | Raw per-sample results (`<model>_<task>_n<N>.json`) and summary tables |
-| `figures/` | Curves, horizons, cross-model (`qwen7b_vs_qwen3b_vs_ivl2b_relative.png`) and format-control figures |
+| `p4_pilot_job.sh`, `p4_ivl_job.sh` | SLURM jobs for the sweeps (Qwen, InternVL) |
+| `p4_btp_format_job.sh` | Format-aware BTP on one closed-form task |
+| `submit_p4_*.sh` | Submitters: pilot, full, ivl, format, hard, mirror, btp_format |
 
-Analysis commands, run from this folder:
+Analysis commands, run from `scripts/`:
 
 ```bash
-python measure_access_horizon.py --analyse results/qwen7b_textvqa_n200.json
-python format_compare.py --results results --tags qwen7b,ivl2b --names "Qwen2.5-VL-7B,InternVL2-2B" --out results
-python schedule_sim.py --results results --out results
+python measure_access_horizon.py --analyse ../results/raw/qwen7b_textvqa_n200.json
+python format_compare.py --results ../results/raw --tags qwen7b,ivl2b --names "Qwen2.5-VL-7B,InternVL2-2B" --out ../results/summary
+python schedule_sim.py --results ../results/raw --out ../results/summary
 ```

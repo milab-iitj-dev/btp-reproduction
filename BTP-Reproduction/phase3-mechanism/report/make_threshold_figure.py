@@ -2,7 +2,7 @@
 import os, matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figs")
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "figures")
 plt.rcParams.update({"font.family": "serif", "font.serif": ["DejaVu Serif"], "font.size": 12,
                      "axes.spines.top": False, "axes.spines.right": False})
 NAVY, CRIMS, GREY = "#1E2761", "#A3312F", "#8A8A8A"

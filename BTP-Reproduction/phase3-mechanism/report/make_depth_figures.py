@@ -10,8 +10,8 @@ disabled in both, so the only variable is the depth of the deletion.
   InternVL2-2B    jobs 419005-419012, 421234-421237, baseline 0.7156, 24 layers
 
 Writes:
-  figs/fig7_depth_sweep.png   two panels, absolute depth and relative depth
-  figs/fig8_one_layer.png     what the shipped constant costs
+  ../figures/fig7_depth_sweep.png   two panels, absolute depth and relative depth
+  ../figures/fig8_one_layer.png     what the shipped constant costs
 
 Run from the reports/ directory:
   python make_depth_figures.py
@@ -22,7 +22,7 @@ import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
-OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "figs")
+OUT = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "figures")
 os.makedirs(OUT, exist_ok=True)
 
 plt.rcParams.update({
