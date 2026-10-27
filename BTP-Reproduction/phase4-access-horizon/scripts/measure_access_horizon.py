@@ -68,7 +68,8 @@ import time
 HERE = os.path.dirname(os.path.abspath(__file__))
 # Reuse the Phase 3 instrument rather than copying it. The deletion hook there was validated
 # against source patching (job 423959), so it must not fork.
-for cand in (os.path.join(HERE, "..", "phase3-mechanism"), os.path.join(HERE, "phase3-mechanism")):
+for cand in (os.path.join(HERE, "..", "..", "phase3-mechanism", "scripts"),
+             os.path.join(HERE, "..", "phase3-mechanism"), os.path.join(HERE, "phase3-mechanism")):
     if os.path.isfile(os.path.join(cand, "measure_visual_depth.py")):
         sys.path.insert(0, os.path.abspath(cand))
         break
