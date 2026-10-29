@@ -339,10 +339,18 @@ def main():
 
     import torch
     from measure_visual_depth import VisualTokenDeleter, pick_loader
-    model, layers, run, generate = pick_loader(args.model)(args.model)
+    # InternVL goes through its chat API, so only answers are recorded there: no confidence
+    # and no logit lens (Experiment 4 is Qwen only).
+    ivl = "internvl" in args.model.lower()
+    bind = None
+    if ivl:
+        from internvl_adapter import load_internvl
+        model, layers, run, generate, bind, _ = load_internvl(args.model)
+    else:
+        model, layers, run, generate = pick_loader(args.model)(args.model)
     L = len(layers)
     _, _, proc = run(samples[0]["image"], samples[0]["question"], suffix=samples[0]["suffix"])
-    sc = Scorer(model, proc)
+    sc = None if ivl else Scorer(model, proc)
     closed = args.cond in CLOSED
     max_new = MAX_NEW.get(args.cond, 8)
     ids = [s["id"] for s in samples]
@@ -368,9 +376,12 @@ def main():
     if "noimage" not in res:
         flags, preds = [], []
         for s in samples:
-            msg = [{"role": "user", "content": [{"type": "text", "text": s["question"] + s["suffix"]}]}]
-            text = proc.apply_chat_template(msg, tokenize=False, add_generation_prompt=True)
-            inp = proc(text=[text], padding=True, return_tensors="pt").to("cuda")
+            if ivl:
+                inp = {"pixel_values": None, "question": s["question"] + s["suffix"]}
+            else:
+                msg = [{"role": "user", "content": [{"type": "text", "text": s["question"] + s["suffix"]}]}]
+                text = proc.apply_chat_template(msg, tokenize=False, add_generation_prompt=True)
+                inp = proc(text=[text], padding=True, return_tensors="pt").to("cuda")
             pred = generate(inp, max_new_tokens=max_new)
             preds.append(pred)
             flags.append(score(args.cond, pred, s))
@@ -379,7 +390,7 @@ def main():
         print("  no image at all: acc {:.4f}".format(sum(flags) / len(flags)), flush=True)
 
     # Logit lens on the unmodified model.
-    if "lens" not in res:
+    if "lens" not in res and not ivl:
         rows = []
         for s in samples:
             inp, _, _ = run(s["image"], s["question"], suffix=s["suffix"])
@@ -389,6 +400,8 @@ def main():
         print("  logit lens saved", flush=True)
 
     deleter = VisualTokenDeleter(model, layers, 0)
+    if bind is not None:
+        bind(deleter)       # InternVL: positions are set from inside model.generate
     for l in [L] + list(range(L)):
         if str(l) in res["per_layer"]:
             continue
@@ -410,14 +423,15 @@ def main():
                     print("  failed on", s["id"], repr(e))
                     failed += 1
                 # A confidence failure must not discard the generated answer.
-                try:
-                    deleter.begin_sample(positions)
-                    if closed:
-                        p, m, top = sc.closed(args.cond, s, inp)
-                    else:
-                        p, m, top = sc.gold_prob(s, inp), None, None
-                except Exception as e:
-                    print("  confidence failed on", s["id"], repr(e))
+                if sc is not None:
+                    try:
+                        deleter.begin_sample(positions)
+                        if closed:
+                            p, m, top = sc.closed(args.cond, s, inp)
+                        else:
+                            p, m, top = sc.gold_prob(s, inp), None, None
+                    except Exception as e:
+                        print("  confidence failed on", s["id"], repr(e))
                 preds.append(pred)
                 flags.append(score(args.cond, pred, s))
                 cp.append(p)
