@@ -109,6 +109,20 @@ questions the options already give away have a trivial decision layer of 0.
   layers after the image stops being needed. In open-ended answering it emerges only at
   layer 27, so the image is needed almost to the end.
 
+### The same split in the Phase 4 data
+
+Re-reading the Phase 4 sweeps with the same 95% safe-layer rule (no new runs) gives the same two
+clusters in every model and task, as a share of decoder depth:
+
+| Model | Closed-form tasks and controls | Open-ended tasks and controls |
+|---|---|---|
+| Qwen2.5-VL-7B (28 layers) | 50-57% (TextVQA MC 14, MMBench 15, AI2D 16, ChartQA MC 16) | 82-89% (MMBench open 23, ChartQA 24, AI2D open 25) |
+| Qwen2.5-VL-3B (36 layers) | 42-61% (ScienceQA 15; MMBench, POPE, AI2D 22) | 89-92% (ChartQA, GQA 32; DocVQA, TextVQA 33) |
+| InternVL2-2B (24 layers) | 46-58% (TextVQA MC 11, MMBench 13, ChartQA MC 13, AI2D 14, POPE 14) | 79-83% (GQA, AI2D open 19; TextVQA, DocVQA, ChartQA, MMBench open 20) |
+
+Within open-ended TextVQA the depth does not depend on answer length or type: one-word numbers,
+one-word text and multi-word answers all have a median per-question layer of 23.
+
 ## What it means
 
 - Answer format splits into two regimes: **select** (yes/no, any number of options, easy or
