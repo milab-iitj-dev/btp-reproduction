@@ -248,31 +248,33 @@ def main():
 
     # ---- Experiment 4
     say("EXPERIMENT 4: when does the decision become stable?")
-    say("  decision layer = first withdrawal layer from which the model's choice no longer changes")
-    say("  (closed: top option; open/fill: the answer text), questions answered correctly with the image.")
-    say("  lens layer = first layer at which the correct answer is the model's internal top choice")
-    say("  (logit lens on the unmodified run) and stays so.")
-    say("  {:<34} {:>10} {:>9} {:>11} {:>10} {:>9}".format(
-        "condition", "safe layer", "decision", "conf. 90%", "lens", "rho"))
-    fig, ax = plt.subplots(1, 2, figsize=(10, 3.6))
+    say("  Image-dependent questions only: right with the image, wrong when it is withdrawn at")
+    say("  layer 0. (Questions the options already give away have a trivial decision layer of 0.)")
+    say("  decision = median first withdrawal layer from which the model's choice no longer changes")
+    say("  (closed: top option; open/fill: the answer text). p90 = 90th percentile of the same.")
+    say("  conf. 90% = first layer from which mean confidence in the correct answer keeps 90% of its")
+    say("  full-image gain. lens = median first layer at which the correct answer is the unmodified")
+    say("  model's internal top choice and stays so (logit lens).")
+    say("  {:<34} {:>5} {:>6} {:>9} {:>5} {:>10} {:>6}".format(
+        "condition", "n", "safe", "decision", "p90", "conf. 90%", "lens"))
+    fig, ax = plt.subplots(1, 3, figsize=(14, 3.6))
+    hist_data = {}
     for c in ["yesno", "mc2", "mc4", "mc8", "mc4_type", "fill", "open"]:
         if c not in R:
             continue
         r = R[c]
         closed = c not in ("open", "fill")
-        dec, hz = [], []
-        for i in range(n):
-            if not r["per_layer"][str(L)][i]:
-                continue
+        dep = [i for i in range(n) if r["per_layer"][str(L)][i] and not r["per_layer"]["0"][i]]
+        dec = []
+        for i in dep:
             if closed:
                 seq = [r["conf_top"][str(l)][i] for l in range(L + 1)]
             else:
                 seq = [_normtext(r["predictions"][str(l)][i]) for l in range(L + 1)]
-            d = stable_layer(seq, seq[L])
-            ph = per_sample_horizon(r, i)
-            dec.append(d)
-            if d is not None and ph is not None:
-                hz.append((d, ph))
+            dec.append(stable_layer(seq, seq[L]))
+        hist_data[c] = [per_sample_horizon(r, i) for i in dep]
+        dsort = sorted(x for x in dec if x is not None)
+        p90 = dsort[int(.9 * (len(dsort) - 1))] if dsort else None
         cp = [mean(r["conf_p"][str(l)]) for l in range(L + 1)]
         g = norm_curve(cp)
         c90 = None
@@ -282,21 +284,30 @@ def main():
             else:
                 break
         lens_layer = []
-        for i, rows_i in enumerate(r.get("lens", [])):
-            if not r["per_layer"][str(L)][i]:
+        lens = r.get("lens", [])
+        for i in dep:
+            if i >= len(lens):
                 continue
-            top = [row[1] for row in rows_i]
-            s = stable_layer(top, 1)
+            s = stable_layer([row[1] for row in lens[i]], 1)
             lens_layer.append(None if s is None else s + 1)     # layers counted from 1
-        rho = spearman([x for x, _ in hz], [y for _, y in hz]) if len(hz) > 5 else float("nan")
-        say("  {:<34} {:>10} {:>9} {:>11} {:>10} {:>9.2f}".format(
-            NAME[c], rows[c]["safe"], median(dec), c90, median(lens_layer), rho))
+        say("  {:<34} {:>5} {:>6} {:>9} {:>5} {:>10} {:>6}".format(
+            NAME[c], len(dep), rows[c]["safe"], median(dec), p90, c90, median(lens_layer)))
         ax[0].plot(range(L + 1), g, "-o", ms=2.2, lw=1.4, color=COLOR[c], label=NAME[c])
         if r.get("lens"):
             lp = [mean([row[l][0] for row in r["lens"]]) for l in range(L)]
             ax[1].plot(range(1, L + 1), lp, "-", lw=1.5, color=COLOR[c], label=NAME[c])
-    say("  rho = per-question Spearman correlation between the decision layer and the layer from")
-    say("  which that question stays correct (its own safe layer).")
+    say("  Per-question layer from which each image-dependent question stays correct:")
+    for c, v in hist_data.items():
+        v = [x for x in v if x is not None]
+        say("  {:<34} beyond 16: {:>3} of {:>3}   at 22 or later: {:>3}".format(
+            NAME[c], sum(1 for x in v if x > 16), len(v), sum(1 for x in v if x >= 22)))
+    sel = [c for c in ("mc4_type", "yesno", "fill", "open") if c in hist_data]
+    for k, c in enumerate(sel):
+        v = [x for x in hist_data[c] if x is not None]
+        ax[2].hist(v, bins=range(0, L + 2), alpha=.55, color=COLOR[c], label=NAME[c])
+    ax[2].set_xlabel("layer from which the question stays correct")
+    ax[2].set_ylabel("image-dependent questions")
+    ax[2].legend(frameon=False, fontsize=7)
     ax[0].set_xlabel("layers that kept the image")
     ax[0].set_ylabel("confidence in the correct answer\n(share of full-image confidence)")
     ax[0].axhline(.9, color=GREY, ls="--", lw=.8)

@@ -1,0 +1,58 @@
+Phase 5, Qwen2.5-VL-7B, TextVQA, 189 questions (same questions in every condition), 28 decoder layers
+safe = first layer keeping >= 95% of full-image accuracy for good; h50 = Phase 4 horizon. Brackets: 95% bootstrap intervals.
+
+EXPERIMENT 1: number of choices
+  condition                             full  no image   floor     safe layer          h50
+  open-ended                           0.910     0.053   0.074   27 [27,28]   23 [23,23]
+  8 options                            0.989     0.545   0.503   15 [10,15]    5 [ 5, 7]
+  4 options                            1.000     0.672   0.608   14 [12,15]    7 [ 5, 9]
+  2 options                            1.000     0.720   0.735   13 [12,15]    9 [ 6,12]
+  open-ended minus 8 options: safe +12 [12, 17]   h50 +18 [15, 18]
+  8 options minus 4 options: safe +1 [-3, 3]   h50 -2 [-4, 1]
+  4 options minus 2 options: safe +1 [-2, 2]   h50 -2 [-6, 2]
+  open-ended minus 2 options: safe +14 [12, 16]   h50 +14 [11, 17]
+
+EXPERIMENT 2: same-type distractors and the no-image control
+  condition                             full  no image   floor     safe layer          h50
+  4 options                            1.000     0.672   0.608   14 [12,15]    7 [ 5, 9]
+  4 options, same-type distractors     0.989     0.582   0.534   15 [13,15]    8 [ 6, 9]
+  same-category distractors for all 3 options: 185 of 189 questions
+  chance for 4 options: 0.250
+  open-ended minus 4 options, same-type distractors: safe +12 [12, 15]   h50 +15 [14, 17]
+  4 options, same-type distractors minus 4 options: safe +1 [-1, 3]   h50 +1 [-1, 3]
+
+EXPERIMENT 3: four response modes
+  condition                             full  no image   floor     safe layer          h50
+  yes / no                             0.958     0.534   0.556   15 [15,15]    9 [ 8,13]
+  4 options                            1.000     0.672   0.608   14 [12,15]    7 [ 5, 9]
+  fill-in-the-blank                    0.783     0.159   0.175   28 [27,28]   23 [23,23]
+  open-ended                           0.910     0.053   0.074   27 [27,28]   23 [23,23]
+  open-ended minus fill-in-the-blank: safe -1 [-1, 1]   h50 +0 [0, 0]
+  fill-in-the-blank minus 4 options: safe +14 [13, 16]   h50 +16 [14, 18]
+  4 options minus yes / no: safe -1 [-3, 0]   h50 -2 [-6, 0]
+  open-ended minus yes / no: safe +12 [12, 13]   h50 +14 [10, 15]
+
+EXPERIMENT 4: when does the decision become stable?
+  Image-dependent questions only: right with the image, wrong when it is withdrawn at
+  layer 0. (Questions the options already give away have a trivial decision layer of 0.)
+  decision = median first withdrawal layer from which the model's choice no longer changes
+  (closed: top option; open/fill: the answer text). p90 = 90th percentile of the same.
+  conf. 90% = first layer from which mean confidence in the correct answer keeps 90% of its
+  full-image gain. lens = median first layer at which the correct answer is the unmodified
+  model's internal top choice and stays so (logit lens).
+  condition                              n   safe  decision   p90  conf. 90%   lens
+  yes / no                              78     15        10    15         15      4
+  2 options                             50     13         8    15         15     19
+  4 options                             74     14         7    14         15     22
+  8 options                             92     15         6    15         15     24
+  4 options, same-type distractors      87     15         8    15         15     22
+  fill-in-the-blank                    118     28        23    28         28     26
+  open-ended                           159     27        23    27         27     27
+  Per-question layer from which each image-dependent question stays correct:
+  yes / no                           beyond 16:   1 of  78   at 22 or later:   1
+  2 options                          beyond 16:   0 of  50   at 22 or later:   0
+  4 options                          beyond 16:   0 of  74   at 22 or later:   0
+  8 options                          beyond 16:   0 of  92   at 22 or later:   0
+  4 options, same-type distractors   beyond 16:   1 of  87   at 22 or later:   0
+  fill-in-the-blank                  beyond 16: 110 of 118   at 22 or later: 105
+  open-ended                         beyond 16: 156 of 159   at 22 or later: 148

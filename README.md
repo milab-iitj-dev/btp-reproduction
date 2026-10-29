@@ -36,6 +36,13 @@ Beyond Local Optimization"** (NeurIPS 2025, [arXiv:2505.22038](https://arxiv.org
   saves 17.5 to 23% of visual layers at 98% accuracy, where a single cut saves under 8%.
   Inside BTP, the same rule keeps the deletion on closed-form tasks with no loss and removes
   it on open-ended ones, recovering reading from 28.4% to 77.9% of baseline.
+- **What matters is selecting versus producing the answer.** On the same 189 TextVQA
+  questions, every closed format (yes/no; 2, 4 or 8 options; easy or same-type distractors)
+  can drop the image after layer 13-15 of 28, and the number or difficulty of options moves it
+  by about one layer. Fill-in-the-blank and open-ended answers need it to layer 27-28, hints or
+  not. The model's confidence settles exactly at that layer, and inside the unmodified model
+  the chosen option forms 4 to 9 layers after the image stops being needed. A withdrawal
+  layer that is safe for every closed format leaves open-ended reading at 0.11 against 0.91.
 
 ---
 
@@ -46,12 +53,13 @@ Every phase folder has the same shape: `README.md` (question, answer, file list)
 
 ```
 BTP-Reproduction/
-  RESULTS.md                 every number from all four phases, in one place
+  RESULTS.md                 every number from all five phases, in one place
   phase1-reproduction/       does BTP reproduce?               yes, within ~1 point
   phase2-text-failure/       where does it break?               reading tasks collapse
   phase3-mechanism/          why?                               a layer-23 deletion; access threshold
     RESULTS_LOG.md           run-by-run record, incl. invalid runs and withdrawn claims
   phase4-access-horizon/     does the needed depth depend on the task, and can pruning use it?
+  phase5-response-format/    which part of the format matters?  selecting vs producing the answer
 ```
 
 | Looking for | Go to |
@@ -135,7 +143,8 @@ grep -c "def div_prune" $MODFILE                     # 1 means BTP is live, 0 me
 - Phase 2 failure-mode study: **done**
 - Phase 3 cause, threshold and tooling: **done**
 - Phase 4 access horizons, format controls and format-aware BTP: **done**
-- Open: per-question format detection inside the model, manuscript
+- Phase 5 number of choices, same-type distractors, response modes, decision stability: **done**
+- Open: manuscript
 
 **Not reproducible:** LLaVA-1.6. The authors never released the LLaVA-Next patch.
 

@@ -227,6 +227,38 @@ keeps half of what the image adds over the no-image floor.
 
 ---
 
+## Phase 5: response format and visual access
+
+Full write-up: [`phase5-response-format/README.md`](phase5-response-format/README.md).
+Qwen2.5-VL-7B, the same 189 TextVQA questions in seven answer formats. Safe layer = first
+layer from which accuracy stays at or above 95% of full-image accuracy.
+
+| Format | Full image | No image | Safe layer [95% CI] |
+|---|---|---|---|
+| Yes / no | 0.958 | 0.534 | 15 [15, 15] |
+| 2 options | 1.000 | 0.720 | 13 [12, 15] |
+| 4 options | 1.000 | 0.672 | 14 [12, 15] |
+| 8 options | 0.989 | 0.545 | 15 [10, 15] |
+| 4 options, same-type distractors | 0.989 | 0.582 | 15 [13, 15] |
+| Fill-in-the-blank | 0.783 | 0.159 | 28 [27, 28] |
+| Open-ended | 0.910 | 0.053 | 27 [27, 28] |
+
+- **Number of choices does not matter** (8 to 4 to 2: +1 [-3, 3], +1 [-2, 2]); open-ended to
+  any multiple choice moves the safe layer 12 to 14 layers earlier.
+- **Same-type distractors** lower no-image accuracy (0.67 to 0.58, chance 0.25) but move the
+  safe layer by only +1 [-1, 3]. Option leakage does not explain early withdrawal.
+- **Two regimes.** Select (yes/no, multiple choice) is safe from layer 15; produce
+  (fill-in-the-blank, open-ended) needs 27-28. Fill hints do not help (h50 difference 0 [0, 0]).
+- **Decision stability.** On image-dependent questions, confidence in the correct answer
+  reaches 90% of its full-image value exactly at the safe layer (15 closed, 27-28 open). Per
+  question, 0-1 closed-format questions per condition need the image past layer 16, against
+  156 of 159 open-ended. In the unmodified model the correct option becomes the top internal
+  choice at layers 19-24: the image is read before the answer is formed.
+- Withdrawing at layer 15, safe for every closed format, leaves open-ended TextVQA at
+  **0.11** against 0.91.
+
+---
+
 ## Conclusions (Phases 1-3)
 
 **Implementation.** The released BTP code deletes all remaining image tokens just below the

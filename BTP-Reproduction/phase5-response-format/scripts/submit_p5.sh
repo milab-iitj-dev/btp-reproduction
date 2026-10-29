@@ -1,11 +1,12 @@
 #!/bin/bash
-# Phase 5: all seven response conditions, as two chains so at most two GPUs are used at once
-# (the lab account's limit). Run from the workspace root:
+# Phase 5: all seven response conditions, as two chains (two GPUs at once). dgx_fat has its own
+# per-user GPU allowance (dgxqos, 4 GPUs), separate from the 2 shared on fat/dgx (fatqos).
+# Run from the workspace root:
 #   bash phase5-response-format/scripts/submit_p5.sh
 set -euo pipefail
 cd /scratch/data/divyasaxena_rs/kedar_BTPreproduction
 mkdir -p logs
-RES="--cpus-per-task=2 --mem-per-cpu=16G -p fat"
+RES="--cpus-per-task=2 --mem-per-cpu=16G -p dgx_fat"
 chain() {
   local prev="" id
   for c in "$@"; do

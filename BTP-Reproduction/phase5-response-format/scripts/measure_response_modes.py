@@ -284,8 +284,9 @@ class Scorer:
             [inp["attention_mask"], torch.ones_like(gt)], 1)
         with torch.inference_mode():
             out = self.model(**full, use_cache=False)
-        n0 = ids.shape[1]
-        lp = torch.log_softmax(out.logits[0, n0 - 1:n0 - 1 + len(g)].float(), dim=-1)
+        # Index from the end: when image tokens are deleted the output is shorter than the
+        # input, so absolute positions past the image no longer line up.
+        lp = torch.log_softmax(out.logits[0, -len(g) - 1:-1].float(), dim=-1)
         tok_lp = lp[torch.arange(len(g), device=lp.device), torch.tensor(g, device=lp.device)]
         return math.exp(tok_lp.mean().item())
 
@@ -401,18 +402,22 @@ def main():
         try:
             for s in samples:
                 inp, positions, _ = run(s["image"], s["question"], suffix=s["suffix"])
+                pred, p, m, top = None, None, None, None
                 try:
                     deleter.begin_sample(positions)
                     pred = generate(inp, max_new_tokens=max_new)
+                except Exception as e:
+                    print("  failed on", s["id"], repr(e))
+                    failed += 1
+                # A confidence failure must not discard the generated answer.
+                try:
                     deleter.begin_sample(positions)
                     if closed:
                         p, m, top = sc.closed(args.cond, s, inp)
                     else:
                         p, m, top = sc.gold_prob(s, inp), None, None
                 except Exception as e:
-                    print("  failed on", s["id"], repr(e))
-                    pred, p, m, top = None, None, None, None
-                    failed += 1
+                    print("  confidence failed on", s["id"], repr(e))
                 preds.append(pred)
                 flags.append(score(args.cond, pred, s))
                 cp.append(p)
