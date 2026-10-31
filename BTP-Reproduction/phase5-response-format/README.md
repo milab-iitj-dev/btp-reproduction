@@ -59,7 +59,7 @@ format controls how long a model needs the image:
 
 - Same-type distractors cut no-image accuracy from 0.67 to 0.58. Chance is 0.25, so the
   question and options together still carry a strong language prior.
-- The safe layer moves by +1 [-1, 3]. Of the 87 questions that need the image, **none needs
+- The safe layer moves by +1 [-1, 3]. Of the 87 questions that need the image, **only one needs
   it past layer 16** under same-type distractors. Option leakage is real, but it does not
   explain why multiple choice can drop the image early.
 
